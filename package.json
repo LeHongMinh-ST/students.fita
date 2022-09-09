@@ -1,14 +1,39 @@
 {
     "private": true,
     "scripts": {
-        "dev": "vite",
-        "build": "vite build"
+        "serve": "vite preview",
+        "build": "vite build",
+        "dev": "vite"
+    },
+    "dependencies": {
+        "@mdi/font": "5.9.55",
+        "@quasar/extras": "^1.15.1",
+        "@vuelidate/core": "^2.0.0-alpha.44",
+        "@vuelidate/validators": "^2.0.0-alpha.31",
+        "moment": "^2.29.4",
+        "quasar": "^2.7.7",
+        "roboto-fontface": "*",
+        "sass-loader": "^13.0.2",
+        "vue": "^3.2.36",
+        "vue-loader": "^17.0.0",
+        "vue-router": "^4.1.4",
+        "vuex": "^4.0.2",
+        "vuex-persistedstate": "^4.1.0",
+        "webfontloader": "^1.0.0"
     },
     "devDependencies": {
-        "axios": "^0.27",
-        "laravel-vite-plugin": "^0.6.0",
-        "lodash": "^4.17.19",
+        "@quasar/vite-plugin": "^1.1.1",
+        "@vitejs/plugin-vue": "^3.0.3",
+        "axios": "^0.27.2",
+        "laravel-vite-plugin": "^0.5.0",
+        "lodash": "^4.17.21",
         "postcss": "^8.1.14",
-        "vite": "^3.0.0"
+        "sass": "^1.32.12",
+        "sass-loader": "^12.0.0",
+        "vite": "^3.0.8",
+        "vite-plugin-vuetify": "^1.0.0-alpha.12",
+        "vue-cli-plugin-quasar": "~5.0.1",
+        "vue-cli-plugin-vuetify": "~2.5.4",
+        "webpack-plugin-vuetify": "^2.0.0-alpha.0"
     }
 }
