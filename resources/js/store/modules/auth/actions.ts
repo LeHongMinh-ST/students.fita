@@ -13,6 +13,6 @@ export const actions: ActionTree<State, RootState> & Actions = {
         commit('updateLoginStatus', false)
         commit('updateAuthUser', {})
         commit('updateAccessToken', '')
-        router.push({name: 'Login'})
+        return router.push({name: 'Login'})
     }
 }

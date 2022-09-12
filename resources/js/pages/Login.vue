@@ -117,7 +117,6 @@ export default defineComponent({
       return auth
     }
 
-
     const isValidate = () => {
       let isCheck = true
 

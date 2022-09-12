@@ -1,11 +1,13 @@
-import {Module, Store as VuexStore, CommitOptions, DispatchOptions} from "vuex";
+import {Module, Store as VuexStore, CommitOptions, DispatchOptions} from 'vuex'
 import {RootState} from '../../index'
-import type { State } from './state'
-import { state } from './state'
-import { actions, Actions } from './actions'
-import { mutations, Mutations } from './mutations'
-import { getters, Getters } from './getters'
-export { State };
+import {state} from './state'
+import {actions, Actions} from './actions'
+import {mutations, Mutations} from './mutations'
+import {getters, Getters} from './getters'
+
+import type {State} from './state'
+
+export {State};
 
 export type AuthStore<S = State> = Omit<VuexStore<S>, 'getters' | 'commit' | 'dispatch'> & {
     commit<K extends keyof Mutations, P extends Parameters<Mutations[K]>[1]>(
@@ -23,7 +25,7 @@ export type AuthStore<S = State> = Omit<VuexStore<S>, 'getters' | 'commit' | 'di
 } & {
     getters: {
         [K in keyof Getters]: ReturnType<Getters[K]>
-    };
+    }
 };
 
 export const store: Module<State, RootState> = {
