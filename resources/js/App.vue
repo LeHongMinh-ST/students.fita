@@ -5,25 +5,25 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
 
 import AppLayout from './layouts/AppLayout.vue'
 import AuthLayout from './layouts/AuthLayout.vue'
 import {mapState} from 'vuex'
-import {computed} from 'vue'
+import {computed, defineComponent} from 'vue'
 
-export default {
+export default defineComponent({
   name: 'App',
   components: {
     AppLayout,
     AuthLayout
   },
   computed: {
-    ...mapState('auth',[
+    ...mapState('auth', [
       'isAuthenticated'
     ])
   }
-}
+})
 </script>
 
 <style scoped>

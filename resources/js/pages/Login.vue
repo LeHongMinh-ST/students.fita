@@ -50,14 +50,15 @@
 </template>
 
 <script>
-import {ref, watch} from 'vue'
+import {defineComponent, ref, watch} from 'vue'
 import api from '../api'
 import {useQuasar} from 'quasar'
 import _ from 'lodash'
 import {useStore} from 'vuex'
 import {useRouter} from 'vue-router/dist/vue-router'
 
-export default {
+
+export default defineComponent({
   name: 'Login',
   setup() {
     const $q = useQuasar()
@@ -150,7 +151,7 @@ export default {
     }
   },
 
-}
+})
 </script>
 
 <style scoped lang="scss">

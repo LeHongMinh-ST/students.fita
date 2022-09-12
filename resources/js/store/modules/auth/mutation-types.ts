@@ -1,0 +1,5 @@
+export enum AuthMutationTypes {
+    SET_LOGIN_STATUS = 'SET_LOGIN_STATUS',
+    SET_AUTH_USER = 'SET_AUTH_USER',
+    SET_ACCESS_TOKEN = 'SET_ACCESS_TOKEN',
+}

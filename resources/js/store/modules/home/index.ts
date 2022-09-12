@@ -6,13 +6,13 @@ export default {
         loader: false
     },
     mutations: {
-        changeTitle(state, data) {
+        changeTitle(state, data): void {
             state.title = data
         },
-        setActiveMenu(state, data) {
+        setActiveMenu(state, data): void {
             state.activeMenu = data
         },
-        setLoader(state, data) {
+        setLoader(state, data): void {
             state.loader = data
         }
     },
