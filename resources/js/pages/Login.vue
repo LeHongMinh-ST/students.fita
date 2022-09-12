@@ -29,11 +29,17 @@
                 />
 
                 <div>
-                  <q-btn label="Đăng nhập" @click="handleLogin" type="button" color="primary"></q-btn>
+                  <q-btn label="Đăng nhập" @click="handleLogin" icon-right="send" type="button" color="primary"></q-btn>
                 </div>
                 <div>
                   <router-link class="textLink" :to='{ name: "Register" }'>Đăng ký</router-link>
                   nếu bạn chưa có tài khoản ?
+                </div>
+                <div class="separator">hoặc</div>
+                <div class="social-card">
+                  <div class="microsoft social-btn q-btn text-white">
+                    <span><q-icon name="fa-brands fa-windows" size="md"/><span class="social-text">Đăng nhập với tài khoản Microsoft</span></span>
+                  </div>
                 </div>
               </form>
             </div>
@@ -169,11 +175,51 @@ export default defineComponent({
       &:visited {
       }
     }
+
+    .social-card {
+      width: 60%;
+      margin: 20px auto;
+
+      .social-btn {
+        cursor: pointer;
+        width: 100%;
+        .social-text {
+          margin-left: 10px;
+        }
+      }
+
+      .microsoft {
+        background-color: #00A1F1;
+      }
+    }
+
+    .separator {
+      display: flex;
+      align-items: center;
+      text-align: center;
+    }
+
+    .separator::before,
+    .separator::after {
+      content: '';
+      flex: 1;
+      border-bottom: 1px solid #868686;
+    }
+
+    .separator:not(:empty)::before {
+      margin-right: .25em;
+    }
+
+    .separator:not(:empty)::after {
+      margin-left: .25em;
+    }
   }
 
   .loginImage {
     width: 100%;
   }
+
+
 }
 
 </style>
