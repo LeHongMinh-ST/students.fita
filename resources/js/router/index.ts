@@ -1,7 +1,8 @@
-import store from "../store"
-import {createRouter, createWebHistory} from 'vue-router'
+import {store} from "../store"
+import {RouteRecordRaw, createRouter, createWebHistory} from 'vue-router'
 
-const routes = [
+
+const routes: Array<RouteRecordRaw> = [
     {
         path: '/',
         name: 'Home',
@@ -42,5 +43,6 @@ router.beforeEach((to, from, next) => {
         next()
     }
 });
+
 
 export default router

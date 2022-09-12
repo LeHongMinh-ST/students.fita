@@ -8,7 +8,7 @@ export default defineConfig({
             template: { transformAssetUrls }
         }),
         laravel({
-            input: ['resources/js/app.js'],
+            input: ['resources/js/app.ts'],
             refresh: true,
         }),
         quasar()

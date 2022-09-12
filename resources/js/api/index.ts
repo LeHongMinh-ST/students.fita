@@ -1,16 +1,15 @@
-import axios from "axios"
-import router from "../router"
-import store from "../store"
+import axios from 'axios'
+import router from '../router'
+import {store} from '../store'
 
+// @ts-ignore
 const baseUrl = import.meta.env.VITE_ADMIN_URL;
 
 export const apiAxios = axios.create({
     baseURL: `${baseUrl}/api`,
     headers: {
-        post: {
-            'Content-Type': 'application/json'
-        }
-    }
+        "Content-type": "application/json",
+    },
 })
 
 apiAxios.interceptors.request.use(config => {
@@ -26,7 +25,7 @@ apiAxios.interceptors.request.use(config => {
 apiAxios.interceptors.response.use(undefined, (error) => {
     if (error) {
         const originalRequest = error.config;
-        if (error.response.status === 401 && !originalRequest._retry && router.currentRoute.name !== 'Login') {
+        if (error.response.status === 401 && !originalRequest._retry && router.currentRoute.value.name !== 'Login') {
             store.commit('auth/updateLoginStatus', false)
             store.commit('auth/updateAuthUser', {})
             store.commit('auth/updateAccessToken', '')
@@ -51,20 +50,20 @@ apiAxios.interceptors.response.use(undefined, error => {
 })
 
 export default {
-    getAuthUser() {
+    getAuthUser(): Promise<any> {
         return apiAxios({
             method: 'get',
             url: '/auth/me'
         })
     },
-    login(data) {
+    login(data: any): Promise<any> {
         return apiAxios({
             method: 'post',
             url: '/auth/login',
             data: data
         })
     },
-    register(data) {
+    register(data: any): Promise<any> {
         return apiAxios({
             method: 'post',
             url: '/auth/register',
