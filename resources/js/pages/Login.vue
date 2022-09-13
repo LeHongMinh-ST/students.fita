@@ -29,7 +29,8 @@
                 />
 
                 <div>
-                  <q-btn label="Đăng nhập" @click="handleLogin" icon-right="send" type="button" color="primary"></q-btn>
+                  <q-btn label="Đăng nhập" @click="handleLogin" icon-right="fa-solid fa-right-to-bracket" type="button"
+                         color="primary"></q-btn>
                 </div>
                 <div>
                   <router-link class="textLink" :to='{ name: "Register" }'>Đăng ký</router-link>
@@ -38,7 +39,12 @@
                 <div class="separator">hoặc</div>
                 <div class="social-card">
                   <div class="microsoft social-btn q-btn text-white">
-                    <span><q-icon name="fa-brands fa-windows" size="md"/><span class="social-text">Đăng nhập với tài khoản Microsoft</span></span>
+                    <span><q-icon class="social-icon" name="fa-brands fa-windows" size="md"/><span class="social-text">Đăng nhập với tài khoản Microsoft</span></span>
+                  </div>
+
+                  <div class="google social-btn q-btn text-white" @click="getUrlSocial('google')">
+                    <span><q-icon class="social-icon" name="fa-brands fa-google-plus-g" size="md"/><span
+                        class="social-text">Đăng nhập với tài khoản Google</span></span>
                   </div>
                 </div>
               </form>
@@ -55,14 +61,14 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
 import {defineComponent, ref, watch} from 'vue'
 import api from '../api'
 import {useQuasar} from 'quasar'
 import _ from 'lodash'
 import {useStore} from 'vuex'
 import {useRouter} from 'vue-router/dist/vue-router'
-
+import {AuthMutationTypes} from "../store/modules/auth/mutation-types"
 
 export default defineComponent({
   name: 'Login',
@@ -83,7 +89,7 @@ export default defineComponent({
       val => (val && val.length > 0) || 'Mật khẩu không được bỏ trống'
     ]
 
-    const handleLogin = async () => {
+    const handleLogin = async (): Promise<void> => {
       userNameRef.value.validate()
       passwordRef.value.validate()
 
@@ -97,9 +103,8 @@ export default defineComponent({
 
         api.login(data).then(async res => {
           if (res) {
-            store.commit('auth/updateAccessToken', _.get(res, 'data.access_token'))
-            store.commit('auth/updateLoginStatus', true)
-
+            store.commit(`auth/${AuthMutationTypes.SET_ACCESS_TOKEN}`, _.get(res, 'data.access_token'))
+            store.commit(`auth/${AuthMutationTypes.SET_LOGIN_STATUS}`, true)
             await getAuthUser()
             await router.push({name: 'Home'})
           }
@@ -114,16 +119,33 @@ export default defineComponent({
       }
     }
 
-    const getAuthUser = async () => {
+    const getUrlSocial = (provider: string): void => {
+      api.getRedirectSocial(provider).then(res => {
+        const url = _.get(res, 'data.data.url')
+        if (url) {
+          // window.location.href = url
+          window.open(url, '_blank');
+        }
+      }).catch(() => {
+        $q.notify({
+          icon: 'report_problem',
+          message: 'Lỗi không thể kết nối !',
+          color: 'negative',
+          position: 'top-right'
+        })
+      })
+    }
+
+    const getAuthUser = async (): Promise<any> => {
       let auth = {}
       await api.getAuthUser().then((res) => {
         auth = _.get(res, 'data', {})
-        store.commit('auth/updateAuthUser', auth)
+        store.commit(`auth/${AuthMutationTypes.SET_AUTH_USER}`, auth)
       })
       return auth
     }
 
-    const isValidate = () => {
+    const isValidate = (): boolean => {
       let isCheck = true
 
       if (userNameRef.value.hasError) {
@@ -137,11 +159,11 @@ export default defineComponent({
       return isCheck
     }
 
-    watch(userName, () => {
+    watch(userName, (): void => {
       userNameRef.value.resetValidation()
     })
 
-    watch(password, () => {
+    watch(password, (): void => {
       passwordRef.value.resetValidation()
     })
 
@@ -153,6 +175,7 @@ export default defineComponent({
       userNameRef,
       passwordRef,
       handleLogin,
+      getUrlSocial
     }
   },
 
@@ -181,16 +204,30 @@ export default defineComponent({
       margin: 20px auto;
 
       .social-btn {
+        margin-bottom: 10px;
+        padding: 5px;
         cursor: pointer;
         width: 100%;
+        border-radius: 3px;
+
         .social-text {
+          font-size: 0.75vw;
           margin-left: 10px;
+        }
+
+        .social-icon {
+          font-size: 1.5vw !important;
         }
       }
 
       .microsoft {
         background-color: #00A1F1;
       }
+
+      .google {
+        background-color: #EA4335;
+      }
+
     }
 
     .separator {

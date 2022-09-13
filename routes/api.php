@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\AuthController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -14,6 +15,17 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
+//Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
+//    return $request->user();
+//});
+
+Route::group(['prefix' => 'auth'], function () {
+    Route::post('login', [AuthController::class, 'login']);
+    Route::post('logout', [AuthController::class, 'logout']);
+    Route::get('social/{provider}', [AuthController::class, 'redirectToProvider']);
+    Route::post('social/{provider}/callback', [AuthController::class, 'callbackProvider']);
+
+    Route::group(['middleware' => ['jwt.auth']], function () {
+        Route::get('me', [AuthController::class, 'me']);
+    });
 });

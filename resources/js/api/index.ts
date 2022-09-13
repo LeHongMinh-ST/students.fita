@@ -63,6 +63,19 @@ export default {
             data: data
         })
     },
+    getRedirectSocial(provider: string): Promise<any> {
+        return apiAxios({
+            method: 'get',
+            url: `/auth/social/${provider}`
+        })
+    },
+    loginSocialCallback(provider: string, payload: Object): Promise<any> {
+        return apiAxios({
+            method: 'post',
+            url: `/auth/social/${provider}/callback`,
+            params: payload
+        })
+    },
     register(data: any): Promise<any> {
         return apiAxios({
             method: 'post',

@@ -1,8 +1,8 @@
 import {VALIDATE_EMAIL_REGEX, VALIDATE_PHONE_REGEX_RULE} from "./constants";
-import moment from 'moment'
+import * as moment from 'moment'
 
-export const isValidEmail = (email) => {
-    let result =  false
+export const isValidEmail = (email: string): boolean => {
+    let result = false
     if (email && typeof email === 'string') {
         const regex = RegExp(VALIDATE_EMAIL_REGEX);
         result = regex.test(email.trim())
@@ -10,7 +10,7 @@ export const isValidEmail = (email) => {
     return result
 }
 
-export const isValidPhone = (phone) => {
+export const isValidPhone = (phone: string): boolean => {
     let result = false
 
     if (phone && typeof phone === 'string') {
@@ -19,10 +19,10 @@ export const isValidPhone = (phone) => {
         if (trimPhone) {
             const regexRule = RegExp(VALIDATE_PHONE_REGEX_RULE);
 
-            let ruleMatchs = trimPhone.match(regexRule);
+            let ruleMatches = trimPhone.match(regexRule);
 
-            if (ruleMatchs && ruleMatchs.length > 0) {
-                result = (ruleMatchs[0] === trimPhone)
+            if (ruleMatches && ruleMatches.length > 0) {
+                result = (ruleMatches[0] === trimPhone)
             }
         }
     }
@@ -30,23 +30,23 @@ export const isValidPhone = (phone) => {
     return result
 }
 
-export const formatMoney = (money) => {
+export const formatMoney = (money: any): string => {
     return money.toString().replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,")
 }
 
-export const formatNumber = (money) => {
+export const formatNumber = (money: any): string => {
     return money.toString().replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,")
 }
 
-export const formatDate = (date) => {
+export const formatDate = (date: any): string => {
     return moment(date).format('HH:mm DD/MM/YYYY')
 }
 
-export const formatTime = (date) => {
+export const formatTime = (date: any): string => {
     return moment(date).lang('vi').fromNow();
 }
 
-export const formatTimeFrom = (stringDate) => {
+export const formatTimeFrom = (stringDate: any): string => {
     moment.locale('vi');
     return moment(stringDate).fromNow();
 }

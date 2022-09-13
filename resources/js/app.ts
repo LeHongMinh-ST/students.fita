@@ -15,8 +15,12 @@ app.use(Quasar, {
     plugins: {
         Loading, Notify
     }, // import Quasar plugins and add here
-    lang: quasarLang, config: {
-        loading: {}, notify: {}
+    lang: {
+        quasarLang
+    },
+    config: {
+        loading: {},
+        notify: {}
     }
 })
 app.mount("#app")
