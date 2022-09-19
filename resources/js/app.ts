@@ -7,7 +7,7 @@ import App from './App.vue'
 import {store} from './store'
 import router from './router'
 import '@quasar/extras/material-icons/material-icons.css'
-
+import '@quasar/extras/fontawesome-v6/fontawesome-v6.css'
 const app = createApp(App)
 app.use(store)
 app.use(router)
@@ -15,8 +15,12 @@ app.use(Quasar, {
     plugins: {
         Loading, Notify
     }, // import Quasar plugins and add here
-    lang: quasarLang, config: {
-        loading: {}, notify: {}
+    lang: {
+        quasarLang
+    },
+    config: {
+        loading: {},
+        notify: {}
     }
 })
 app.mount("#app")

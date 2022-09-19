@@ -1,9 +1,9 @@
 import {ref} from 'vue'
 
-export function validationHelper() {
+export function validationHelper(): any {
     const errors = ref([])
 
-    const getValidationErrorMessages = (field) => {
+    const getValidationErrorMessages = (field: any): Array<any> => {
         if (!errors.value) {
             return []
         }
@@ -15,7 +15,7 @@ export function validationHelper() {
         return []
     }
 
-    const getValidationErrors = (field) => {
+    const getValidationErrors = (field: any): string => {
         const errors = getValidationErrorMessages(field)
         if (errors.length !== 0) {
             return errors.join('\r\n')
@@ -23,18 +23,18 @@ export function validationHelper() {
         return ''
     }
 
-    const hasValidationErrors = (field) => {
+    const hasValidationErrors = (field: any): boolean => {
         if (getValidationErrorMessages(field).length !== 0) {
             return true
         }
         return false
     }
 
-    const setValidationErrors = (payload) => {
+    const setValidationErrors = (payload: any): void => {
         errors.value = payload
     }
-    
-    const resetValidateErrors = (field) => {
+
+    const resetValidateErrors = (field: any): void => {
         const keys = Object.keys(errors.value)
         const key = keys.find(element => element.toLowerCase() === field.toLowerCase())
         if (errors.value[key]) {
@@ -42,7 +42,7 @@ export function validationHelper() {
         }
     }
 
-    const showValidationError = () => {
+    const showValidationError = (): void => {
         this.$q.notify({
             type: 'negative',
             message: 'Vui lòng kiểm tra lại dữ liệu nhập vào!',

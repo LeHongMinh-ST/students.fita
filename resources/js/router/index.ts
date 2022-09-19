@@ -19,6 +19,11 @@ const routes: Array<RouteRecordRaw> = [
         name: 'Register',
         component: () => import('../pages/Register.vue')
     },
+    {
+        path: '/authorize/google/callback',
+        name: 'LoginGoogle',
+        component: () => import('../pages/LoginGoogle.vue')
+    }
 ]
 const router = createRouter({
     history: createWebHistory(),

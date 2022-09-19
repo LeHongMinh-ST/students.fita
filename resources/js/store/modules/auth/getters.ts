@@ -1,9 +1,6 @@
 import {GetterTree} from 'vuex'
-
 import {isAuthenticated, authUser, accessToken} from '../../../@type'
-
 import {RootState} from '../../index'
-
 import {State} from './state'
 
 export type Getters = {
