@@ -36,7 +36,6 @@
 4. Local development server
 - Run 
 ``` bash
-
     back end
 	$ php artisan serve
 	

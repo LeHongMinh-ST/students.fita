@@ -58,6 +58,7 @@
         </q-card-section>
       </q-card>
     </div>
+
   </div>
 </template>
 
@@ -123,8 +124,7 @@ export default defineComponent({
       api.getRedirectSocial(provider).then(res => {
         const url = _.get(res, 'data.data.url')
         if (url) {
-          // window.location.href = url
-          window.open(url, '_blank');
+          window.open(url,'_self');
         }
       }).catch(() => {
         $q.notify({
