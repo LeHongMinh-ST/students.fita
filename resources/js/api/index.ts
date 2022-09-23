@@ -16,6 +16,7 @@ export const apiAxios = axios.create({
 apiAxios.interceptors.request.use(config => {
     let token = store.state.auth.accessToken
     if (token) {
+        // @ts-ignore
         config.headers.common['Authorization'] = `Bearer ${token}`
     }
     return config

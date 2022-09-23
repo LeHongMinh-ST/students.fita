@@ -143,7 +143,7 @@
 
 <script lang="ts">
 import {defineComponent, ref} from 'vue'
-import {fabYoutube} from '@quasar/extras/fontawesome-v6'
+import {fabYoutube, farUsers} from '@quasar/extras/fontawesome-v6'
 import {useRouter} from "vue-router/dist/vue-router";
 
 export default defineComponent({
@@ -174,7 +174,7 @@ export default defineComponent({
 
       links1: [
         {icon: 'home', text: 'Bảng điều khiển', routeName: 'Home'},
-        {icon: 'whatshot', text: 'Trending'},
+        {icon: 'fa-solid fa-users', text: 'Quản lý sinh viên', routeName: 'StudentIndex'},
         {icon: 'subscriptions', text: 'Subscriptions'}
       ],
       links2: [
@@ -215,7 +215,7 @@ export default defineComponent({
 })
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .YL {
   &__toolbar-input-container {
     min-width: 100px;
