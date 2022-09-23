@@ -1,7 +1,6 @@
 import {store} from "../store"
 import {RouteRecordRaw, createRouter, createWebHistory} from 'vue-router'
 
-
 const routes: Array<RouteRecordRaw> = [
     {
         path: '/',
