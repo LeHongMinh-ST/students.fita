@@ -1,6 +1,7 @@
 import axios from 'axios'
 import router from '../router'
 import {store} from '../store'
+import {AuthMutationTypes} from "../store/modules/auth/mutation-types"
 
 // @ts-ignore
 const baseUrl = import.meta.env.VITE_ADMIN_URL;
@@ -15,6 +16,7 @@ export const apiAxios = axios.create({
 apiAxios.interceptors.request.use(config => {
     let token = store.state.auth.accessToken
     if (token) {
+        // @ts-ignore
         config.headers.common['Authorization'] = `Bearer ${token}`
     }
     return config
@@ -26,9 +28,9 @@ apiAxios.interceptors.response.use(undefined, (error) => {
     if (error) {
         const originalRequest = error.config;
         if (error.response.status === 401 && !originalRequest._retry && router.currentRoute.value.name !== 'Login') {
-            store.commit('auth/updateLoginStatus', false)
-            store.commit('auth/updateAuthUser', {})
-            store.commit('auth/updateAccessToken', '')
+            store.commit(`auth/${AuthMutationTypes.SET_LOGIN_STATUS}`, false)
+            store.commit(`auth/${AuthMutationTypes.SET_AUTH_USER}`, {})
+            store.commit(`auth/${AuthMutationTypes.SET_ACCESS_TOKEN}`, '')
             return router.push({name: 'Login'})
         }
     }

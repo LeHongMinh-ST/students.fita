@@ -5,7 +5,10 @@
         <q-card-section>
           <div class="row">
             <div class="col">
-              <div><h4>Chào mừng bạn quay trở lại!</h4></div>
+              <div class="logoLogin">
+                <img src="/images/FITA.png" alt="">
+              </div>
+              <div class="textLoginHeader"><h4 class="textHeader text-center">Hệ thống quản lý sinh viên trực tuyến</h4></div>
               <form class="q-gutter-md frmLogin">
                 <q-input
                     ref="userNameRef"
@@ -58,6 +61,7 @@
         </q-card-section>
       </q-card>
     </div>
+
   </div>
 </template>
 
@@ -123,8 +127,7 @@ export default defineComponent({
       api.getRedirectSocial(provider).then(res => {
         const url = _.get(res, 'data.data.url')
         if (url) {
-          // window.location.href = url
-          window.open(url, '_blank');
+          window.open(url, '_self');
         }
       }).catch(() => {
         $q.notify({
@@ -186,6 +189,21 @@ export default defineComponent({
 
 .loginWrapper {
   margin-top: 5vw;
+
+  .logoLogin {
+    width: 4vw;
+    margin: 0 auto;
+
+    img {
+      width: 100%;
+    }
+  }
+
+  .textLoginHeader {
+    .textHeader {
+      margin: 10px;
+    }
+  }
 
   .frmLogin {
     margin-top: 20px;

@@ -1,7 +1,8 @@
 <template>
   <div>
-    <AppLayout v-if="isAuthenticated"/>
-    <AuthLayout v-else/>
+<!--    <AppLayout v-if="isAuthenticated"/>-->
+<!--    <AuthLayout v-else/>-->
+    <router-view />
   </div>
 </template>
 
