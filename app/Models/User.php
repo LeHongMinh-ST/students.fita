@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Notifications\Notifiable;
 use PHPOpenSourceSaver\JWTAuth\Contracts\JWTSubject;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -23,6 +24,13 @@ class User extends Authenticatable implements JWTSubject
         'social_id',
         'social_provider',
         'password',
+        'created_by',
+        'updated_by',
+        'role_id',
+        'department_id',
+        'is_super_admin',
+        'is_teacher',
+        'phone',
     ];
 
     /**
@@ -62,5 +70,25 @@ class User extends Authenticatable implements JWTSubject
     public function getJWTCustomClaims(): array
     {
         return [];
+    }
+
+    public function role(): BelongsTo
+    {
+        return $this->belongsTo(Role::class);
+    }
+
+//    public function department(): BelongsTo
+//    {
+//        return $this->belongsTo(Department::class);
+//    }
+
+    public function createBy(): BelongsTo
+    {
+        return $this->belongsTo(self::class, 'created_by');
+    }
+
+    public function updateBy(): BelongsTo
+    {
+        return $this->belongsTo(self::class, 'updated_by');
     }
 }

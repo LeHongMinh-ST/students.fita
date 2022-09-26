@@ -1,6 +1,9 @@
 <?php
 
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\PermissionController;
+use App\Http\Controllers\Api\RoleController;
+use App\Http\Controllers\Api\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -28,4 +31,29 @@ Route::group(['prefix' => 'auth'], function () {
     Route::group(['middleware' => ['jwt.auth']], function () {
         Route::get('me', [AuthController::class, 'me']);
     });
+});
+
+Route::group(['middleware' => ['jwt.auth']], function () {
+    Route::prefix('users')->group(function () {
+        Route::get('/', [UserController::class, 'index'])->middleware('permission:user-index');
+        Route::post('/', [UserController::class, 'store'])->middleware('permission:user-create');
+        Route::get('/{id}', [UserController::class, 'show'])->middleware('permission:user-read');
+        Route::put('/{id}', [UserController::class, 'update'])->middleware('permission:user-update');
+        Route::delete('/{id}', [UserController::class, 'destroy'])->middleware('permission:user-delete');
+    });
+
+    Route::prefix('roles')->group(function () {
+        Route::get('/', [RoleController::class, 'index'])->middleware('permission:role-index');
+        Route::post('/', [RoleController::class, 'store'])->middleware('permission:role-create');
+        Route::get('/{id}', [RoleController::class, 'show'])->middleware('permission:role-read');
+        Route::put('/{id}', [RoleController::class, 'update'])->middleware('permission:role-update');
+        Route::delete('/{id}', [RoleController::class, 'destroy'])->middleware('permission:role-delete');
+    });
+
+    Route::prefix('permissions')->group(function () {
+        Route::get('/', [PermissionController::class, 'index'])->middleware('permission:role-index');
+        Route::get('/group', [PermissionController::class, 'getGroupPermission'])
+            ->middleware('permission:role-index');
+    });
+
 });
