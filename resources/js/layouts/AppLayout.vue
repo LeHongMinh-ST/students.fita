@@ -1,50 +1,41 @@
 <template>
-  <q-layout view="hHh lpR fFf" class="bg-grey-1">
-    <q-header elevated class="bg-white text-grey-8 q-py-xs" height-hint="58">
+  <q-layout view="lHh Lpr lFf" class="main">
+    <q-header elevated>
       <q-toolbar>
         <q-btn
             flat
             dense
             round
             @click="toggleLeftDrawer"
-            aria-label="Menu"
             icon="menu"
+            aria-label="Menu"
         />
-
-        <q-btn flat no-caps no-wrap class="q-ml-xs" v-if="$q.screen.gt.xs">
-          <img class="logo" src="/images/FITA.png">
-        </q-btn>
-
+        <q-toolbar-title>
+          {{ title }}
+        </q-toolbar-title>
         <q-space/>
-
-        <div class="YL__toolbar-input-container row no-wrap">
-          <q-input dense outlined square v-model="search" placeholder="Search" class="bg-white col"/>
-          <q-btn class="YL__toolbar-input-btn" color="grey-3" text-color="grey-8" icon="search" unelevated/>
-        </div>
-
-        <q-space/>
-
         <div class="q-gutter-sm row items-center no-wrap">
-          <q-btn round dense flat color="grey-8" icon="video_call" v-if="$q.screen.gt.sm">
-            <q-tooltip>Create a video or post</q-tooltip>
+          <q-btn round dense flat icon="fas fa-heart" style="color:#9d4182 !important;" type="a" href="https://github.com/sponsors/pratik227" target="_blank">
           </q-btn>
-          <q-btn round dense flat color="grey-8" icon="apps" v-if="$q.screen.gt.sm">
-            <q-tooltip>Apps</q-tooltip>
-          </q-btn>
-          <q-btn round dense flat color="grey-8" icon="message" v-if="$q.screen.gt.sm">
-            <q-tooltip>Messages</q-tooltip>
-          </q-btn>
-          <q-btn round dense flat color="grey-8" icon="notifications">
+          <q-btn round dense flat color="white" icon="notifications">
             <q-badge color="red" text-color="white" floating>
-              2
+              5
             </q-badge>
-            <q-tooltip>Notifications</q-tooltip>
+            <q-menu
+            >
+              <q-list style="min-width: 100px">
+                <messages></messages>
+                <q-card class="text-center no-shadow no-border">
+                  <q-btn label="View All" style="max-width: 120px !important;" flat dense
+                         class="text-indigo-8"></q-btn>
+                </q-card>
+              </q-list>
+            </q-menu>
           </q-btn>
           <q-btn round flat>
             <q-avatar size="26px">
               <img src="https://cdn.quasar.dev/img/boy-avatar.png">
             </q-avatar>
-            <q-tooltip>Account</q-tooltip>
           </q-btn>
         </div>
       </q-toolbar>
@@ -54,11 +45,22 @@
         v-model="leftDrawerOpen"
         show-if-above
         bordered
-        class="bg-grey-2"
+        class="bg-white main-drawer"
         :width="240"
     >
       <q-scroll-area class="fit">
+        <div class="logoWrapper">
+          <div class="logo">
+            <a href="">
+              <img src="/images/FITA.png" alt="">
+            </a>
+          </div>
+        </div>
+        <q-separator class="q-my-md"/>
         <q-list padding>
+          <q-item-label header class="text-weight-bold">
+            Quản lý chung
+          </q-item-label>
           <q-item v-for="link in links1" :key="link.text" v-ripple clickable @click="redirectRouteName(link.routeName)">
             <q-item-section avatar>
               <q-icon color="grey" :name="link.icon"/>
@@ -95,8 +97,10 @@
           </q-item>
 
           <q-separator class="q-my-md"/>
-
-          <q-item v-for="link in links4" :key="link.text" v-ripple clickable>
+          <q-item-label header class="text-weight-bold">
+            Hệ thống
+          </q-item-label>
+          <q-item v-for="link in linksSystem" :key="link.text" v-ripple clickable @click="redirectRouteName(link.routeName)">
             <q-item-section avatar>
               <q-icon color="grey" :name="link.icon"/>
             </q-item-section>
@@ -105,53 +109,28 @@
             </q-item-section>
           </q-item>
 
-          <q-separator class="q-mt-md q-mb-lg"/>
-
-          <div class="q-px-md text-grey-9">
-            <div class="row items-center q-gutter-x-sm q-gutter-y-xs">
-              <a
-                  v-for="button in buttons1"
-                  :key="button.text"
-                  class="YL__drawer-footer-link"
-                  href="javascript:void(0)"
-              >
-                {{ button.text }}
-              </a>
-            </div>
-          </div>
-          <div class="q-py-md q-px-md text-grey-9">
-            <div class="row items-center q-gutter-x-sm q-gutter-y-xs">
-              <a
-                  v-for="button in buttons2"
-                  :key="button.text"
-                  class="YL__drawer-footer-link"
-                  href="javascript:void(0)"
-              >
-                {{ button.text }}
-              </a>
-            </div>
-          </div>
         </q-list>
       </q-scroll-area>
     </q-drawer>
 
-    <q-page-container>
-      <router-view/>
+    <q-page-container class="bg-grey-2">
+      <router-view />
     </q-page-container>
   </q-layout>
 </template>
 
 <script lang="ts">
-import {defineComponent, ref} from 'vue'
-import {fabYoutube, farUsers} from '@quasar/extras/fontawesome-v6'
+import {defineComponent, ref, computed } from 'vue'
+import {fabYoutube} from '@quasar/extras/fontawesome-v6'
 import {useRouter} from "vue-router/dist/vue-router";
+import {useStore} from "vuex";
 
 export default defineComponent({
   name: 'Home',
 
   setup() {
+    const store = useStore()
     const leftDrawerOpen = ref(false)
-    const search = ref('')
     const router = useRouter()
 
     function toggleLeftDrawer(): void {
@@ -162,19 +141,23 @@ export default defineComponent({
       router.push({name: routeName})
     }
 
+    const title = computed(() => {
+      return store.state.home.title
+    })
+
 
     return {
       fabYoutube,
 
       leftDrawerOpen,
-      search,
+      title,
 
       toggleLeftDrawer,
       redirectRouteName,
 
       links1: [
         {icon: 'home', text: 'Bảng điều khiển', routeName: 'Home'},
-        {icon: 'fa-solid fa-users', text: 'Quản lý sinh viên', routeName: 'StudentIndex'},
+        {icon: 'fa-solid fa-users', text: 'Quản lý sinh viên', routeName: 'Student'},
         {icon: 'subscriptions', text: 'Subscriptions'}
       ],
       links2: [
@@ -189,63 +172,33 @@ export default defineComponent({
         {icon: 'videogame_asset', text: 'Gaming'},
         {icon: 'live_tv', text: 'Live'}
       ],
-      links4: [
-        {icon: 'settings', text: 'Settings'},
-        {icon: 'flag', text: 'Report history'},
-        {icon: 'help', text: 'Help'},
-        {icon: 'feedback', text: 'Send feedback'}
+      linksSystem: [
+        {icon: 'fa-solid fa-user', text: 'Quản lý người dùng', routeName: 'User'},
+        {icon: 'fa-solid fa-user-lock', text: 'Quản lý phân quyền', routeName: 'Role'},
       ],
-      buttons1: [
-        {text: 'About'},
-        {text: 'Press'},
-        {text: 'Copyright'},
-        {text: 'Contact us'},
-        {text: 'Creators'},
-        {text: 'Advertise'},
-        {text: 'Developers'}
-      ],
-      buttons2: [
-        {text: 'Terms'},
-        {text: 'Privacy'},
-        {text: 'Policy & Safety'},
-        {text: 'Test new features'}
-      ]
     }
   }
 })
 </script>
 
 <style lang="scss" scoped>
-.YL {
-  &__toolbar-input-container {
-    min-width: 100px;
-    width: 55%
-  }
+.logoWrapper {
+  .logo {
+    text-align: center;
+    padding-top: 20px;
 
-  &__toolbar-input-btn {
-    border-radius: 0;
-    border-style: solid;
-    border-width: 1px 1px 1px 0;
-    border-color: rgba(0, 0, 0, .24);
-    max-width: 60px;
-    width: 100%
-  }
+    a {
 
-
-  &__drawer-footer-link {
-    color: inherit;
-    text-decoration: none;
-    font-weight: 500;
-    font-size: .75rem;
-
-    &:hover {
-      color: #000
+      img {
+        width: 100px;
+      }
     }
   }
 }
-
-.logo {
-  width: 2.083vw
+.main {
+  //background-color: #F3F5F8;
 }
-
+.main-drawer {
+  //background-color: #F5F5F5!important;
+}
 </style>

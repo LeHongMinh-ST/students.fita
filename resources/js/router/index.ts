@@ -10,8 +10,20 @@ const routeAdmin: Array<RouteRecordRaw> = [
     },
     {
         path: 'students',
-        name: 'StudentIndex',
+        name: 'Student',
         component: () => import('../pages/Student/StudentIndex.vue'),
+        meta: {isAuthenticated: true},
+    },
+    {
+        path: 'users',
+        name: 'User',
+        component: () => import('../pages/User/UserIndex.vue'),
+        meta: {isAuthenticated: true},
+    },
+    {
+        path: 'roles',
+        name: 'Role',
+        component: () => import('../pages/Role/RoleIndex.vue'),
         meta: {isAuthenticated: true},
     }
 ]

@@ -1,5 +1,5 @@
 import {VALIDATE_EMAIL_REGEX, VALIDATE_PHONE_REGEX_RULE} from "./constants";
-import * as moment from 'moment'
+import moment from 'moment'
 
 export const isValidEmail = (email: string): boolean => {
     let result = false
