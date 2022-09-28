@@ -1,6 +1,6 @@
 import './bootstrap'
 import {createApp} from 'vue'
-import {Quasar, Loading, Notify} from 'quasar'
+import {Quasar, Loading, Notify, Dialog} from 'quasar'
 import quasarLang from 'quasar/lang/vi'
 import 'quasar/src/css/index.sass'
 import App from './App.vue'
@@ -13,7 +13,7 @@ app.use(store)
 app.use(router)
 app.use(Quasar, {
     plugins: {
-        Loading, Notify
+        Loading, Notify, Dialog
     }, // import Quasar plugins and add here
     lang: {
         quasarLang

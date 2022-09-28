@@ -27,6 +27,6 @@ class PermissionController extends Controller
 
     public function getGroupPermission(): JsonResponse
     {
-        return $this->responseSuccess(['group_permission' => $this->groupPermissionRepository->all(['*'], ['permissions'])]);
+        return $this->responseSuccess(['groupPermission' => $this->groupPermissionRepository->all(['*'], ['permissions'])]);
     }
 }

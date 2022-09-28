@@ -27,6 +27,12 @@ export default defineComponent({
 })
 </script>
 
-<style scoped>
+<style lang="scss">
+.required {
+  color: #F44336;
+}
 
+.imgEmpty {
+  width: 500px;
+}
 </style>

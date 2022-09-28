@@ -1,5 +1,5 @@
 <template>
-  <q-layout view="lHh Lpr lFf" class="main">
+  <q-layout view="lHh Lpr lFf" class="main bg-grey-2" >
     <q-header elevated>
       <q-toolbar>
         <q-btn
@@ -98,7 +98,7 @@
 
           <q-separator class="q-my-md"/>
           <q-item-label header class="text-weight-bold">
-            Hệ thống
+            Quản trị hệ thống
           </q-item-label>
           <q-item v-for="link in linksSystem" :key="link.text" v-ripple clickable @click="redirectRouteName(link.routeName)">
             <q-item-section avatar>
@@ -113,8 +113,12 @@
       </q-scroll-area>
     </q-drawer>
 
-    <q-page-container class="bg-grey-2">
-      <router-view />
+    <q-page-container>
+      <div class="page-content-wrapper">
+        <div class="page-content">
+          <router-view />
+        </div>
+      </div>
     </q-page-container>
   </q-layout>
 </template>
@@ -156,7 +160,7 @@ export default defineComponent({
       redirectRouteName,
 
       links1: [
-        {icon: 'home', text: 'Bảng điều khiển', routeName: 'Home'},
+        {icon: 'fa-solid fa-home', text: 'Bảng điều khiển', routeName: 'Home'},
         {icon: 'fa-solid fa-users', text: 'Quản lý sinh viên', routeName: 'Student'},
         {icon: 'subscriptions', text: 'Subscriptions'}
       ],
@@ -173,8 +177,8 @@ export default defineComponent({
         {icon: 'live_tv', text: 'Live'}
       ],
       linksSystem: [
-        {icon: 'fa-solid fa-user', text: 'Quản lý người dùng', routeName: 'User'},
-        {icon: 'fa-solid fa-user-lock', text: 'Quản lý phân quyền', routeName: 'Role'},
+        {icon: 'fa-solid fa-user', text: 'Người dùng', routeName: 'User'},
+        {icon: 'fa-solid fa-user-shield', text: 'Nhóm và phân quyền', routeName: 'Role'},
       ],
     }
   }
@@ -200,5 +204,12 @@ export default defineComponent({
 }
 .main-drawer {
   //background-color: #F5F5F5!important;
+}
+.page-content-wrapper {
+  .page-content {
+    margin-top: 0;
+    min-height: 600px;
+    padding: 20px 20px 10px 20px;
+  }
 }
 </style>

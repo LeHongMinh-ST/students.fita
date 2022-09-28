@@ -3,8 +3,10 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Role\DeleteRoleRequest;
 use App\Http\Requests\Role\StoreRoleRequest;
 use App\Http\Requests\Role\UpdateRoleRequest;
+use App\Repositories\Permission\PermissionRepository;
 use App\Repositories\Role\RoleRepositoryInterface;
 use App\Traits\ResponseTrait;
 use Illuminate\Http\JsonResponse;
@@ -17,7 +19,8 @@ class RoleController extends Controller
     use ResponseTrait;
 
     public function __construct(
-        private RoleRepositoryInterface $roleRepository
+        private RoleRepositoryInterface $roleRepository,
+        private PermissionRepository    $permissionRepository
     )
     {
     }
@@ -25,7 +28,7 @@ class RoleController extends Controller
     public function index(Request $request): JsonResponse
     {
         $data = $request->all();
-        $relationships = ['permissions'];
+        $relationships = ['permissions', 'createBy'];
         $columns = ['*'];
         $paginate = $data['limit'] ?? config('constants.limit_of_paginate', 10);
         $condition = [];
@@ -34,11 +37,29 @@ class RoleController extends Controller
             $condition[] = ['name', 'like', '%' . $data['q'] . '%'];
         }
 
+        $sort = $data['sort'] ?? 'DESC';
+        $condition[] = ['created_at', 'ORDER_BY', $sort];
+
         $roles = $this->roleRepository->getListPaginateBy($condition, $relationships, $columns, $paginate);
 
         return $this->responseSuccess([
             'roles' => $roles
         ]);
+    }
+
+    public function getAllRoleId(): JsonResponse
+    {
+        $roles = $this->roleRepository->all()?->pluck('id')?->toArray();
+        return $this->responseSuccess([
+            'roles' => $roles
+        ]);
+    }
+
+    public function show($id): JsonResponse
+    {
+        $relationships = ['permissions'];
+        $columns = ['*'];
+        return $this->responseSuccess(['role' => $this->roleRepository->findById($id, $columns, $relationships)]);
     }
 
     public function store(StoreRoleRequest $request): JsonResponse
@@ -51,7 +72,12 @@ class RoleController extends Controller
                 'created_by' => $authId,
                 'updated_by' => $authId
             ]));
-            $role?->permissions()->attach($data['permission_ids'] ?? []);
+
+            $permissionIds = $this->permissionRepository->getByWhereIn('code', $data['permission_ids'])
+                ?->pluck('id')
+                ?->toArray();
+
+            $role?->permissions()->attach($permissionIds);
             DB::commit();
             return $this->responseSuccess(['role' => $role]);
 
@@ -78,7 +104,11 @@ class RoleController extends Controller
 
             $role = $this->roleRepository->createOrUpdate($role);
 
-            $role->permissions()->sync($data['permission_ids'] ?? []);
+            $permissionIds = $this->permissionRepository->getByWhereIn('code', $data['permission_ids'])
+                ?->pluck('id')
+                ?->toArray();
+
+            $role->permissions()->sync($permissionIds);
             DB::commit();
             return $this->responseSuccess();
         } catch (\Exception $exception) {
@@ -99,6 +129,22 @@ class RoleController extends Controller
             return $this->responseSuccess();
         } catch (\Exception $exception) {
             Log::error('Error delete role', [
+                'method' => __METHOD__,
+                'message' => $exception->getMessage()
+            ]);
+            return $this->responseError();
+        }
+    }
+
+    public function deleteSelected(DeleteRoleRequest $request): JsonResponse
+    {
+        try {
+            $roleId = $request->input('role_id', []);
+            $condition[] = ['id', 'in', $roleId];
+            $this->roleRepository->deleteBy($condition);
+            return $this->responseSuccess();
+        } catch (\Exception $exception) {
+            Log::error('Error delete select role', [
                 'method' => __METHOD__,
                 'message' => $exception->getMessage()
             ]);

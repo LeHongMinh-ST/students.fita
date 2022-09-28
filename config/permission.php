@@ -19,12 +19,6 @@ return [
         'description' => 'Có quyền tạo mới vai trò'
     ],
     [
-        'code' => 'role-read',
-        'name' => 'Xem chi tiết vai trò',
-        'group_code' => 'role',
-        'description' => 'Có quyền xem chi tiết vai trò'
-    ],
-    [
         'code' => 'role-update',
         'name' => 'Cập nhật vai trò',
         'group_code' => 'role',
@@ -47,12 +41,6 @@ return [
         'name' => 'Tạo mới người dùng',
         'group_code' => 'user',
         'description' => 'Có quyền tạo mới người dùng'
-    ],
-    [
-        'code' => 'user-read',
-        'name' => 'Xem chi tiết người dùng',
-        'group_code' => 'user',
-        'description' => 'Có quyền xem chi tiết người dùng'
     ],
     [
         'code' => 'user-update',
@@ -84,12 +72,6 @@ return [
         'name' => 'Tạo mới bộ môn',
         'group_code' => 'department',
         'description' => 'Có quyền tạo mới bộ môn'
-    ],
-    [
-        'code' => 'department-read',
-        'name' => 'Xem chi tiết bộ môn',
-        'group_code' => 'department',
-        'description' => 'Có quyền xem chi tiết bộ môn'
     ],
     [
         'code' => 'department-update',
