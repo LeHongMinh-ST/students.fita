@@ -29,6 +29,8 @@ use App\Repositories\ScientificResearch\ScientificResearchRepository;
 use App\Repositories\ScientificResearch\ScientificResearchRepositoryInterface;
 use App\Repositories\Semester\SemesterRepository;
 use App\Repositories\Semester\SemesterRepositoryInterface;
+use App\Repositories\Social\SocialRepository;
+use App\Repositories\Social\SocialRepositoryInterface;
 use App\Repositories\Subject\SubjectRepository;
 use App\Repositories\Subject\SubjectRepositoryInterface;
 use App\Repositories\Tag\TagRepository;
@@ -50,6 +52,10 @@ class RepositoryServiceProvider extends ServiceProvider
     {
         $this->app->bind(BaseRepositoryInterface::class, BaseRepository::class);
         $this->app->bind(UserRepositoryInterface::class, UserRepository::class);
+        $this->app->bind(SocialRepositoryInterface::class, SocialRepository::class);
+        $this->app->bind(RoleRepositoryInterface::class, RoleRepository::class);
+        $this->app->bind(PermissionRepositoryInterface::class, PermissionRepository::class);
+        $this->app->bind(GroupPermissionRepositoryInterface::class, GroupPermissionRepository::class);
     }
 
     /**

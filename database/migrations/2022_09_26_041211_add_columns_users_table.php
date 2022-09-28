@@ -36,6 +36,8 @@ return new class extends Migration
             $table->dropColumn('is_teacher');
             $table->dropColumn('phone');
             $table->dropColumn('department_id');
+            $table->dropColumn('created_by');
+            $table->dropColumn('updated_by');
 
         });
     }

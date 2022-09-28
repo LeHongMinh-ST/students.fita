@@ -23,7 +23,25 @@ class UserController extends Controller
 
     public function index(Request $request): JsonResponse
     {
-        return $this->responseSuccess(['users' => $this->userRepository->getListPaginateBy($request->all())]);
+        $data = $request->all();
+        $relationships = ['role', 'department'];
+        $columns = ['*'];
+        $paginate = $data['limit'] ?? config('constants.limit_of_paginate', 10);
+        $condition = [];
+
+        if (isset($data['q'])) {
+            $condition[] = ['user_name', 'like', '%' . $data['q'] . '%'];
+            $orCondition = [
+                ['full_name', 'like', '%' . $data['q'] . '%'],
+                ['email', 'like', '%' . $data['q'] . '%'],
+                ['phone', 'like', '%' . $data['q'] . '%']
+            ];
+            $condition[] = ['user_name', 'or', $orCondition];
+        }
+
+        $user = $this->userRepository->getListPaginateBy($condition, $relationships, $columns, $paginate);
+
+        return $this->responseSuccess(['users' => $user]);
     }
 
     public function show($id): JsonResponse
@@ -34,7 +52,14 @@ class UserController extends Controller
     public function store(StoreUserRequest $request): JsonResponse
     {
         try {
-            return $this->responseSuccess(['user' => $this->userRepository->create($request->all())]);
+            $data = $request->all();
+            $authId = auth()->id();
+            $user = $this->userRepository->create(array_merge($data, [
+                'created_by' => $authId,
+                'updated_by' => $authId
+            ]));
+            return $this->responseSuccess(['user' => $user]);
+
         } catch (\Exception $exception) {
             Log::error('Error store user', [
                 'method' => __METHOD__,
@@ -47,7 +72,11 @@ class UserController extends Controller
     public function update(UpdateUserRequest $request, $id): JsonResponse
     {
         try {
-            $this->userRepository->updateById($id, $request->all());
+            $data = $request->all();
+
+            $this->userRepository->updateById($id, array_merge($data, [
+                'updated_by' => auth()->id()
+            ]));
             return $this->responseSuccess();
         } catch (\Exception $exception) {
             Log::error('Error update user', [
@@ -77,7 +106,10 @@ class UserController extends Controller
         try {
             $password = $request->input('password', '');
 
-            $this->userRepository->updateById($id, ['password' => Hash::make($password)]);
+            $this->userRepository->updateById($id, [
+                'password' => Hash::make($password),
+                'updated_by' => auth()->id()
+            ]);
             return $this->responseSuccess();
         } catch (\Exception $exception) {
             Log::error('Error update user', [

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Repositories\Social\SocialRepositoryInterface;
 use App\Repositories\User\UserRepositoryInterface;
 use App\Traits\ResponseTrait;
 use Illuminate\Http\JsonResponse;
@@ -16,7 +17,10 @@ class AuthController extends Controller
 {
     use ResponseTrait;
 
-    public function __construct(private UserRepositoryInterface $userRepository)
+    public function __construct(
+        private UserRepositoryInterface   $userRepository,
+        private SocialRepositoryInterface $socialRepository
+    )
     {
     }
 
@@ -111,24 +115,23 @@ class AuthController extends Controller
             return $this->responseError('Invalid provider email', [], 422);
         }
 
-        DB::transaction(function () use ($userProvider, $provider, &$user) {
-            $user = $this->userRepository->firstOrCreate([
-                'social_id' => $userProvider->id,
-                'social_provider' => $provider,
-            ], [
-                'email' => $userProvider->email,
-                'user_name' => $userProvider->email,
-                'full_name' => $userProvider->name,
-                'password' => Hash::make($userProvider->email),
-                'email_verified_at' => now(),
-            ]);
-        });
+        $social = $this->socialRepository->getFirstBy([
+            'social_id' => $userProvider->id,
+            'social_provider' => $provider,
+        ]);
 
-        if (!$user) {
-            return $this->responseError('Không thể tạo tài khoản');
+
+        if (!$social) {
+            return $this->responseError('Bạn chưa liên kết với tài khoản nào !');
         }
 
-        if (!$token = auth()->attempt(['email' => $userProvider->email, 'password' => $userProvider->email])) {
+        $user = $this->userRepository->findById($social->user_id);
+
+        if (!$user) {
+            return $this->responseError('Không tìm thấy tài khoản!');
+        }
+
+        if (!$token = auth()->attempt(['email' => $userProvider->email])) {
             return response()->json(['error' => 'Unauthorized'], 401);
         }
 

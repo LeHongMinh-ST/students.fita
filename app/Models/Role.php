@@ -40,4 +40,13 @@ class Role extends Model
     {
         return $this->belongsTo(User::class, 'updated_by');
     }
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::deleting(function (Role $post) {
+            $post->permissions()->detach();
+        });
+    }
 }
