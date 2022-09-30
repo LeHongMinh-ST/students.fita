@@ -44,6 +44,8 @@ Route::group(['middleware' => ['jwt.auth']], function () {
 
     Route::prefix('roles')->group(function () {
         Route::get('/', [RoleController::class, 'index'])->middleware('permission:role-index');
+        Route::get('/get-all-role-id', [RoleController::class, 'getAllRoleId'])->middleware('permission:role-index');
+        Route::delete('/delete-selected', [RoleController::class, 'deleteSelected'])->middleware('permission:role-delete');
         Route::post('/', [RoleController::class, 'store'])->middleware('permission:role-create');
         Route::get('/{id}', [RoleController::class, 'show'])->middleware('permission:role-read');
         Route::put('/{id}', [RoleController::class, 'update'])->middleware('permission:role-update');

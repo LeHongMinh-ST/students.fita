@@ -10,9 +10,39 @@ const routeAdmin: Array<RouteRecordRaw> = [
     },
     {
         path: 'students',
-        name: 'StudentIndex',
+        name: 'Student',
         component: () => import('../pages/Student/StudentIndex.vue'),
         meta: {isAuthenticated: true},
+    },
+    {
+        path: 'users',
+        name: 'User',
+        component: () => import('../pages/User/UserIndex.vue'),
+        meta: {isAuthenticated: true},
+    },
+    {
+        path: 'roles',
+        meta: {isAuthenticated: true},
+        children: [
+            {
+                path: '',
+                name: 'Role',
+                component: () => import('../pages/Role/RoleIndex.vue'),
+                meta: {isAuthenticated: true},
+            },
+            {
+                path: 'update/:id',
+                name: 'RoleUpdate',
+                component: () => import('../pages/Role/RoleUpdate.vue'),
+                meta: {isAuthenticated: true},
+            },
+            {
+                path: 'create',
+                name: 'RoleCreate',
+                component: () => import('../pages/Role/RoleCreate.vue'),
+                meta: {isAuthenticated: true},
+            }
+        ]
     }
 ]
 
@@ -52,7 +82,6 @@ const router = createRouter({
 
 router.beforeEach((to, from, next) => {
     if (to.matched.some((route) => route.meta.isAuthenticated)) {
-        console.log(to)
         if (store.state.auth.isAuthenticated) {
             if (to.name === 'Login') {
                 next({name: 'Home'})

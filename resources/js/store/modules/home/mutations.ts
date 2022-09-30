@@ -1,14 +1,14 @@
 import { MutationTree } from 'vuex'
 
-import {isAuthenticated, authUser, accessToken, activeMenu, title} from '../../../@type'
+import {activeMenu, title} from '../../../@type'
 
 import { State } from './state'
 
-import {AuthMutationTypes as MutationTypes} from './mutation-types'
+import {HomeMutationTypes as MutationTypes} from './mutation-types'
 
 export type Mutations<S = State> = {
     [MutationTypes.SET_ACTIVE_MENU](state: S, payload: activeMenu): void
-    [MutationTypes.SET_TITLE](state: S, payload: authUser): void
+    [MutationTypes.SET_TITLE](state: S, payload: title): void
 }
 
 export const  mutations: MutationTree<State> & Mutations = {

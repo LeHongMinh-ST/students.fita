@@ -84,5 +84,59 @@ export default {
             url: '/auth/register',
             data: data
         })
+    },
+
+    //roles
+    getRoles(params: object = {}): Promise<any> {
+        return apiAxios({
+            method: 'get',
+            url: '/roles',
+            params: params
+        })
+    },
+    getAllRoleId(): Promise<any> {
+        return apiAxios({
+            method: 'get',
+            url: '/roles/get-all-role-id',
+        })
+    },
+    getRole(id: string): Promise<any> {
+        return apiAxios({
+            method: 'get',
+            url: `/roles/${id}`
+        })
+    },
+    getPermissionGroups(): Promise<any> {
+        return apiAxios({
+            method: 'get',
+            url: '/permissions/group'
+        })
+    },
+    createRole(data: any): Promise<any> {
+        return apiAxios({
+            method: 'post',
+            url: '/roles',
+            data: data
+        })
+    },
+    updateRole(data: any, id: string): Promise<any> {
+        return apiAxios({
+            method: 'put',
+            url: `/roles/${id}`,
+            data: data
+        })
+    },
+    deleteRole(id: string): Promise<any> {
+        return apiAxios({
+            method: 'delete',
+            url: `/roles/${id}`,
+        })
+    },
+    deleteSelected(data: any): Promise<any> {
+        return apiAxios({
+            method: 'delete',
+            url: `/roles/delete-selected`,
+            data: data
+        })
     }
 }

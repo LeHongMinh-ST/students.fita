@@ -65,7 +65,8 @@ abstract class BaseRepository implements BaseRepositoryInterface
 
     public function findById(int $id, array $columns = ['*'], array $relations = [], array $append = [])
     {
-        return $this->model->select($columns)->make($relations)->findOrFail($id)->append($append);
+        $this->make($relations);
+        return $this->model->select($columns)->findOrFail($id)->append($append);
     }
 
     public function create(array $payload)
@@ -264,6 +265,7 @@ abstract class BaseRepository implements BaseRepositoryInterface
 
                         return $query;
                     }),
+                    'ORDER_BY' => $newModel->orderBy($field, $val),
                     default => $newModel->where($field, $condition, $val),
                 };
             } else {

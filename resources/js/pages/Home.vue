@@ -3,10 +3,20 @@
 </template>
 
 <script>
-import {defineComponent} from 'vue'
+import {defineComponent, onMounted} from 'vue'
+import {HomeMutationTypes} from "../store/modules/home/mutation-types"
+import {useStore} from "vuex"
 
 export default defineComponent({
-  name: "Home"
+  name: "Home",
+  setup() {
+    const store = useStore()
+
+    onMounted(() => {
+      store.commit(`home/${HomeMutationTypes.SET_TITLE}`, 'Bảng điều khiển')
+    })
+
+  }
 })
 </script>
 
