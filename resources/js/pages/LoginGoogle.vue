@@ -12,6 +12,7 @@ import _ from "lodash"
 import {useStore} from "vuex"
 import {AuthMutationTypes} from "../store/modules/auth/mutation-types"
 import {useRouter} from "vue-router"
+import ILoginResult from "../models/ILoginResult";
 
 const PROVIDER_GOOGLE = 'google'
 
@@ -33,7 +34,7 @@ export default defineComponent({
         code: _.get(route, 'query.code', '')
       }
 
-      api.loginSocialCallback(PROVIDER_GOOGLE, payload).then(async res => {
+      api.loginSocialCallback<ILoginResult>(PROVIDER_GOOGLE, payload).then(async res => {
         if (res) {
           store.commit(`auth/${AuthMutationTypes.SET_ACCESS_TOKEN}`, _.get(res, 'data.access_token'))
           store.commit(`auth/${AuthMutationTypes.SET_LOGIN_STATUS}`, true)

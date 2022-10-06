@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\User;
 use App\Repositories\Social\SocialRepositoryInterface;
 use App\Repositories\User\UserRepositoryInterface;
 use App\Traits\ResponseTrait;
@@ -28,8 +29,8 @@ class AuthController extends Controller
     {
         request()->merge([$this->username() => request()->input('user_name')]);
         $credentials = request([$this->username(), 'password']);
-        if (!$token = auth()->attempt($credentials)) {
-            return response()->json(['error' => 'Unauthorized'], 401);
+        if (!$token = auth('api')->attempt($credentials)) {
+            return $this->responseError('Unauthorized', [], 401, 401);
         }
 
         return $this->respondWithToken($token);
@@ -37,14 +38,14 @@ class AuthController extends Controller
 
     public function logout(): JsonResponse
     {
-        auth()->logout();
+        auth('api')->logout();
 
         return response()->json(['message' => 'Đăng xuất thành công']);
     }
 
     public function me(): JsonResponse
     {
-        $user = auth()->user();
+        $user = auth('api')->user();
 
         if (empty($user)) {
             return response()->json(['error' => 'Unauthorized'], 401);
@@ -118,6 +119,7 @@ class AuthController extends Controller
         $social = $this->socialRepository->getFirstBy([
             'social_id' => $userProvider->id,
             'social_provider' => $provider,
+            'socialable_type' => User::class
         ]);
 
 
@@ -125,7 +127,7 @@ class AuthController extends Controller
             return $this->responseError('Bạn chưa liên kết với tài khoản nào !');
         }
 
-        $user = $this->userRepository->findById($social->user_id);
+        $user = $this->userRepository->findById($social->socialable_id);
 
         if (!$user) {
             return $this->responseError('Không tìm thấy tài khoản!');

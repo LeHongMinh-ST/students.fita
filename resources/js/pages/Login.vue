@@ -73,6 +73,9 @@ import _ from 'lodash'
 import {useStore} from 'vuex'
 import {useRouter} from 'vue-router/dist/vue-router'
 import {AuthMutationTypes} from "../store/modules/auth/mutation-types"
+import ILoginResult from "../models/ILoginResult";
+import IUserResult from "../models/IUserResult";
+import IRedirectSocialResult from "../models/IRedirectSocialResult";
 
 export default defineComponent({
   name: 'Login',
@@ -105,7 +108,7 @@ export default defineComponent({
           password: password.value,
         }
 
-        api.login(data).then(async res => {
+        api.login<ILoginResult>(data).then(async res => {
           if (res) {
             store.commit(`auth/${AuthMutationTypes.SET_ACCESS_TOKEN}`, _.get(res, 'data.access_token'))
             store.commit(`auth/${AuthMutationTypes.SET_LOGIN_STATUS}`, true)
@@ -124,7 +127,7 @@ export default defineComponent({
     }
 
     const getUrlSocial = (provider: string): void => {
-      api.getRedirectSocial(provider).then(res => {
+      api.getRedirectSocial<IRedirectSocialResult>(provider).then(res => {
         const url = _.get(res, 'data.data.url')
         if (url) {
           window.open(url, '_self');
@@ -141,7 +144,7 @@ export default defineComponent({
 
     const getAuthUser = async (): Promise<any> => {
       let auth = {}
-      await api.getAuthUser().then((res) => {
+      await api.getAuthUser<IUserResult>().then((res) => {
         auth = _.get(res, 'data', {})
         store.commit(`auth/${AuthMutationTypes.SET_AUTH_USER}`, auth)
       })

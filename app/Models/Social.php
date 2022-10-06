@@ -13,12 +13,14 @@ class Social extends Model
     protected $table = [
         'social_id',
         'social_provider',
-        'user_id',
+        'socialable_id',
+        'socialable_type',
         'email',
     ];
 
-    public function user(): BelongsTo
+    public function socialable()
     {
-        return $this->belongsTo(User::class);
+        return $this->morphTo();
     }
+
 }

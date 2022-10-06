@@ -3,10 +3,12 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Notifications\Notifiable;
-use PHPOpenSourceSaver\JWTAuth\Contracts\JWTSubject;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
+use PHPOpenSourceSaver\JWTAuth\Contracts\JWTSubject;
 
 class User extends Authenticatable implements JWTSubject
 {
@@ -28,6 +30,7 @@ class User extends Authenticatable implements JWTSubject
         'department_id',
         'is_super_admin',
         'is_teacher',
+        'teacher_code',
         'phone',
     ];
 
@@ -75,6 +78,11 @@ class User extends Authenticatable implements JWTSubject
         return $this->belongsTo(Role::class);
     }
 
+    public function socials(): MorphMany
+    {
+        return $this->morphMany(Social::class,'socialable');
+    }
+
 //    public function department(): BelongsTo
 //    {
 //        return $this->belongsTo(Department::class);
@@ -88,5 +96,10 @@ class User extends Authenticatable implements JWTSubject
     public function updateBy(): BelongsTo
     {
         return $this->belongsTo(self::class, 'updated_by');
+    }
+
+    public function approvedReports(): HasMany
+    {
+        return $this->hasMany(Report::class, 'approved_by');
     }
 }

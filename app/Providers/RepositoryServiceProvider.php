@@ -11,8 +11,14 @@ use App\Repositories\Category\CategoryRepository;
 use App\Repositories\Category\CategoryRepositoryInterface;
 use App\Repositories\Department\DepartmentRepository;
 use App\Repositories\Department\DepartmentRepositoryInterface;
+use App\Repositories\Family\FamilyRepository;
+use App\Repositories\Family\FamilyRepositoryInterface;
+use App\Repositories\GeneralClass\GeneralClassRepository;
+use App\Repositories\GeneralClass\GeneralClassRepositoryInterface;
 use App\Repositories\GroupPermission\GroupPermissionRepository;
 use App\Repositories\GroupPermission\GroupPermissionRepositoryInterface;
+use App\Repositories\LearningOutcome\LearningOutcomeRepository;
+use App\Repositories\LearningOutcome\LearningOutcomeRepositoryInterface;
 use App\Repositories\Menu\MenuNodeRepository;
 use App\Repositories\Menu\MenuNodeRepositoryInterface;
 use App\Repositories\Menu\MenuRepository;
@@ -31,6 +37,8 @@ use App\Repositories\Semester\SemesterRepository;
 use App\Repositories\Semester\SemesterRepositoryInterface;
 use App\Repositories\Social\SocialRepository;
 use App\Repositories\Social\SocialRepositoryInterface;
+use App\Repositories\Student\StudentRepository;
+use App\Repositories\Student\StudentRepositoryInterface;
 use App\Repositories\Subject\SubjectRepository;
 use App\Repositories\Subject\SubjectRepositoryInterface;
 use App\Repositories\Tag\TagRepository;
@@ -56,6 +64,11 @@ class RepositoryServiceProvider extends ServiceProvider
         $this->app->bind(RoleRepositoryInterface::class, RoleRepository::class);
         $this->app->bind(PermissionRepositoryInterface::class, PermissionRepository::class);
         $this->app->bind(GroupPermissionRepositoryInterface::class, GroupPermissionRepository::class);
+        $this->app->bind(StudentRepositoryInterface::class, StudentRepository::class);
+        $this->app->bind(FamilyRepositoryInterface::class, FamilyRepository::class);
+        $this->app->bind(DepartmentRepositoryInterface::class, DepartmentRepository::class);
+        $this->app->bind(GeneralClassRepositoryInterface::class, GeneralClassRepository::class);
+        $this->app->bind(LearningOutcomeRepositoryInterface::class, LearningOutcomeRepository::class);
     }
 
     /**

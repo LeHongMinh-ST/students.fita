@@ -85,4 +85,77 @@ return [
         'group_code' => 'department',
         'description' => 'Có quyền xóa bộ môn'
     ],
+    [
+        'code' => 'student-index',
+        'name' => 'Xem toàn bộ danh sách sinh viên',
+        'group_code' => 'student',
+        'description' => 'Có quyền xem danh sách sinh viên'
+    ],
+    [
+        'code' => 'student-create',
+        'name' => 'Tạo mới sinh viên',
+        'group_code' => 'student',
+        'description' => 'Có quyền tạo mới sinh viên'
+    ],
+    [
+        'code' => 'student-update',
+        'name' => 'Cập nhật thông sinh viên',
+        'group_code' => 'student',
+        'description' => 'Có quyền cập nhật thông tin sinh viên'
+    ],
+    [
+        'code' => 'student-delete',
+        'name' => 'Xoá sinh viên',
+        'group_code' => 'student',
+        'description' => 'Có quyền xóa sinh viên'
+    ],
+
+    [
+        'code' => 'class-index',
+        'name' => 'Xem toàn bộ danh sách lớp',
+        'group_code' => 'class',
+        'description' => 'Có quyền xem danh sách lớp'
+    ],
+    [
+        'code' => 'class-create',
+        'name' => 'Tạo mới lớp',
+        'group_code' => 'class',
+        'description' => 'Có quyền tạo mới lớp'
+    ],
+    [
+        'code' => 'class-update',
+        'name' => 'Cập nhật thông tin lớp',
+        'group_code' => 'class',
+        'description' => 'Có quyền cập nhật thông tin lớp'
+    ],
+    [
+        'code' => 'class-delete',
+        'name' => 'Xoá lớp',
+        'group_code' => 'class',
+        'description' => 'Có quyền xóa lớp'
+    ],
+    [
+        'code' => 'department-index',
+        'name' => 'Xem toàn bộ danh sách bộ môn',
+        'group_code' => 'department',
+        'description' => 'Có quyền xem danh sách bộ môn'
+    ],
+    [
+        'code' => 'department-create',
+        'name' => 'Tạo mới bộ môn',
+        'group_code' => 'department',
+        'description' => 'Có quyền tạo mới bộ môn'
+    ],
+    [
+        'code' => 'department-update',
+        'name' => 'Cập nhật thông tin bộ môn',
+        'group_code' => 'department',
+        'description' => 'Có quyền cập nhật thông tin bộ môn'
+    ],
+    [
+        'code' => 'department-delete',
+        'name' => 'Xoá bộ môn',
+        'group_code' => 'department',
+        'description' => 'Có quyền xóa bộ môn'
+    ],
 ];

@@ -17,7 +17,8 @@ return new class extends Migration
             $table->id();
             $table->string('social_id')->nullable();
             $table->string('social_provider')->nullable();
-            $table->bigInteger('user_id')->nullable();
+            $table->string('socialable_type')->nullable();
+            $table->bigInteger('socialable_id')->nullable();
             $table->bigInteger('email')->nullable();
             $table->timestamps();
         });

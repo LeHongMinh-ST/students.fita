@@ -92,6 +92,8 @@ import {useRouter} from "vue-router/dist/vue-router"
 import eventBus from "../../utils/eventBus"
 import {validationHelper} from "../../utils/validationHelper"
 import _ from "lodash";
+import IGroupPermissionResult from "../../models/IGroupPermissionResult";
+import IRoleResult from "../../models/IRoleResult";
 
 
 export default defineComponent({
@@ -116,7 +118,7 @@ export default defineComponent({
 
     const getPermissionGroup = (): void => {
       loadingPermission.value = true
-      api.getPermissionGroups().then(res => {
+      api.getPermissionGroups<IGroupPermissionResult>().then(res => {
         const permissions = {
           name: 'Tất cả quyền hạn',
           code: 'all',
@@ -144,7 +146,7 @@ export default defineComponent({
           permission_ids: ticked.value
         }
 
-        api.createRole(data).then(res => {
+        api.createRole<IRoleResult>(data).then(res => {
           if (res) {
             eventBus.$emit('notify-success', 'Tạo mới nhóm vai trò thành công')
             redirectRouter('Role')
