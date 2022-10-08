@@ -46,7 +46,12 @@ class UserController extends Controller
 
     public function show($id): JsonResponse
     {
-        return $this->responseSuccess(['user' => $this->userRepository->findById($id)]);
+        $relationships = ['role', 'department'];
+        $columns = ['*'];
+
+        return $this->responseSuccess([
+            'user' => $this->userRepository->findById($id, $columns, $relationships)
+        ]);
     }
 
     public function store(StoreUserRequest $request): JsonResponse

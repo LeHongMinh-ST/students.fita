@@ -97,6 +97,8 @@ import {useRoute, useRouter} from "vue-router/dist/vue-router"
 import eventBus from "../../utils/eventBus"
 import {validationHelper} from "../../utils/validationHelper"
 import _ from "lodash";
+import IRoleResult from "../../models/IRoleResult";
+import IGroupPermissionResult from "../../models/IGroupPermissionResult";
 
 
 export default defineComponent({
@@ -124,7 +126,7 @@ export default defineComponent({
 
         const getPermissionGroup = (): void => {
             loadingPermission.value = true
-            api.getPermissionGroups().then(res => {
+            api.getPermissionGroups<IGroupPermissionResult>().then(res => {
                 const permissions = {
                     name: 'Tất cả quyền hạn',
                     code: 'all',
@@ -143,7 +145,7 @@ export default defineComponent({
 
         const handleGetRole = (id: string): void => {
             $q.loading.show()
-            api.getRole(id).then(res => {
+            api.getRole<IRoleResult>(id).then(res => {
                 name.value = _.get(res, 'data.data.role.name', '')
                 description.value = _.get(res, 'data.data.role.description', '')
                 let permission = _.get(res, 'data.data.role.permissions')
@@ -169,7 +171,7 @@ export default defineComponent({
                     permission_ids: ticked.value
                 }
 
-                api.createRole(data).then(res => {
+                api.createRole<IRoleResult>(data).then(res => {
                     if (res) {
                         eventBus.$emit('notify-success', 'Nhân bản thành công')
                         const id = _.get(res, 'data.data.role.id')

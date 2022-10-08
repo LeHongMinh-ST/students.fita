@@ -188,6 +188,8 @@ import api from "../../api";
 import eventBus from "../../utils/eventBus";
 import {useQuasar} from "quasar";
 import {formatDate} from "../../utils/helpers";
+import IRoleResult from "../../models/IRoleResult";
+import IPaginate from "../../models/IPaginate";
 
 export default defineComponent({
   name: "RoleIndex",
@@ -243,7 +245,7 @@ export default defineComponent({
 
       payload.page = page.value.currentPage
 
-      api.getRoles(payload).then(res => {
+      api.getRoles<IPaginate<IRoleResult[]>>(payload).then(res => {
         roles.value = _.get(res, 'data.data.roles.data')
         page.value.currentPage = _.get(res, 'data.data.roles.current_page', 1)
         page.value.total = _.get(res, 'data.data.roles.last_page', 0)
@@ -299,7 +301,7 @@ export default defineComponent({
     }
 
     const handleGetRoleIds = (): void => {
-      api.getAllRoleId().then(res => roleIds.value = _.get(res, 'data.data.roles', []))
+      api.getAllRoleId<number[]>().then(res => roleIds.value = _.get(res, 'data.data.roles', []))
     }
 
     const handleDeleteSelect = () => {

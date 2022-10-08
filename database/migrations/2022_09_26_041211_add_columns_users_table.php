@@ -15,6 +15,7 @@ return new class extends Migration
     {
         Schema::table('users', function (Blueprint $table) {
             $table->string('phone')->nullable();
+            $table->string('teacher_code')->nullable();
             $table->bigInteger('department_id')->nullable();
             $table->boolean('is_super_admin')->default(false);
             $table->boolean('is_teacher')->default(false);

@@ -1,7 +1,8 @@
-import axios from 'axios'
+import axios, {AxiosPromise} from 'axios'
 import router from '../router'
 import {store} from '../store'
 import {AuthMutationTypes} from "../store/modules/auth/mutation-types"
+import IResult from "../models/IResult";
 
 // @ts-ignore
 const baseUrl = import.meta.env.VITE_ADMIN_URL;
@@ -52,33 +53,33 @@ apiAxios.interceptors.response.use(undefined, error => {
 })
 
 export default {
-    getAuthUser(): Promise<any> {
+    getAuthUser<T>(): AxiosPromise<IResult<T>> {
         return apiAxios({
             method: 'get',
             url: '/auth/me'
         })
     },
-    login(data: any): Promise<any> {
+    login<T>(data: any): AxiosPromise<IResult<T>> {
         return apiAxios({
             method: 'post',
             url: '/auth/login',
             data: data
         })
     },
-    getRedirectSocial(provider: string): Promise<any> {
+    getRedirectSocial<T>(provider: string): AxiosPromise<IResult<T>> {
         return apiAxios({
             method: 'get',
             url: `/auth/social/${provider}`
         })
     },
-    loginSocialCallback(provider: string, payload: Object): Promise<any> {
+    loginSocialCallback<T>(provider: string, payload: Object): AxiosPromise<IResult<T>> {
         return apiAxios({
             method: 'post',
             url: `/auth/social/${provider}/callback`,
             params: payload
         })
     },
-    register(data: any): Promise<any> {
+    register<T>(data: any): AxiosPromise<IResult<T>> {
         return apiAxios({
             method: 'post',
             url: '/auth/register',
@@ -87,52 +88,52 @@ export default {
     },
 
     //roles
-    getRoles(params: object = {}): Promise<any> {
+    getRoles<T>(params: object = {}): AxiosPromise<IResult<T>> {
         return apiAxios({
             method: 'get',
             url: '/roles',
             params: params
         })
     },
-    getAllRoleId(): Promise<any> {
+    getAllRoleId<T>(): AxiosPromise<IResult<T>> {
         return apiAxios({
             method: 'get',
             url: '/roles/get-all-role-id',
         })
     },
-    getRole(id: string): Promise<any> {
+    getRole<T>(id: string): AxiosPromise<IResult<T>> {
         return apiAxios({
             method: 'get',
             url: `/roles/${id}`
         })
     },
-    getPermissionGroups(): Promise<any> {
+    getPermissionGroups<T>(): AxiosPromise<IResult<T>> {
         return apiAxios({
             method: 'get',
             url: '/permissions/group'
         })
     },
-    createRole(data: any): Promise<any> {
+    createRole<T>(data: any): AxiosPromise<IResult<T>> {
         return apiAxios({
             method: 'post',
             url: '/roles',
             data: data
         })
     },
-    updateRole(data: any, id: string): Promise<any> {
+    updateRole<T>(data: any, id: string): AxiosPromise<IResult<T>> {
         return apiAxios({
             method: 'put',
             url: `/roles/${id}`,
             data: data
         })
     },
-    deleteRole(id: string): Promise<any> {
+    deleteRole<T>(id: string): AxiosPromise<IResult<T>> {
         return apiAxios({
             method: 'delete',
             url: `/roles/${id}`,
         })
     },
-    deleteSelected(data: any): Promise<any> {
+    deleteSelected<T>(data: any): AxiosPromise<IResult<T>> {
         return apiAxios({
             method: 'delete',
             url: `/roles/delete-selected`,
