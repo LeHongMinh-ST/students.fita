@@ -15,6 +15,12 @@ const routeAdmin: Array<RouteRecordRaw> = [
         meta: {isAuthenticated: true},
     },
     {
+        path: 'classes',
+        name: 'Classes',
+        component: () => import('../pages/Classes/ClassesIndex.vue'),
+        meta: {isAuthenticated: true},
+    },
+    {
         path: 'users',
         name: 'User',
         component: () => import('../pages/User/UserIndex.vue'),
