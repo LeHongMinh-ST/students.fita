@@ -25,7 +25,7 @@ class UpdateDepartmentRequest extends FormRequest
     {
         return [
             'name' => 'required',
-            'code' => 'required'
+            'department_code' => 'required'
         ];
     }
 }

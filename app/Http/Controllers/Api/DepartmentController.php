@@ -48,7 +48,10 @@ class DepartmentController extends Controller
     {
         try {
             $data = $request->all();
-            $department = $this->departmentRepository->create($data);
+            $department = $this->departmentRepository->create(array_merge($data, [
+                'created_by' => auth()->id(),
+                'updated_by' => auth()->id(),
+            ]));
             return $this->responseSuccess(['department' => $department]);
 
         } catch (\Exception $exception) {
@@ -65,7 +68,9 @@ class DepartmentController extends Controller
         try {
             $data = $request->all();
             $department = $this->departmentRepository->findById($id);
-            $department?->fill($data);
+            $department?->fill(array_merge($data, [
+                'updated_by' => auth()->id(),
+            ]));
             $this->departmentRepository->createOrUpdate($department);
 
             return $this->responseSuccess();
