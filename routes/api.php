@@ -67,7 +67,9 @@ Route::group(['middleware' => ['jwt.auth', 'auth.admin']], function () {
         Route::get('/', [DepartmentController::class, 'index'])->middleware('permission:department-index');
         Route::post('/', [DepartmentController::class, 'store'])->middleware('permission:department-create');
         Route::put('/{id}', [DepartmentController::class, 'update'])->middleware('permission:department-update');
+        Route::delete('/delete-selected', [DepartmentController::class, 'deleteSelected'])->middleware('permission:department-delete');
         Route::delete('/{id}', [DepartmentController::class, 'destroy'])->middleware('permission:department-delete');
+        Route::get('/get-all-id', [DepartmentController::class, 'getAllId'])->middleware('permission:department-index');
     });
 
     Route::prefix('roles')->group(function () {

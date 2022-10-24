@@ -1,5 +1,5 @@
-import {store} from "../store"
-import {RouteRecordRaw, createRouter, createWebHistory} from 'vue-router'
+import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router'
+import { store } from "../store"
 
 const routeAdmin: Array<RouteRecordRaw> = [
     {
@@ -19,6 +19,18 @@ const routeAdmin: Array<RouteRecordRaw> = [
         name: 'User',
         component: () => import('../pages/User/UserIndex.vue'),
         meta: {isAuthenticated: true},
+    },
+    {
+        path: 'departments',
+        meta: {isAuthenticated: true},
+        children: [
+            {
+                path: '',
+                name: 'Department',
+                component: () => import('../pages/Department/DepartmentIndex.vue'),
+                meta: {isAuthenticated: true},
+            },
+        ]
     },
     {
         path: 'roles',
@@ -43,7 +55,8 @@ const routeAdmin: Array<RouteRecordRaw> = [
                 meta: {isAuthenticated: true},
             }
         ]
-    }
+    },
+
 ]
 
 const routes: Array<RouteRecordRaw> = [
