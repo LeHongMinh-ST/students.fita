@@ -2,9 +2,10 @@
 
 namespace App\Http\Requests\Department;
 
+use App\Http\Requests\BaseRequest;
 use Illuminate\Foundation\Http\FormRequest;
 
-class DeleteDepartmentRequest extends FormRequest
+class DeleteDepartmentRequest extends BaseRequest
 {
     /**
      * Determine if the user is authorized to make this request.
