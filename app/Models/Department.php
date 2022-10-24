@@ -14,7 +14,7 @@ class Department extends Model
 
     protected $fillable = [
         'name',
-        'code'
+        'department_code'
     ];
 
     public function user(): HasMany

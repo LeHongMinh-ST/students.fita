@@ -162,7 +162,8 @@ export default defineComponent({
       links1: [
         {icon: 'fa-solid fa-home', text: 'Bảng điều khiển', routeName: 'Home'},
         {icon: 'fa-solid fa-users', text: 'Quản lý sinh viên', routeName: 'Student'},
-        {icon: 'fa-solid fa-users', text: 'Danh sách lớp học', routeName: 'Classes'},
+        {icon: 'fa-solid fa-users', text: 'Quản lý bộ môn', routeName: 'Department'},
+{icon: 'fa-solid fa-users', text: 'Danh sách lớp học', routeName: 'Classes'},
         {icon: 'subscriptions', text: 'Subscriptions'}
       ],
       links2: [

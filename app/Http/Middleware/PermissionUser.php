@@ -24,7 +24,7 @@ class PermissionUser
     public function handle(Request $request, Closure $next, $namePermission): mixed
     {
         try {
-            $user = \auth()->user();
+            $user = \auth('api')->user();
             $isSuperAdmin = $user->is_super_admin;
             if ($isSuperAdmin) {
                 return $next($request);

@@ -4,7 +4,7 @@ namespace App\Http\Requests\Department;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class UpdateDepartmentRequest extends FormRequest
+class DeleteDepartmentRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,8 +24,7 @@ class UpdateDepartmentRequest extends FormRequest
     public function rules()
     {
         return [
-            'name' => 'required',
-            'department_code' => 'required'
+            'id' => 'required'
         ];
     }
 }

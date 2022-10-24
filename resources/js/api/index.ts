@@ -1,8 +1,8 @@
-import axios, {AxiosPromise} from 'axios'
-import router from '../router'
-import {store} from '../store'
-import {AuthMutationTypes} from "../store/modules/auth/mutation-types"
+import axios, { AxiosPromise } from 'axios';
 import IResult from "../models/IResult";
+import router from '../router';
+import { store } from '../store';
+import { AuthMutationTypes } from "../store/modules/auth/mutation-types";
 
 // @ts-ignore
 const baseUrl = import.meta.env.VITE_ADMIN_URL;
@@ -141,7 +141,54 @@ export default {
         })
     },
 
-    //Classes start
+    //departments
+    getDepartments<T>(params: object = {}): AxiosPromise<IResult<T>> {
+        return apiAxios({
+            method: 'get',
+            url: '/departments',
+            params: params
+        })
+    },
+    createDepartment<T>(data: any): AxiosPromise<IResult<T>> {
+        return apiAxios({
+            method: 'post',
+            url: '/departments',
+            data: data
+        })
+    },
+    getDepartment<T>(id: string): AxiosPromise<IResult<T>> {
+        return apiAxios({
+            method: 'get',
+            url: `/departments/${id}`
+        })
+    },
+    updateDepartment<T>(data: any, id: string): AxiosPromise<IResult<T>> {
+        return apiAxios({
+            method: 'put',
+            url: `/departments/${id}`,
+            data: data
+        })
+    },
+    deleteDepartment<T>(id: string): AxiosPromise<IResult<T>> {
+        return apiAxios({
+            method: 'delete',
+            url: `/departments/${id}`,
+        })
+    },
+    deleteDepartmentSelected<T>(data: any): AxiosPromise<IResult<T>> {
+        return apiAxios({
+            method: 'delete',
+            url: `/departments/delete-selected`,
+            data: data
+        })
+    },
+    getAllDepartmentId<T>(): AxiosPromise<IResult<T>> {
+        return apiAxios({
+            method: 'get',
+            url: '/departments/get-all-id',
+        })
+    },
+	//Classes start
     getClasses<T>(params: object = {}): AxiosPromise<IResult<T>> {
         return apiAxios({
             method: 'get',
