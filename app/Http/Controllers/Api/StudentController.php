@@ -7,6 +7,7 @@ use App\Http\Requests\Role\StoreRoleRequest;
 use App\Http\Requests\Student\UpdateStudentRequest;
 use App\Jobs\CrawlDataLearningOutcomeJob;
 use App\Repositories\Student\StudentRepositoryInterface;
+use App\Services\CrawlDataLearningOutcomeService;
 use App\Traits\ResponseTrait;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -95,7 +96,6 @@ class StudentController extends Controller
     {
         try {
             $this->studentRepository->deleteById($id);
-
             return $this->responseSuccess();
         } catch (\Exception $exception) {
             Log::error('Error delete student', [
@@ -131,7 +131,7 @@ class StudentController extends Controller
     {
         try {
             $student = $this->studentRepository->findById($studentId);
-            CrawlDataLearningOutcomeJob::dispatch($student?->student_code);
+            app(CrawlDataLearningOutcomeService::class)->crawlData($student?->student_code);
             return $this->responseSuccess([
                 'student' => $student->load(['learningOutcomes'])
             ]);

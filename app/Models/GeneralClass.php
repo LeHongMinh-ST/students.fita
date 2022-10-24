@@ -23,4 +23,9 @@ class GeneralClass extends Model
     {
         return $this->hasMany(Student::class);
     }
+
+    public function department()
+    {
+        return $this->belongsToMany(Departmente::class);
+    }
 }

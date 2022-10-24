@@ -100,7 +100,7 @@ Route::group(['prefix' => 'student'], function () {
         });
     });
 
-    Route::group(['middleware' => ['jwt.auth', 'auth.student']], function () {
+    Route::group(['middleware' => []], function () {
         Route::prefix('profile')->group(function () {
             Route::get('/', [StudentController::class, 'getProfileStudent']);
             Route::put('/update-learning-outcome/{id}', [StudentController::class, 'updateDataLearningOutcome']);
