@@ -21,7 +21,7 @@ class UserTableSeeder extends Seeder
             'full_name' => 'Super Admin',
             'email' => 'superadmin@st.vn',
             'is_super_admin' => true,
-            'password' => Hash::make('ST@2015.edu.vn'),
+            'password' => Hash::make('123456aA@'),
         ]);
     }
 

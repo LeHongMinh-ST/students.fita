@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Department\StoreDepartmentRequest;
 use App\Http\Requests\Department\UpdateDepartmentRequest;
+use App\Http\Requests\Department\DeleteDepartmentRequest;
 use App\Repositories\Department\DepartmentRepositoryInterface;
 use App\Traits\ResponseTrait;
 use Illuminate\Http\JsonResponse;
@@ -30,13 +31,13 @@ class DepartmentController extends Controller
         if (isset($data['q'])) {
             $condition[] = ['name', 'like', '%' . $data['q'] . '%'];
             $orCondition = [
-                ['code', 'like', '%' . $data['q'] . '%'],
+                ['department_code', 'like', '%' . $data['q'] . '%'],
             ];
             $condition[] = ['name', 'or', $orCondition];
         }
 
-        if (isset($data['code'])) {
-            $condition[] = ['code' => $data['code']];
+        if (isset($data['department_code'])) {
+            $condition[] = ['department_code' => $data['department_code']];
         }
 
         $department = $this->departmentRepository->getListPaginateBy($condition, $relationships, $columns, $paginate);
@@ -91,6 +92,30 @@ class DepartmentController extends Controller
             return $this->responseSuccess();
         } catch (\Exception $exception) {
             Log::error('Error delete department', [
+                'method' => __METHOD__,
+                'message' => $exception->getMessage()
+            ]);
+            return $this->responseError();
+        }
+    }
+
+    public function getAllId(): JsonResponse
+    {
+        $dapartments = $this->departmentRepository->all()?->pluck('id')?->toArray();
+        return $this->responseSuccess([
+            'dapartments' => $dapartments
+        ]);
+    }
+
+    public function deleteSelected(DeleteDepartmentRequest $request): JsonResponse
+    {
+        try {
+            $departmentIds = $request->input('id', []);
+            $condition[] = ['id', 'in', $departmentIds];
+            $this->departmentRepository->deleteBy($condition);
+            return $this->responseSuccess();
+        } catch (\Exception $exception) {
+            Log::error('Error delete select department', [
                 'method' => __METHOD__,
                 'message' => $exception->getMessage()
             ]);
