@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class GeneralClass extends Model
@@ -24,8 +25,8 @@ class GeneralClass extends Model
         return $this->hasMany(Student::class);
     }
 
-    public function department()
+    public function department(): BelongsToMany
     {
-        return $this->belongsToMany(Departmente::class);
+        return $this->belongsToMany(Department::class);
     }
 }
