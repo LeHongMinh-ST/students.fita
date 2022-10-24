@@ -139,5 +139,60 @@ export default {
             url: `/roles/delete-selected`,
             data: data
         })
-    }
+    },
+
+    //Classes start
+    getClasses<T>(params: object = {}): AxiosPromise<IResult<T>> {
+        return apiAxios({
+            method: 'get',
+            url: '/classes',
+            params: params
+        })
+    },
+    // getAllRoleId<T>(): AxiosPromise<IResult<T>> {
+    //     return apiAxios({
+    //         method: 'get',
+    //         url: '/roles/get-all-role-id',
+    //     })
+    // },
+    // getRole<T>(id: string): AxiosPromise<IResult<T>> {
+    //     return apiAxios({
+    //         method: 'get',
+    //         url: `/roles/${id}`
+    //     })
+    // },
+    // getPermissionGroups<T>(): AxiosPromise<IResult<T>> {
+    //     return apiAxios({
+    //         method: 'get',
+    //         url: '/permissions/group'
+    //     })
+    // },
+    // createRole<T>(data: any): AxiosPromise<IResult<T>> {
+    //     return apiAxios({
+    //         method: 'post',
+    //         url: '/roles',
+    //         data: data
+    //     })
+    // },
+    // updateRole<T>(data: any, id: string): AxiosPromise<IResult<T>> {
+    //     return apiAxios({
+    //         method: 'put',
+    //         url: `/roles/${id}`,
+    //         data: data
+    //     })
+    // },
+    // deleteRole<T>(id: string): AxiosPromise<IResult<T>> {
+    //     return apiAxios({
+    //         method: 'delete',
+    //         url: `/roles/${id}`,
+    //     })
+    // },
+    // deleteSelected<T>(data: any): AxiosPromise<IResult<T>> {
+    //     return apiAxios({
+    //         method: 'delete',
+    //         url: `/roles/delete-selected`,
+    //         data: data
+    //     })
+    // }
+    //Classes end
 }
