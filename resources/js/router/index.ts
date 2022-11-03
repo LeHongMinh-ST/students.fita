@@ -16,9 +16,21 @@ const routeAdmin: Array<RouteRecordRaw> = [
     },
     {
         path: 'classes',
-        name: 'Classes',
-        component: () => import('../pages/Classes/ClassesIndex.vue'),
         meta: {isAuthenticated: true},
+        children: [
+            {
+                path: '',
+                name: 'Classes',
+                component: () => import('../pages/Classes/ClassesIndex.vue'),
+                meta: {isAuthenticated: true},
+            },
+            {
+                path: 'create',
+                name: 'ClassesCreate',
+                component: () => import('../pages/Classes/ClassesCreate.vue'),
+                meta: {isAuthenticated: true},
+            },
+        ]
     },
     {
         path: 'users',

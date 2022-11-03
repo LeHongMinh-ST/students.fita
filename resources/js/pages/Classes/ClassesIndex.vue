@@ -60,7 +60,7 @@
           </div>
         </div>
         <div class="table-wrapper-action">
-          <q-btn no-caps @click="redirectRouter('RoleCreate')" color="secondary" class="q-mr-sm">
+          <q-btn no-caps @click="redirectRouter('ClassesCreate')" color="secondary" class="q-mr-sm">
             <q-icon name="fa-solid fa-plus" class="q-mr-sm" size="xs"></q-icon>
             Tạo mới
           </q-btn>
@@ -80,8 +80,9 @@
               <q-checkbox v-model="checkboxAll"/>
             </th>
             <th class="text-center" width="5%">STT</th>
-            <th class="text-left">Tên nhóm</th>
-            <th class="text-left">Mô tả</th>
+            <th class="text-left">Mã lớp</th>
+            <th class="text-left">Tên lớp</th>
+            <th class="text-left">Bộ môn</th>
             <th class="text-center">Ngày tạo</th>
             <th class="text-left">Được tạo bởi</th>
             <th class="text-center">Tác vụ</th>
@@ -97,10 +98,16 @@
               <td class="text-left">
                   <span @click="redirectRouter('RoleUpdate', {id: classItem.id})"
                         class="text-bold cursor-pointer text-link">
-                    {{ getValueLodash(role, 'name', '') }}
+                    {{ getValueLodash(classItem, 'class_code', '') }}
                   </span>
               </td>
-              <td class="text-left"> {{ getValueLodash(classItem, 'description', '') }}</td>
+              <td class="text-left">
+                  <span @click="redirectRouter('RoleUpdate', {id: classItem.id})"
+                        class="text-bold cursor-pointer text-link">
+                    {{ getValueLodash(classItem, 'name', '') }}
+                  </span>
+              </td>
+              <td class="text-left"> {{ getValueLodash(classItem.department, 'name', '') }}</td>
               <td class="text-center">{{ handleFormatDate(getValueLodash(classItem, 'created_at', '')) }}</td>
               <td class="text-left">{{ getValueLodash(classItem, 'create_by.full_name', '') }}</td>
               <td class="text-center">
@@ -108,6 +115,11 @@
                   <q-icon name="menu" size="sm"></q-icon>
                   <q-menu touch-position>
                     <q-list style="min-width: 100px">
+                      <q-item clickable v-close-popup
+                              @click="openDialogDelete(getValueLodash(classItem, 'id', 0))">
+                                                <span><q-icon name="fa-solid fa-eye" class="q-mr-sm"
+                                                              size="xs"></q-icon>Xem chi tiết</span>
+                      </q-item>
                       <q-item clickable v-close-popup
                               @click="redirectRouter('RoleUpdate', {id: getValueLodash(classItem, 'id', 0)})">
                         <q-item-section>
@@ -120,6 +132,7 @@
                                                 <span><q-icon name="fa-solid fa-trash" class="q-mr-sm"
                                                               size="xs"></q-icon>Xoá</span>
                       </q-item>
+                      
                     </q-list>
                   </q-menu>
                 </div>
@@ -178,284 +191,9 @@
     </q-dialog>
   </div>
 </template>
-
-<script lang="ts">
-import {defineComponent, onMounted, ref, watch} from "vue";
-import {useStore} from "vuex";
-import {HomeMutationTypes} from "../../store/modules/home/mutation-types";
-import {useRouter} from "vue-router/dist/vue-router";
-import api from "../../api";
-import eventBus from "../../utils/eventBus";
-import {useQuasar} from "quasar";
-import {formatDate} from "../../utils/helpers";
-import IRoleResult from "../../models/IRoleResult";
-import IPaginate from "../../models/IPaginate";
-
-export default defineComponent({
-  name: "ClassesIndex",
-  setup() {
-    const $q = useQuasar()
-    const store = useStore()
-    const router = useRouter()
-
-    const search = ref<string>('')
-    const dialogDelete = ref<boolean>(false)
-    const dialogDeleteSelect = ref<boolean>(false)
-    const roleId = ref<string>('')
-    const classes = ref<Array<any>>([])
-    const roleIds = ref<Array<string>>([])
-
-    const checkboxArray = ref<Array<string>>([])
-    const checkboxAll = ref<boolean | string>(false)
-    const page = ref<Object>({
-      currentPage: 1,
-      total: 0,
-      perPage: 10
-    })
-
-    const currentPage = ref<number>(1)
-
-    const loadingClasses = ref<boolean>(false)
-    const isFilter = ref<boolean>(false)
-    const toggleFilter = (): void => {
-      isFilter.value = !isFilter.value
-    }
-    const closeFilter = (): void => {
-      isFilter.value = false
-    }
-
-    const redirectRouter = (nameRoute: string, params: any | [] = null): void => {
-      router.push({name: nameRoute, params: params})
-    }
-
-    const handleFormatDate = (value: string): string => {
-      return formatDate(value)
-    }
-
-    const getListClasses = (): void => {
-
-      loadingClasses.value = true
-      const payload = {
-        page: 1,
-      }
-
-      if (search.value) {
-        payload.q = search.value
-      }
-
-      payload.page = page.value.currentPage
-
-      api.getClasses<IPaginate<[]>>(payload).then(res => {
-        debugger;
-        console.log("thaiaaaaaaaaaaa"+res.data);
-        classes.value = _.get(res, 'data.data.class.data')
-        page.value.currentPage = _.get(res, 'data.data.class.current_page', 1)
-        page.value.total = _.get(res, 'data.data.class.last_page', 0)
-        page.value.perPage = _.get(res, 'data.data.class.per_page', 0)
-
-        
-      }).catch(() => {
-        $q.notify({
-          icon: 'report_problem',
-          message: 'Không tải được danh sách nhóm vai trò!',
-          color: 'negative',
-          position: 'top-right'
-        })
-      }).finally(() => loadingClasses.value = false)
-    }
-
-    const openDialogDelete = (id: string): void => {
-      dialogDelete.value = true
-      roleId.value = id
-    }
-    const openDialogDeleteSelect = (id: string): void => {
-      dialogDeleteSelect.value = true
-    }
-
-
-    const closeDialog = (): void => {
-      dialogDelete.value = false
-      dialogDeleteSelect.value = false
-      roleId.value = ''
-    }
-
-    const handleDelete = (): void => {
-      $q.loading.show()
-      api.deleteRole(roleId.value).then(() => {
-        getListClasses()
-        closeDialog()
-        $q.notify({
-          icon: 'check',
-          message: 'Xóa thành công nhóm vai trò',
-          color: 'positive',
-          position: 'top-right'
-        })
-      }).catch(() => {
-        $q.notify({
-          icon: 'report_problem',
-          message: 'Không xóa được nhóm vai trò!',
-          color: 'negative',
-          position: 'top-right'
-        })
-      }).finally(() => $q.loading.hide())
-    }
-
-    const getValueLodash = (res: object, data: string, d: any = null) => {
-      return _.get(res, data, d)
-    }
-
-    const handleGetRoleIds = (): void => {
-      api.getAllRoleId<number[]>().then(res => roleIds.value = _.get(res, 'data.data.classes', []))
-    }
-
-    const handleDeleteSelect = () => {
-      $q.loading.show()
-      const data = {
-        role_id: checkboxArray.value
-      }
-      api.deleteSelected(data).then(() => {
-        getListClasses()
-        closeDialog()
-        checkboxArray.value = []
-        $q.notify({
-          icon: 'check',
-          message: 'Xóa thành công nhóm vai trò',
-          color: 'positive',
-          position: 'top-right'
-        })
-      }).catch(() => {
-        $q.notify({
-          icon: 'report_problem',
-          message: 'Không xóa được nhóm vai trò!',
-          color: 'negative',
-          position: 'top-right'
-        })
-      }).finally(() => $q.loading.hide())
-    }
-
-    watch(() => page.value.currentPage, () => getListClasses())
-    watch(() => search.value, () => getListClasses())
-    watch(() => checkboxAll.value, (value) => {
-      if (value === true) {
-        checkboxArray.value = roleIds.value
-      }
-
-      if (value === false) {
-        checkboxArray.value = []
-      }
-
-    })
-
-    watch(() => checkboxArray.value, (value) => {
-      if (value.length < roleIds.value.length) {
-        checkboxAll.value = 'maybe'
-      }
-
-      if (value.length == 0) {
-        checkboxAll.value = false
-      }
-    })
-
-    onMounted((): void => {
-      store.commit(`home/${HomeMutationTypes.SET_TITLE}`, 'Quản lý lớp học')
-      eventBus.$on('notify-success', message => {
-        $q.notify({
-          icon: 'check',
-          message: message,
-          color: 'positive',
-          position: 'top-right'
-        })
-      })
-      getListClasses()
-      handleGetRoleIds()
-    })
-
-
-    return {
-      search,
-      isFilter,
-      toggleFilter,
-      closeFilter,
-      handleFormatDate,
-      redirectRouter,
-      getValueLodash,
-      handleDelete,
-      handleDeleteSelect,
-      currentPage,
-      classes,
-      loadingClasses,
-      getListClasses,
-      page,
-      dialogDelete,
-      openDialogDelete,
-      openDialogDeleteSelect,
-      dialogDeleteSelect,
-      closeDialog,
-      checkboxArray,
-      checkboxAll,
-    }
-  }
-})
+<style lang="css" src="./index.scss"></style>
+<script lang="ts" src="./index.ts">
 </script>
 
-<style scoped lang="scss">
-.classes-wrapper {
-  .filter-wrapper {
-    margin-top: 20px;
-    margin-bottom: 20px;
 
-    .filter-wrapper-content {
-      padding: 10px 20px;
 
-      .filter-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-      }
-    }
-  }
-
-  .table-wrapper {
-    margin-top: 20px;
-
-    .table-wrapper-title {
-      padding: 0px 20px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-
-      .table-wrapper-filter {
-        width: 75%;
-        display: flex;
-        justify-content: flex-start;
-        align-items: center;
-
-        .q-btn {
-          height: 35px;
-        }
-
-        .table-wrapper-search {
-          margin-top: 20px;
-          width: 20vw;
-        }
-      }
-    }
-
-    .role-table {
-      tr {
-        th {
-          text-transform: uppercase;
-          font-weight: bold;
-          color: #949597;
-        }
-
-        td {
-          .text-link {
-            color: #337ab7;
-          }
-        }
-      }
-    }
-  }
-}
-</style>

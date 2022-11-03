@@ -214,13 +214,13 @@ export default {
     //         url: '/permissions/group'
     //     })
     // },
-    // createRole<T>(data: any): AxiosPromise<IResult<T>> {
-    //     return apiAxios({
-    //         method: 'post',
-    //         url: '/roles',
-    //         data: data
-    //     })
-    // },
+    createClass<T>(data: any): AxiosPromise<IResult<T>> {
+        return apiAxios({
+            method: 'post',
+            url: '/classes',
+            data: data
+        })
+    },
     // updateRole<T>(data: any, id: string): AxiosPromise<IResult<T>> {
     //     return apiAxios({
     //         method: 'put',
