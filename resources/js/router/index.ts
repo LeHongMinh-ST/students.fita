@@ -15,12 +15,6 @@ const routeAdmin: Array<RouteRecordRaw> = [
         meta: {isAuthenticated: true},
     },
     {
-        path: 'users',
-        name: 'User',
-        component: () => import('../pages/User/UserIndex.vue'),
-        meta: {isAuthenticated: true},
-    },
-    {
         path: 'departments',
         meta: {isAuthenticated: true},
         children: [
@@ -30,6 +24,30 @@ const routeAdmin: Array<RouteRecordRaw> = [
                 component: () => import('../pages/Department/DepartmentIndex.vue'),
                 meta: {isAuthenticated: true},
             },
+        ]
+    },
+    {
+        path: 'users',
+        meta: {isAuthenticated: true},
+        children: [
+            {
+                path: '',
+                name: 'User',
+                component: () => import('../pages/User/UserIndex.vue'),
+                meta: {isAuthenticated: true},
+            },
+            {
+                path: 'update/:id',
+                name: 'UserUpdate',
+                component: () => import('../pages/User/UserCreate.vue'),
+                meta: {isAuthenticated: true},
+            },
+            {
+                path: 'create',
+                name: 'UserCreate',
+                component: () => import('../pages/User/UserCreate.vue'),
+                meta: {isAuthenticated: true},
+            }
         ]
     },
     {

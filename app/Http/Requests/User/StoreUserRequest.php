@@ -25,7 +25,7 @@ class StoreUserRequest extends BaseRequest
     {
         return [
             'email' => 'required|unique:users',
-            'password' => 'required|confirmed',
+            'password' => 'required',
             'full_name' => 'required',
             'user_name' => 'required|unique:users',
         ];
@@ -37,6 +37,7 @@ class StoreUserRequest extends BaseRequest
             'password' => 'mật khẩu',
             'user_name' => 'tên tài khoản',
             'full_name' => 'họ và tên',
+            'teacher_code' => 'Mã giảng viên'
         ];
     }
 }
