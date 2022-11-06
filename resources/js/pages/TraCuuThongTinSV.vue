@@ -20,7 +20,7 @@
     <div class="q-pa-md" style="max-width: 90%; margin: 0 auto;">
         <div class="row">
             <div class="col-4">
-                <div class="main-form mr-3">
+                <div class="main-form me-3">
                     <q-input color="teal" outlined v-model="sv.hoTen" label="Họ và tên">
                         <template v-slot:append>
                             <q-avatar>
@@ -31,7 +31,7 @@
                 </div>
             </div>
             <div class="col-4">
-                <div class="main-form mr-3">
+                <div class="main-form me-3">
                     <q-input color="teal" outlined v-model="sv.ngaySinh" label="Ngày sinh">
                         <template v-slot:append>
                             <q-avatar>
@@ -42,7 +42,7 @@
                 </div>
             </div>
             <div class="col-4">
-                <div class="main-form mr-3">
+                <div class="main-form me-3">
                     <q-input color="teal" outlined v-model="sv.maSV" label="Mã sinh viên">
                         <template v-slot:append>
                             <q-avatar>
@@ -53,7 +53,7 @@
                 </div>
             </div>
             <div class="col-4">
-                <div class="main-form mr-3">
+                <div class="main-form me-3">
                     <q-input color="teal" outlined v-model="sv.lop" label="Lớp">
                         <template v-slot:append>
                             <q-avatar>
@@ -64,7 +64,18 @@
                 </div>
             </div>
             <div class="col-4">
-                <div class="main-form mr-3">
+                <div class="main-form me-3">
+                    <q-input color="teal" outlined v-model="sv.khoa" label="Khoa">
+                        <template v-slot:append>
+                            <q-avatar>
+                                <img src="https://cdn.quasar.dev/logo-v2/svg/logo.svg">
+                            </q-avatar>
+                        </template>
+                    </q-input>
+                </div>
+            </div>
+            <div class="col-4">
+                <div class="main-form me-3">
                     <q-input color="teal" outlined v-model="sv.khoa" label="Khoa">
                         <template v-slot:append>
                             <q-avatar>
