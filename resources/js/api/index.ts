@@ -188,7 +188,43 @@ export default {
             url: '/departments/get-all-id',
         })
     },
-	//Classes start
+
+    //users
+    getUsers<T>(params: object = {}): AxiosPromise<IResult<T>> {
+        return apiAxios({
+            method: 'get',
+            url: '/users',
+            params: params
+        })
+    },
+    createUser<T>(data: any): AxiosPromise<IResult<T>> {
+        return apiAxios({
+            method: 'post',
+            url: '/users',
+            data: data
+        })
+    },
+    getUser<T>(id: string): AxiosPromise<IResult<T>> {
+        return apiAxios({
+            method: 'get',
+            url: `/users/${id}`
+        })
+    },
+    updateUser<T>(data: any, id: string): AxiosPromise<IResult<T>> {
+        return apiAxios({
+            method: 'put',
+            url: `/users/${id}`,
+            data: data
+        })
+    },
+    deleteUser<T>(id: string): AxiosPromise<IResult<T>> {
+        return apiAxios({
+            method: 'delete',
+            url: `/users/${id}`,
+        })
+    },
+	
+//Classes start
     getClasses<T>(params: object = {}): AxiosPromise<IResult<T>> {
         return apiAxios({
             method: 'get',
@@ -241,5 +277,5 @@ export default {
     //         data: data
     //     })
     // }
-    //Classes end
+    //Classes end}
 }

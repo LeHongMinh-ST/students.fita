@@ -83,6 +83,7 @@
             <th class="text-left">Mã lớp</th>
             <th class="text-left">Tên lớp</th>
             <th class="text-left">Bộ môn</th>
+            <th class="text-left">Giáo viên</th>
             <th class="text-center">Ngày tạo</th>
             <th class="text-left">Được tạo bởi</th>
             <th class="text-center">Tác vụ</th>
@@ -108,6 +109,7 @@
                   </span>
               </td>
               <td class="text-left"> {{ getValueLodash(classItem.department, 'name', '') }}</td>
+              <td class="text-left"> {{ getValueLodash(classItem, 'teacher_id', '') }}</td>
               <td class="text-center">{{ handleFormatDate(getValueLodash(classItem, 'created_at', '')) }}</td>
               <td class="text-left">{{ getValueLodash(classItem, 'create_by.full_name', '') }}</td>
               <td class="text-center">
@@ -121,7 +123,7 @@
                                                               size="xs"></q-icon>Xem chi tiết</span>
                       </q-item>
                       <q-item clickable v-close-popup
-                              @click="redirectRouter('RoleUpdate', {id: getValueLodash(classItem, 'id', 0)})">
+                              @click="redirectRouter('ClassesUpdate', {id: getValueLodash(classItem, 'id', 0)})">
                         <q-item-section>
                                                     <span><q-icon name="fa-solid fa-pen-to-square" class="q-mr-sm"
                                                                   size="xs"></q-icon>Chỉnh sửa</span>

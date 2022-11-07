@@ -26,6 +26,7 @@ class UpdateUserRequest extends BaseRequest
         return [
             'email' => 'required|unique:users,email,' . $this->id . ',id',
             'user_name' => 'required|unique:users,user_name,' . $this->id . ',id',
+            // 'teacher_code' => 'unique:users,teacher_code,' . $this->id . ',id',
             'full_name' => 'required',
         ];
     }
@@ -35,6 +36,7 @@ class UpdateUserRequest extends BaseRequest
         return [
             'user_name' => 'tên tài khoản',
             'full_name' => 'họ và tên',
+            'teacher_code' => 'mã giảng viên'
         ];
     }
 }

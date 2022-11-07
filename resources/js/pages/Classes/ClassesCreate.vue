@@ -9,13 +9,10 @@
             <div class="row">
                 <div class="col-9 q-pr-lg">
                     <q-card class="main-form">
-                        <q-badge color="secondary" multi-line>
-                                Model: "{{ optionDeparment }}"
-                        </q-badge>
                         <div class="form-group">
                             <label for="code" class="text-bold">Mã lớp học <span class="required">*</span></label>
-                            <q-input outlined dense v-model="code" id="code" ref="codeRef" :rules="codeRules"
-                                :error-message="getValidationErrors('code')" :error="hasValidationErrors('code')" />
+                            <q-input outlined dense v-model="class_code" id="class_code" ref="codeRef" :rules="class_code"
+                                :error-message="getValidationErrors('class_code')" :error="hasValidationErrors('class_code')" />
                         </div>
                         <div class="form-group">
                             <label for="name" class="text-bold">Tên <span class="required">*</span></label>
@@ -25,13 +22,37 @@
                         <div class="form-group">
                             <label for="department" class="text-bold">Bộ môn</label>
                             <div class="q-gutter-md">
-                                <q-select filled outlined v-model="model" :options="optionDeparment" label="Chọn bộ môn" name="department" emit-value map-options/>
+                                <q-select
+                                    emit-value
+                                    map-options
+                                    :ref="refInput.department_id"
+                                    borderless
+                                    dense
+                                    outlined
+                                    v-model="department_id"
+                                    option-value="id"
+                                    option-label="name"
+                                    :options="departments"
+                                    :rules="rule.department_id"
+                                />
                             </div>
                         </div>
-                        <div class="form-group" style="margin-top:30px">
-                            <label for="teacher" class="text-bold">Giáo viên</label>
+                        <div class="form-group">
+                            <label for="department" class="text-bold">Giáo viên</label>
                             <div class="q-gutter-md">
-                                <q-select outlined v-model="model" :options="optionTeacher" label="Chọn giáo viên" name="teacher"/>
+                                <q-select
+                                    emit-value
+                                    map-options
+                                    :ref="refInput.department_id"
+                                    borderless
+                                    dense
+                                    outlined
+                                    v-model="teacher_id"
+                                    option-value="id"
+                                    option-label="full_name"
+                                    :options="users"
+                                    :rules="rule.teacher_id"
+                                />
                             </div>
                         </div>
                     </q-card>
@@ -44,7 +65,7 @@
                             </q-card-section>
                             <q-separator />
                             <q-card-section>
-                                <q-btn @click="handleCreateClass" no-caps color="secondary" class="q-mr-sm">
+                                <q-btn @click="handleSave" no-caps color="secondary" class="q-mr-sm">
                                     <q-icon name="fa-solid fa-save" class="q-mr-sm" size="xs"></q-icon>
                                     Lưu
                                 </q-btn>
@@ -65,6 +86,7 @@
     import {
         defineComponent,
         onMounted,
+        reactive,
         ref,
         watch
     } from "vue"
@@ -79,12 +101,15 @@
         useQuasar
     } from "quasar"
     import {
+useRoute,
         useRouter
     } from "vue-router/dist/vue-router"
     import eventBus from "../../utils/eventBus"
     import {
         validationHelper
     } from "../../utils/validationHelper"
+    import { IDepartmentResult } from "../../models/IDepartmentResult";
+    import IUserResult from "../../models/IUserResult";
     import IPaginate from "../../models/IPaginate";
     import _ from "lodash";
 
@@ -99,7 +124,7 @@
             const optionTeacher=ref<Array<any>>([]);
             const store = useStore()
             const $q = useQuasar()
-            const router = useRouter()
+            const router = useRoute()
             const {
                 setValidationErrors,
                 getValidationErrors,
@@ -107,73 +132,10 @@
                 resetValidateErrors
             } = validationHelper()
 
-            const name = ref<string>('')
-            const nameRef = ref<any>(null)
-
+            const idClass = ref("")
             const departments = ref<Array<any>>([]);
 
-            const nameRules = [
-                val => (val && val.length > 0) || 'Trường tên lớp học không được bỏ trống!'
-            ]
-
-            const code = ref <string> ('')
-            const codeRef = ref <any> (null)
-
-            const codeRules = [
-                val => (val && val.length > 0) || 'Trường mã lớp học không được bỏ trống!'
-            ]
-
-            const teacherId = ref<number> ()
-            const departmentId = ref<number> ()
-            
-            
-
-            const handleCreateClass = (): void => {
-                nameRef.value.validate();
-                codeRef.value.validate();
-
-                if (isValidate()) {
-                    $q.loading.show()
-                    let data = {
-                        name: name.value,
-                        class_code: code.value,
-                        teacher_id:teacherId,
-                        department_id:departmentId,
-                    }
-
-                    api.createClass <[]> (data).then(res => {
-                        if (res) {
-                            eventBus.$emit('notify-success', 'Tạo mới lớp học thành công')
-                            redirectRouter('Role')
-                        }
-                    }).catch(error => {
-                        let errors = _.get(error.response, 'data.error', {})
-                        if (Object.keys(errors).length === 0) {
-                            let message = _.get(error.response, 'data.message', '')
-                            $q.notify({
-                                icon: 'report_problem',
-                                message,
-                                color: 'negative',
-                                position: 'top-right'
-                            })
-                        }
-                        if (Object.keys(errors).length > 0) {
-                            setValidationErrors(errors)
-                        }
-                    }).finally(() => $q.loading.hide())
-                }
-
-            }
-
-            const isValidate = (): boolean => {
-                let isCheck = true
-
-                if (nameRef.value.hasError) {
-                    isCheck = false
-                }
-
-                return isCheck
-            }
+            const users = ref<Array<any>>([]);
 
             const redirectRouter = (nameRoute: string): void => {
                 router.push({
@@ -181,75 +143,141 @@
                 })
             }
 
-            const getListDepartment = (): void => {                
-                
+            const rule = {
+                name: [
+                    (val: any) => val  || "Trường họ và tên không được bỏ trống!",
+                ],
+                class_code: [
+                    (val: any) => val || "Trường họ và tên không được bỏ trống!",
+                ],
+                teacher_id: [
+                    (val: any) => val  || "Trường họ và tên không được bỏ trống!",
+                ],
+                department_id: [
+                    (val: any) => val || "Trường họ và tên không được bỏ trống!",
+                ],
+            };
+
+            const refInput: any = {
+                name: ref<any>(null),
+                class_code: ref<any>(null),
+                teacher_id: ref<any>(null),
+                department_id: ref<any>(null),
+            };
+
+            const classes: any = {
+                class_code: ref<string>(""),
+                name: ref<string>(""),
+                teacher_id: ref<string>(""),
+                department_id: ref<string>(""),
+            };
+
+            const payload = reactive({...classes})
+
+            const getListDepartment = (): void => {
                 const payload = {
                     page: 1,
+                    limit: 100,
                 };
+                api
+                .getDepartments<IPaginate<IDepartmentResult[]>>(payload)
+                .then((res) => {
+                    departments.value = _.get(res, "data.data.department.data");
+                })
+                .catch(() => {
+                $q.notify({
+                    icon: "report_problem",
+                    message: "Không tải được danh sách nhóm vai trò!",
+                    color: "negative",
+                    position: "top-right",
+                });
+                })
+                .finally(() => {});
+            };
 
-                api.getDepartments<IPaginate<[]>>(payload)
-                    .then((res) => {
-                        const department = ref<Array<any>>([]);
-                        department.value = _.get(res, "data.data.department.data"); 
-                        
-                        
-                        department.value.forEach(element => {
-                            var objectOptionDepart = ref<any>({});
-                            objectOptionDepart.label=element['name'];
-                            objectOptionDepart.value=element['id'];
-                            console.log(objectOptionDepart);
-                            // objectOptionDepart.value.add(objectOptionDepart);
-                            optionDeparment.value.push(objectOptionDepart);
-                        });
-                     
-                        console.log("aaaaaa"+optionDeparment.value);                   
+            const getListUserIsLecturers = (): void => {
+                const payload = {
+                    page: 1,
+                    limit: 100,
+                }
+                api.getUsers<IPaginate<IUserResult[]>>(payload).then(res => {
+                    users.value = _.get(res, 'data.data.users.data')
+
+                }).catch(() => {
+                    $q.notify({
+                        icon: 'report_problem',
+                        message: 'Không tải được danh sách người dùng!',
+                        color: 'negative',
+                        position: 'top-right'
                     })
-                    .catch(() => {
-                        generateNotify("Không tải được danh sách bộ môn")
-                    })
-                    .finally(() => (console.log("aaaa")));
+                }).finally()
             };
             
-            
-
-            watch(name, (): void => {
-                resetValidateErrors('name')
-                nameRef.value.resetValidation()
-                codeRef.value.resetValidation()
-            })
-
             onMounted(() => {
-                getListDepartment()
+                getListDepartment();
+                getListUserIsLecturers();
+                idClass.value = <string> router.params.id
+                console.log("aaaaaaa"+idClass.value);
+                if(idClass.value) {
+                    handleGetClass(idClass.value);
+                }
             })
 
-            const generateNotify = (message, isSuccess=false) => {
-                isSuccess ? $q.notify({icon: "check",
-                message: message,
-                color: "positive",
-                position: "top-right",}) :
-                $q.notify({ icon: "report_problem",
-                message: message,
-                color: "negative",
-                position: "top-right"})
+            const handleSave = (): void => {
+                console.log("aaaaaaaaaaaaaaa");
+                const data  = JSON.parse(JSON.stringify(payload));
+                api.createClass(data).then(res => {
+                if (res) {
+                    eventBus.$emit('notify-success', 'Tạo mới lớp học thành công')
+                    redirectRouter('Classes')
+                }
+                }).catch(error => {
+                let errors = _.get(error.response, 'data.error', {})
+                console.log('errors', errors)
+                if (Object.keys(errors).length === 0) {
+                    let message = _.get(error.response, 'data.message', '')
+                    $q.notify({
+                    icon: 'report_problem',
+                    message,
+                    color: 'negative',
+                    position: 'top-right'
+                    })
+                }
+                if (Object.keys(errors).length > 0) {
+                    setValidationErrors(errors)
+                }
+                }).finally(() => $q.loading.hide())
+            }
+
+            const handleGetClass = (id: string): void => {
+                $q.loading.show()
+                api.getClass<{}>(id).then(res => {
+                    console.log("ssssss"+res);
+                    // const data = _.get(res, 'data.data.class', '')
+                    // console.log("sssssssss"+data);
+                }).catch(() => {
+                    $q.notify({
+                        icon: 'report_problem',
+                        message: 'Không tải được dữ liệu lớp học !',
+                        color: 'negative',
+                        position: 'top-right'
+                    })
+                }).finally(() => $q.loading.hide())
             }
             return {
-                name,
-                nameRef,
-                nameRules,
-                code,
-                codeRef,
-                codeRules,
-                teacherId,
-                departmentId,
-                redirectRouter,
-                handleCreateClass,
+                handleSave,
+                redirectRouter,         
                 getValidationErrors,
                 hasValidationErrors,
-                generateNotify,
                 model,
                 optionDeparment,
                 optionTeacher,
-                modelTeacher
+                modelTeacher,
+                departments,
+                users,
+                rule,
+                refInput,
+                ...classes
             }
         }
     })

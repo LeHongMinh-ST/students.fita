@@ -83,10 +83,10 @@ class User extends Authenticatable implements JWTSubject
         return $this->morphMany(Social::class,'socialable');
     }
 
-//    public function department(): BelongsTo
-//    {
-//        return $this->belongsTo(Department::class);
-//    }
+    public function department(): BelongsTo
+    {
+        return $this->belongsTo(Department::class);
+    }
 
     public function createBy(): BelongsTo
     {
