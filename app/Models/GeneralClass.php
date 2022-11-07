@@ -23,7 +23,7 @@ class GeneralClass extends Model
 
     public function students(): HasMany
     {
-        return $this->hasMany(Student::class);
+        return $this->hasMany(Student::class, 'class_id', 'id');
     }
 
     public function department(): BelongsTo
