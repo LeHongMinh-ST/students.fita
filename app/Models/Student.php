@@ -87,7 +87,7 @@ class Student extends Authenticatable implements JWTSubject
 
     public function generalClass(): BelongsTo
     {
-        return $this->belongsTo(GeneralClass::class);
+        return $this->belongsTo(GeneralClass::class, 'class_id');
     }
 
     public function learningOutcomes(): HasMany
