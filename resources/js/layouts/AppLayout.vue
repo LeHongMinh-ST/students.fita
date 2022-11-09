@@ -105,7 +105,7 @@ import {useRouter} from "vue-router/dist/vue-router";
 import {useStore} from "vuex";
 
 export default defineComponent({
-  name: 'Home',
+  name: 'AppLayout',
 
   setup() {
     const store = useStore()
@@ -136,8 +136,8 @@ export default defineComponent({
 
       links1: [
         {icon: 'fa-solid fa-home', text: 'Bảng điều khiển', routeName: 'Home'},
-        {icon: 'fa-solid fa-users', text: 'Quản lý sinh viên', routeName: 'Student'},
-        {icon: 'fa-solid fa-users', text: 'Quản lý bộ môn', routeName: 'Department'},
+        {icon: 'fa-solid fa-address-card', text: 'Quản lý sinh viên', routeName: 'Student'},
+        {icon: 'fa-solid fa-building-user', text: 'Quản lý bộ môn', routeName: 'Department'},
       ],
       linksSystem: [
         {icon: 'fa-solid fa-user', text: 'Người dùng', routeName: 'User'},
