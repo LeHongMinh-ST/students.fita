@@ -232,24 +232,7 @@ export default {
             params: params
         })
     },
-    // getAllRoleId<T>(): AxiosPromise<IResult<T>> {
-    //     return apiAxios({
-    //         method: 'get',
-    //         url: '/roles/get-all-role-id',
-    //     })
-    // },
-    // getRole<T>(id: string): AxiosPromise<IResult<T>> {
-    //     return apiAxios({
-    //         method: 'get',
-    //         url: `/roles/${id}`
-    //     })
-    // },
-    // getPermissionGroups<T>(): AxiosPromise<IResult<T>> {
-    //     return apiAxios({
-    //         method: 'get',
-    //         url: '/permissions/group'
-    //     })
-    // },
+
     createClass<T>(data: any): AxiosPromise<IResult<T>> {
         return apiAxios({
             method: 'post',
@@ -257,25 +240,42 @@ export default {
             data: data
         })
     },
-    // updateRole<T>(data: any, id: string): AxiosPromise<IResult<T>> {
-    //     return apiAxios({
-    //         method: 'put',
-    //         url: `/roles/${id}`,
-    //         data: data
-    //     })
-    // },
-    // deleteRole<T>(id: string): AxiosPromise<IResult<T>> {
-    //     return apiAxios({
-    //         method: 'delete',
-    //         url: `/roles/${id}`,
-    //     })
-    // },
-    // deleteSelected<T>(data: any): AxiosPromise<IResult<T>> {
-    //     return apiAxios({
-    //         method: 'delete',
-    //         url: `/roles/delete-selected`,
-    //         data: data
-    //     })
-    // }
-    //Classes end}
+
+    getClass<T>(id: string): AxiosPromise<IResult<T>> {
+        return apiAxios({
+            method: 'get',
+            url: `/classes/${id}`
+        })
+    },
+
+    updateClass<T>(data: any, id: string): AxiosPromise<IResult<T>> {
+        return apiAxios({
+            method: 'put',
+            url: `/classes/${id}`,
+            data: data
+        })
+    },
+
+    deleteClass<T>(id: string): AxiosPromise<IResult<T>> {
+        return apiAxios({
+            method: 'delete',
+            url: `/classes/${id}`,
+        })
+    },
+
+    deleteSelectedClass<T>(data: any): AxiosPromise<IResult<T>> {
+        return apiAxios({
+            method: 'delete',
+            url: `/classes/delete-selected`,
+            data: data
+        })
+    },
+
+    getAllClassId<T>(): AxiosPromise<IResult<T>> {
+        return apiAxios({
+            method: 'get',
+            url: '/class/get-all-class-id',
+        })
+    },
+   
 }

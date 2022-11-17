@@ -31,14 +31,19 @@ const routeAdmin: Array<RouteRecordRaw> = [
                 meta: {isAuthenticated: true},
             },
             {
-                path: 'update',
+                path: 'update/:id',
                 name: 'ClassesUpdate',
                 component: () => import('../pages/Classes/ClassesCreate.vue'),
                 meta: {isAuthenticated: true},
             },
+            {
+                path: '/:id',
+                name: 'ClassesDetail',
+                component: () => import('../pages/Classes/ClassesDetail.vue'),
+                meta: {isAuthenticated: true},
+            },
         ]
     },
-    
     {
         path: 'departments',
         meta: {isAuthenticated: true},

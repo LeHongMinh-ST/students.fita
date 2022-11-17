@@ -226,35 +226,60 @@ useRoute,
             const handleSave = (): void => {
                 console.log("aaaaaaaaaaaaaaa");
                 const data  = JSON.parse(JSON.stringify(payload));
-                api.createClass(data).then(res => {
-                if (res) {
-                    eventBus.$emit('notify-success', 'Tạo mới lớp học thành công')
-                    redirectRouter('Classes')
+                if(idClass.value){
+                    api.updateClass(data, idClass.value).then(res => {
+                    if (res) {
+                        eventBus.$emit('notify-success', 'Cập nhật lớp học thành công')
+                        redirectRouter('User')
+                    }
+                    }).catch(error => {
+                        let errors = _.get(error.response, 'data.error', {})
+                        if (Object.keys(errors).length === 0) {
+                            let message = _.get(error.response, 'data.message', '')
+                            $q.notify({
+                                icon: 'report_problem',
+                                message,
+                                color: 'negative',
+                                position: 'top-right'
+                            })
+                        }
+                    if (Object.keys(errors).length > 0) {
+                        setValidationErrors(errors)
+                    }
+            }).finally(() => $q.loading.hide())
+                }else{
+                    api.createClass(data).then(res => {
+                    if (res) {
+                        eventBus.$emit('notify-success', 'Tạo mới lớp học thành công')
+                        redirectRouter('Classes')
+                    }
+                    }).catch(error => {
+                    let errors = _.get(error.response, 'data.error', {})
+                    console.log('errors', errors)
+                    if (Object.keys(errors).length === 0) {
+                        let message = _.get(error.response, 'data.message', '')
+                        $q.notify({
+                        icon: 'report_problem',
+                        message,
+                        color: 'negative',
+                        position: 'top-right'
+                        })
+                    }
+                    if (Object.keys(errors).length > 0) {
+                        setValidationErrors(errors)
+                    }
+                    }).finally(() => $q.loading.hide())
                 }
-                }).catch(error => {
-                let errors = _.get(error.response, 'data.error', {})
-                console.log('errors', errors)
-                if (Object.keys(errors).length === 0) {
-                    let message = _.get(error.response, 'data.message', '')
-                    $q.notify({
-                    icon: 'report_problem',
-                    message,
-                    color: 'negative',
-                    position: 'top-right'
-                    })
-                }
-                if (Object.keys(errors).length > 0) {
-                    setValidationErrors(errors)
-                }
-                }).finally(() => $q.loading.hide())
+                
             }
 
             const handleGetClass = (id: string): void => {
                 $q.loading.show()
                 api.getClass<{}>(id).then(res => {
-                    console.log("ssssss"+res);
-                    // const data = _.get(res, 'data.data.class', '')
-                    // console.log("sssssssss"+data);
+                    const data = _.get(res, 'data.data.class', '')
+                    for (const key in classes) {
+                        classes[key].value = data[key]
+                    }
                 }).catch(() => {
                     $q.notify({
                         icon: 'report_problem',
