@@ -1,5 +1,4 @@
 <template>
-
     <div class="role-wrapper">
         <q-breadcrumbs>
             <q-breadcrumbs-el label="Bảng điều khiển" icon="home" :to="{name: 'Home'}"/>
@@ -93,7 +92,7 @@
                     <template v-if="users.length > 0">
                         <tr v-for="(user, index) in users" :key="index">
                             <td class="text-center">
-                                  <q-checkbox v-model="checkboxArray" :val="getValueLodash(user, 'id', 0)"/>
+                                  <q-checkbox v-model="checkboxArray" :val="String(getValueLodash(user, 'id', ''))"/>
                             </td>
                             <td class="text-center">{{ index + +1 + +page.perPage * (page.currentPage - 1) }}</td>
                             <td class="text-left">
