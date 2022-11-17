@@ -1,8 +1,10 @@
+import _ from "lodash";
 import { useQuasar } from "quasar";
 import { defineComponent, getCurrentInstance, onMounted, ref, watch } from "vue";
 import { useStore } from "vuex";
 import api from "../../api";
 import { IDepartmentResult } from "../../models/IDepartmentResult";
+import { IPage, IPayload } from "../../models/IPage";
 import IPaginate from "../../models/IPaginate";
 import { HomeMutationTypes } from "../../store/modules/home/mutation-types";
 import eventBus from "../../utils/eventBus";
@@ -21,12 +23,12 @@ export default defineComponent({
     const $q = useQuasar();
     const store = useStore();
     const search = ref<string>("");
-    const departments = ref<Array<any>>([]);
+    const departments = ref<Array<IDepartmentResult>>([]);
     const departmentIds = ref<Array<string>>([]);
     const checkboxArray = ref<Array<string>>([]);
     const checkboxAll = ref<boolean | string>(false);
     const departmentCurrent = ref<any>({})
-    const page = ref<Object>({
+    const page = ref<IPage>({
       currentPage: 1,
       total: 0,
       perPage: 10,
@@ -52,7 +54,7 @@ export default defineComponent({
 
     const getListDepartment = (): void => {
       loadingDepartments.value = true;
-      const payload = {
+      const payload: IPayload = {
         page: 1,
       };
 
