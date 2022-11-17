@@ -11,6 +11,7 @@ export default interface IUserResult {
     department_id: number | null,
     is_super_admin: boolean,
     is_teacher: boolean,
+    role_id: number | null,
     created_by: number | null,
     updated_by: number | null,
 }
