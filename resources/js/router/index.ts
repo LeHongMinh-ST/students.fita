@@ -1,5 +1,5 @@
-import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router'
-import { store } from "../store"
+import {createRouter, createWebHistory, RouteRecordRaw} from 'vue-router'
+import {store} from "../store"
 
 const routeAdmin: Array<RouteRecordRaw> = [
     {
@@ -106,6 +106,15 @@ const routeAdmin: Array<RouteRecordRaw> = [
     },
 
 ]
+const routeStudent: Array<RouteRecordRaw> = [
+    {
+        path: '',
+        name: 'HomeStudent',
+        component: () => import('../pages/StudentPage/HomeStudent.vue'),
+        meta: {isAuthenticated: false},
+    },
+]
+
 
 const routes: Array<RouteRecordRaw> = [
     {
@@ -113,6 +122,16 @@ const routes: Array<RouteRecordRaw> = [
         meta: {isAuthenticated: true},
         component: () => import('../layouts/AppLayout.vue'),
         children: routeAdmin,
+    },
+    {
+        path: '/student',
+        component: () => import('../layouts/StudentLayout.vue'),
+        children: routeStudent,
+    },
+    {
+        path: '/student/login',
+        name: 'LoginStudent',
+        component: () => import('../pages/StudentPage/LoginStudent.vue')
     },
     {
         path: '/admin/login',
@@ -150,12 +169,20 @@ router.beforeEach((to, from, next) => {
             next()
         }
         next({name: 'Login'})
-    } else {
-        if (store.state.auth.isAuthenticated) {
-            if (to.name === 'Login') {
-                next({name: 'Home'})
+    } else if (to.matched.some((route) => route.meta.isAuthenticatedStudent)) {
+        if (store.state.authStudent.isAuthenticated) {
+            if (to.name === 'LoginStudent') {
+                next({name: 'HomeStudent'})
             }
+            next()
         }
+        next({name: 'LoginStudent'})
+    } else {
+        // if (store.state.auth.isAuthenticated) {
+        //     if (to.name === 'Login') {
+        //         next({name: 'Home'})
+        //     }
+        // }
         next()
     }
 });

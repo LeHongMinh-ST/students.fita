@@ -22,7 +22,7 @@ class GeneralClassController extends Controller
     public function index(Request $request): JsonResponse
     {
         $data = $request->all();
-        $relationships = ['department'];
+        $relationships = ['department', 'teacher', 'students'];
         $columns = ['*'];
         $paginate = $data['limit'] ?? config('constants.limit_of_paginate', 10);
         $condition = [];
@@ -37,6 +37,11 @@ class GeneralClassController extends Controller
 
         if (isset($data['class_code'])) {
             $condition[] = ['class_code' => $data['class_code']];
+        }
+        $user = auth()->user();
+
+        if (@$user->teacher_id) {
+            $condition[] = ['teacher_id' => $user->teacher_id];
         }
 
         $class = $this->generalClassRepository->getListPaginateBy($condition, $relationships, $columns, $paginate);

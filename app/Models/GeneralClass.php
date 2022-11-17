@@ -26,6 +26,11 @@ class GeneralClass extends Model
         return $this->hasMany(Student::class, 'class_id', 'id');
     }
 
+    public function teacher(): belongsTo
+    {
+        return $this->belongsTo(User::class, 'teacher_id');
+    }
+
     public function department(): BelongsTo
     {
         return $this->belongsTo(Department::class);
