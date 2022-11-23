@@ -224,4 +224,57 @@ export default {
         })
     },
 
+	getClasses<T>(params: object = {}): AxiosPromise<IResult<T>> {
+        return apiAxios({
+            method: 'get',
+            url: '/classes',
+            params: params
+        })
+    },
+
+    createClass<T>(data: any): AxiosPromise<IResult<T>> {
+        return apiAxios({
+            method: 'post',
+            url: '/classes',
+            data: data
+        })
+    },
+
+    getClass<T>(id: string): AxiosPromise<IResult<T>> {
+        return apiAxios({
+            method: 'get',
+            url: `/classes/${id}`
+        })
+    },
+
+    updateClass<T>(data: any, id: string): AxiosPromise<IResult<T>> {
+        return apiAxios({
+            method: 'put',
+            url: `/classes/${id}`,
+            data: data
+        })
+    },
+
+    deleteClass<T>(id: string): AxiosPromise<IResult<T>> {
+        return apiAxios({
+            method: 'delete',
+            url: `/classes/${id}`,
+        })
+    },
+
+    deleteSelectedClass<T>(data: any): AxiosPromise<IResult<T>> {
+        return apiAxios({
+            method: 'delete',
+            url: `/classes/delete-selected`,
+            data: data
+        })
+    },
+
+    getAllClassId<T>(): AxiosPromise<IResult<T>> {
+        return apiAxios({
+            method: 'get',
+            url: '/class/get-all-class-id',
+        })
+    },
+
 }
