@@ -96,10 +96,10 @@
                             </td>
                             <td class="text-center">{{ index + +1 + +page.perPage * (page.currentPage - 1) }}</td>
                             <td class="text-left">
-                  <span @click="redirectRouter('RoleUpdate', {id: user.id})"
-                        class="text-bold cursor-pointer text-link">
-                    {{ getValueLodash(user, 'full_name', '') }}
-                  </span>
+                                  <span @click="redirectRouter('UserUpdate', {id: user.id})"
+                                        class="text-bold cursor-pointer text-link">
+                                    {{ getValueLodash(user, 'full_name', '') }}
+                                  </span>
                             </td>
                             <td class="text-left"> {{ getValueLodash(user, 'user_name', '') }}</td>
                             <td class="text-left">{{ getValueLodash(user, 'email', '') }}</td>

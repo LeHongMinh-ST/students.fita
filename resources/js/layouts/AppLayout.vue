@@ -156,7 +156,7 @@ export default defineComponent({
         ],
 
         links2: [
-            {icon: 'fa-solid fa-address-card', text: 'Quản lý sinh viên', routeName: 'Student'},
+            {icon: 'fa-solid fa-address-card', text: 'Quản lý sinh viên', routeName: 'StudentIndex'},
             {icon: 'fa-solid fa-address-card', text: 'Danh sách xét duyệt', routeName: 'Student'},
             {icon: 'fa-solid fa-address-card', text: 'Báo cáo sinh viên', routeName: 'Student'},
 
