@@ -63,7 +63,10 @@ class GeneralClassController extends Controller
     {
         try {
             $data = $request->all();
-            $class = $this->generalClassRepository->create($data);
+            $class = $this->generalClassRepository->create(array_merge($data, [
+                'created_by' => auth()->id(),
+                'updated_by' => auth()->id(),
+            ]));
             return $this->responseSuccess(['class' => $class]);
 
         } catch (\Exception $exception) {
@@ -80,7 +83,9 @@ class GeneralClassController extends Controller
         try {
             $data = $request->all();
             $class = $this->generalClassRepository->findById($id);
-            $class?->fill($data);
+            $class?->fill(array_merge($data, [
+                'updated_by' => auth()->id(),
+            ]));
             $this->generalClassRepository->createOrUpdate($class);
 
             return $this->responseSuccess();

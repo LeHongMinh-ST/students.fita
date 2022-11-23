@@ -58,31 +58,46 @@
         </div>
         <q-separator class="q-my-md"/>
         <q-list padding>
-          <q-item-label header class="text-weight-bold">
-            Quản lý chung
-          </q-item-label>
-          <q-item v-for="link in links1" :key="link.text" v-ripple clickable @click="redirectRouteName(link.routeName)">
-            <q-item-section avatar>
-              <q-icon color="grey" :name="link.icon"/>
-            </q-item-section>
-            <q-item-section>
-              <q-item-label>{{ link.text }}</q-item-label>
-            </q-item-section>
-          </q-item>
+            <q-item-label header class="text-weight-bold">
+                Quản lý chung
+            </q-item-label>
+            <q-item v-for="link in links1" :key="link.text" v-ripple clickable
+                    @click="redirectRouteName(link.routeName)">
+                <q-item-section avatar>
+                    <q-icon color="grey" :name="link.icon"/>
+                </q-item-section>
+                <q-item-section>
+                    <q-item-label>{{ link.text }}</q-item-label>
+                </q-item-section>
+            </q-item>
 
+            <q-separator class="q-my-md"/>
 
-          <q-separator class="q-my-md"/>
-          <q-item-label header class="text-weight-bold">
-            Quản trị hệ thống
-          </q-item-label>
-          <q-item v-for="link in linksSystem" :key="link.text" v-ripple clickable @click="redirectRouteName(link.routeName)">
-            <q-item-section avatar>
-              <q-icon color="grey" :name="link.icon"/>
-            </q-item-section>
-            <q-item-section>
-              <q-item-label>{{ link.text }}</q-item-label>
-            </q-item-section>
-          </q-item>
+            <q-item-label header class="text-weight-bold">
+                Quản lý thông tin
+            </q-item-label>
+            <q-item v-for="link in links2" :key="link.text" v-ripple clickable
+                    @click="redirectRouteName(link.routeName)">
+                <q-item-section avatar>
+                    <q-icon color="grey" :name="link.icon"/>
+                </q-item-section>
+                <q-item-section>
+                    <q-item-label>{{ link.text }}</q-item-label>
+                </q-item-section>
+            </q-item>
+            <q-separator class="q-my-md"/>
+            <q-item-label header class="text-weight-bold">
+                Quản trị hệ thống
+            </q-item-label>
+            <q-item v-for="link in linksSystem" :key="link.text" v-ripple clickable
+                    @click="redirectRouteName(link.routeName)">
+                <q-item-section avatar>
+                    <q-icon color="grey" :name="link.icon"/>
+                </q-item-section>
+                <q-item-section>
+                    <q-item-label>{{ link.text }}</q-item-label>
+                </q-item-section>
+            </q-item>
 
         </q-list>
       </q-scroll-area>
@@ -99,7 +114,7 @@
 </template>
 
 <script lang="ts">
-import {defineComponent, ref, computed } from 'vue'
+import {computed, defineComponent, ref} from 'vue'
 import {fabYoutube} from '@quasar/extras/fontawesome-v6'
 import {useRouter} from "vue-router/dist/vue-router";
 import {useStore} from "vuex";
@@ -126,25 +141,30 @@ export default defineComponent({
 
 
     return {
-      fabYoutube,
+        fabYoutube,
 
-      leftDrawerOpen,
-      title,
+        leftDrawerOpen,
+        title,
 
-      toggleLeftDrawer,
-      redirectRouteName,
+        toggleLeftDrawer,
+        redirectRouteName,
 
-      links1: [
-        {icon: 'fa-solid fa-home', text: 'Bảng điều khiển', routeName: 'Home'},
-        {icon: 'fa-solid fa-address-card', text: 'Quản lý sinh viên', routeName: 'Student'},
-        {icon: 'fa-solid fa-building-user', text: 'Quản lý bộ môn', routeName: 'Department'},
-{icon: 'fa-solid fa-users', text: 'Danh sách lớp học', routeName: 'Classes'},
-        {icon: 'subscriptions', text: 'Subscriptions'}
-      ],
-      linksSystem: [
-        {icon: 'fa-solid fa-user', text: 'Người dùng', routeName: 'User'},
-        {icon: 'fa-solid fa-user-shield', text: 'Nhóm và phân quyền', routeName: 'Role'},
-      ],
+        links1: [
+            {icon: 'fa-solid fa-home', text: 'Bảng điều khiển', routeName: 'Home'},
+            {icon: 'fa-solid fa-building-user', text: 'Quản lý bộ môn', routeName: 'Department'},
+            {icon: 'fa-solid fa-users', text: 'Quản lý lớp học', routeName: 'Classes'},
+        ],
+
+        links2: [
+            {icon: 'fa-solid fa-address-card', text: 'Quản lý sinh viên', routeName: 'Student'},
+            {icon: 'fa-solid fa-address-card', text: 'Danh sách xét duyệt', routeName: 'Student'},
+            {icon: 'fa-solid fa-address-card', text: 'Báo cáo sinh viên', routeName: 'Student'},
+
+        ],
+        linksSystem: [
+            {icon: 'fa-solid fa-user', text: 'Người dùng', routeName: 'User'},
+            {icon: 'fa-solid fa-user-shield', text: 'Nhóm và phân quyền', routeName: 'Role'},
+        ],
     }
   }
 })
