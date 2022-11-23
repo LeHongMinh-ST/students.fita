@@ -1,14 +1,14 @@
 <template>
-    <div>Hồ sơ sinh viên</div>
+    <div>Thông tin lớp học/div>
 </template>
 
-<script lang="ts">
+<script>
 import {defineComponent, onMounted} from "vue";
+import {useStore} from "vuex";
 import {HomeMutationTypes} from "../../store/modules/home/mutation-types";
-import {useStore} from "vuex"
 
 export default defineComponent({
-    name: "HomeStudent",
+    name: "StudentClass",
     setup() {
         const store = useStore()
 
