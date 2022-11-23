@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Role\DeleteRoleRequest;
+use App\Http\Requests\User\DeleteUserRequest;
 use App\Http\Requests\User\ResetPasswordRequest;
 use App\Http\Requests\User\StoreUserRequest;
 use App\Http\Requests\User\UpdateUserRequest;
@@ -99,6 +101,22 @@ class UserController extends Controller
             return $this->responseSuccess();
         } catch (\Exception $exception) {
             Log::error('Error delete user', [
+                'method' => __METHOD__,
+                'message' => $exception->getMessage()
+            ]);
+            return $this->responseError();
+        }
+    }
+
+    public function deleteSelected(DeleteUserRequest $request): JsonResponse
+    {
+        try {
+            $roleId = $request->input('user_id', []);
+            $condition[] = ['id', 'in', $roleId];
+            $this->userRepository->deleteBy($condition);
+            return $this->responseSuccess();
+        } catch (\Exception $exception) {
+            Log::error('Error delete select user', [
                 'method' => __METHOD__,
                 'message' => $exception->getMessage()
             ]);

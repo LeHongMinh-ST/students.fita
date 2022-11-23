@@ -3,9 +3,12 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\GeneralClass\AddStudentGeneralClassRequest;
+use App\Http\Requests\GeneralClass\DeleteGeneralClassRequest;
 use App\Http\Requests\GeneralClass\StoreGeneralClassRequest;
 use App\Http\Requests\GeneralClass\UpdateGeneralClassRequest;
 use App\Repositories\GeneralClass\GeneralClassRepositoryInterface;
+use App\Repositories\Student\StudentRepositoryInterface;
 use App\Traits\ResponseTrait;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -15,7 +18,10 @@ class GeneralClassController extends Controller
 {
     use ResponseTrait;
 
-    public function __construct(private GeneralClassRepositoryInterface $generalClassRepository)
+    public function __construct(
+        private GeneralClassRepositoryInterface $generalClassRepository,
+        private StudentRepositoryInterface      $studentRepository
+    )
     {
     }
 
@@ -63,7 +69,10 @@ class GeneralClassController extends Controller
     {
         try {
             $data = $request->all();
-            $class = $this->generalClassRepository->create($data);
+            $class = $this->generalClassRepository->create(array_merge($data, [
+                'created_by' => auth()->id(),
+                'updated_by' => auth()->id(),
+            ]));
             return $this->responseSuccess(['class' => $class]);
 
         } catch (\Exception $exception) {
@@ -80,7 +89,9 @@ class GeneralClassController extends Controller
         try {
             $data = $request->all();
             $class = $this->generalClassRepository->findById($id);
-            $class?->fill($data);
+            $class?->fill(array_merge($data, [
+                'updated_by' => auth()->id(),
+            ]));
             $this->generalClassRepository->createOrUpdate($class);
 
             return $this->responseSuccess();
@@ -101,6 +112,42 @@ class GeneralClassController extends Controller
             return $this->responseSuccess();
         } catch (\Exception $exception) {
             Log::error('Error delete class', [
+                'method' => __METHOD__,
+                'message' => $exception->getMessage()
+            ]);
+            return $this->responseError();
+        }
+    }
+
+    public function deleteSelected(DeleteGeneralClassRequest $request): JsonResponse
+    {
+        try {
+            $roleId = $request->input('class_id', []);
+            $condition[] = ['id', 'in', $roleId];
+            $this->generalClassRepository->deleteBy($condition);
+            return $this->responseSuccess();
+        } catch (\Exception $exception) {
+            Log::error('Error delete select class', [
+                'method' => __METHOD__,
+                'message' => $exception->getMessage()
+            ]);
+            return $this->responseError();
+        }
+    }
+
+    public function addStudentToClass(AddStudentGeneralClassRequest $request, $id): JsonResponse
+    {
+        try {
+            $studentId = $request->input('student_id', '');
+            $student = $this->studentRepository->findById($studentId);
+            $student?->fill([
+                'class_id' => $id,
+                'updated_by' => auth()->id(),
+            ]);
+            $this->studentRepository->createOrUpdate($student);
+            return $this->responseSuccess();
+        } catch (\Exception $exception) {
+            Log::error('Error add student to class', [
                 'method' => __METHOD__,
                 'message' => $exception->getMessage()
             ]);

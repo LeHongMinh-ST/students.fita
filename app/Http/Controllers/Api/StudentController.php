@@ -60,7 +60,11 @@ class StudentController extends Controller
     {
         try {
             $data = $request->all();
-            $student = $this->studentRepository->create($data);
+            $authId = auth()->id();
+            $student = $this->studentRepository->create(array_merge($data, [
+                'created_by' => $authId,
+                'updated_by' => $authId
+            ]));
             $this->extractedStudentRelationship($data, $student);
             return $this->responseSuccess(['student' => $student]);
 
@@ -78,7 +82,9 @@ class StudentController extends Controller
         try {
             $data = $request->all();
             $student = $this->studentRepository->findById($id);
-            $student?->fill($data);
+            $student?->fill(array_merge($data, [
+                'updated_by' => auth()->id(),
+            ]));
             $student = $this->studentRepository->createOrUpdate($student);
             $this->extractedStudentRelationship($data, $student);
 
