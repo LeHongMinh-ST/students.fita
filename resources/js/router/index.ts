@@ -115,7 +115,7 @@ const routeStudent: Array<RouteRecordRaw> = [
     },
     {
         path: 'update-profile',
-        name: 'StudentUpdateProdile',
+        name: 'StudentUpdateProfile',
         component: () => import('../pages/StudentPage/StudentUpdateProfile.vue'),
         meta: {isAuthenticated: false},
     },
@@ -200,4 +200,5 @@ router.beforeEach((to, from, next) => {
 });
 
 
+// @ts-ignore
 export default router
