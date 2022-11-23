@@ -5,6 +5,7 @@ import {AuthActionTypes} from './actions-type'
 import router from '../../../router'
 
 export interface Actions {
+    // @ts-ignore
     [AuthActionTypes.LOGOUT_ACTION]({ commit }): void
 }
 
