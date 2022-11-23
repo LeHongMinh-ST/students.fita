@@ -223,9 +223,8 @@ export default {
             url: `/users/${id}`,
         })
     },
-	
-//Classes start
-    getClasses<T>(params: object = {}): AxiosPromise<IResult<T>> {
+
+	getClasses<T>(params: object = {}): AxiosPromise<IResult<T>> {
         return apiAxios({
             method: 'get',
             url: '/classes',
@@ -277,5 +276,5 @@ export default {
             url: '/class/get-all-class-id',
         })
     },
-   
+
 }

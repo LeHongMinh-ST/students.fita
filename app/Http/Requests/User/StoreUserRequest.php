@@ -3,9 +3,14 @@
 namespace App\Http\Requests\User;
 
 use App\Http\Requests\BaseRequest;
+use App\Http\Controllers\Api\UserController;
+use App\Rules\TeacherUniqueRule;
 
 class StoreUserRequest extends BaseRequest
 {
+    public function __construct(private UserController $userController)
+    {
+    }
     /**
      * Determine if the user is authorized to make this request.
      *
@@ -28,6 +33,9 @@ class StoreUserRequest extends BaseRequest
             'password' => 'required',
             'full_name' => 'required',
             'user_name' => 'required|unique:users',
+            'teacher_code' => [
+                new TeacherUniqueRule()
+            ]
         ];
     }
 

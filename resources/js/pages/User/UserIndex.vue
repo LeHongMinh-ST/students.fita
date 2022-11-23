@@ -92,7 +92,7 @@
                     <template v-if="users.length > 0">
                         <tr v-for="(user, index) in users" :key="index">
                             <td class="text-center">
-                                <q-checkbox v-model="checkboxArray" :val="getValueLodash(role, 'id', 0)"/>
+                                  <q-checkbox v-model="checkboxArray" :val="String(getValueLodash(user, 'id', ''))"/>
                             </td>
                             <td class="text-center">{{ index + +1 + +page.perPage * (page.currentPage - 1) }}</td>
                             <td class="text-left">
@@ -124,6 +124,11 @@
                                                     @click="openDialogDelete(getValueLodash(user, 'id', 0))">
                                                 <span><q-icon name="fa-solid fa-trash" class="q-mr-sm"
                                                               size="xs"></q-icon>Xoá</span>
+                                            </q-item>
+                                            <q-item clickable v-close-popup
+                                                    @click="openDialogResetPassword()">
+                                                <span><q-icon name="fa-solid fa-trash" class="q-mr-sm"
+                                                              size="xs"></q-icon>Reset mật khẩu</span>
                                             </q-item>
                                         </q-list>
                                     </q-menu>
@@ -168,6 +173,52 @@
                 </q-card-actions>
             </q-card>
         </q-dialog>
+        <q-dialog v-model="popupResetPassword" persistent>
+            <q-card style="width: 300px">
+                <q-card-section>
+                    <div class="text-h6">Reset Password</div>
+                </q-card-section>
+                <q-card-section class="q-pt-none" style="width: 100%">
+                <label for="password" class="text-bold"
+                  >Mật khẩu mới <span class="required">*</span></label
+                >
+                <q-input
+                  outlined
+                  dense
+                  v-model="password"
+                  id="password"
+                  :ref="refPassword"
+                  :rules="[(val) =>(val && val.length > 0) || 'Trường mật khẩu không được bỏ trống']"
+                  :error-message="getValidationErrors('password')"
+                  :error="hasValidationErrors('password')"
+                  :type="isPwd ? 'password' : 'text'"
+                >
+                  <template v-slot:append>
+                    <q-icon
+                      :name="isPwd ? 'visibility_off' : 'visibility'"
+                      class="cursor-pointer"
+                      @click="isPwd = !isPwd"
+                    />
+                  </template>
+                </q-input>
+
+        </q-card-section>
+        <q-card-actions align="right" class="row">
+          <q-btn
+            flat
+            label="Đóng"
+            color="primary"
+            @click="closeDialog"
+            v-close-popup
+          />
+          <q-btn
+            label="Đồng ý"
+            color="blue"
+            @click="handleResetPassword"
+          />
+        </q-card-actions>
+            </q-card>
+        </q-dialog>
         <q-dialog v-model="dialogDeleteSelect" persistent>
             <q-card>
                 <q-card-section class="row items-center">
@@ -195,28 +246,44 @@
     import {formatDate} from "../../utils/helpers";
     import IUserResult from "../../models/IUserResult";
     import IPaginate from "../../models/IPaginate";
+    import { IPage, IPayload } from "../../models/IPage";
+    import _ from "lodash";
+import { validationHelper } from "../../utils/validationHelper";
 
     export default defineComponent({
-        name: "RoleIndex",
+        name: "UserIndex",
+        components: {
+        },
         setup() {
             const $q = useQuasar()
             const store = useStore()
             const router = useRouter()
-
+            const popupResetPassword = ref<boolean>(false)
             const search = ref<string>('')
             const dialogDelete = ref<boolean>(false)
             const dialogDeleteSelect = ref<boolean>(false)
             const userId = ref<string>('')
-            const users = ref<Array<any>>([])
+            const users = ref<IUserResult[]>([])
             const roleIds = ref<Array<string>>([])
-
+            const userIds = ref<Array<string>>([]);
+            const password = ref<string>("")
+            const refPassword = ref<any>(null)
             const checkboxArray = ref<Array<string>>([])
             const checkboxAll = ref<boolean | string>(false)
-            const page = ref<Object>({
+            const page = ref<IPage>({
                 currentPage: 1,
                 total: 0,
                 perPage: 10
             })
+
+            const {
+            setValidationErrors,
+            getValidationErrors,
+            hasValidationErrors,
+            resetValidateErrors,
+            } = validationHelper();
+            const isPwd = ref(true);
+
 
             const currentPage = ref<number>(1)
 
@@ -240,7 +307,7 @@
             const getListUser = (): void => {
 
                 loadingRoles.value = true
-                const payload = {
+                const payload: IPayload = {
                     page: 1,
                 }
 
@@ -252,6 +319,7 @@
 
                 api.getUsers<IPaginate<IUserResult[]>>(payload).then(res => {
                     users.value = _.get(res, 'data.data.users.data')
+                    userIds.value = users.value.map(user => user.id.toString());
                     page.value.currentPage = _.get(res, 'data.data.users.current_page', 1)
                     page.value.total = _.get(res, 'data.data.users.last_page', 0)
                     page.value.perPage = _.get(res, 'data.data.users.per_page', 0)
@@ -273,6 +341,13 @@
                 dialogDeleteSelect.value = true
             }
 
+            const openDialogResetPassword = (): void => {
+                popupResetPassword.value = !popupResetPassword.value;
+            }
+
+            const handleResetPassword = (): void => {
+
+            }
 
             const closeDialog = (): void => {
                 dialogDelete.value = false
@@ -312,9 +387,9 @@
             const handleDeleteSelect = () => {
                 $q.loading.show()
                 const data = {
-                    role_id: checkboxArray.value
+                    user_id: checkboxArray.value
                 }
-                api.deleteSelected(data).then(() => {
+                api.deleteUserSelected(data).then(() => {
                     getListUser()
                     closeDialog()
                     checkboxArray.value = []
@@ -334,11 +409,11 @@
                 }).finally(() => $q.loading.hide())
             }
 
-            watch(() => page.value.currentPage, () => getListRole())
-            watch(() => search.value, () => getListRole())
+            watch(() => page.value.currentPage, () => getListUser())
+            watch(() => search.value, () => getListUser())
             watch(() => checkboxAll.value, (value) => {
                 if (value === true) {
-                    checkboxArray.value = roleIds.value
+                    checkboxArray.value = userIds.value;
                 }
 
                 if (value === false) {
@@ -348,7 +423,7 @@
             })
 
             watch(() => checkboxArray.value, (value) => {
-                if (value.length < roleIds.value.length) {
+                if (value.length < userIds.value.length) {
                     checkboxAll.value = 'maybe'
                 }
 
@@ -359,7 +434,7 @@
 
             onMounted((): void => {
                 store.commit(`home/${HomeMutationTypes.SET_TITLE}`, 'Quản lý người dùng')
-                eventBus.$on('notify-success', message => {
+                eventBus.$on('notify-success', (message: string) => {
                     $q.notify({
                         icon: 'check',
                         message: message,
@@ -370,7 +445,6 @@
                 getListUser()
                 handleGetRoleIds()
             })
-
 
             return {
                 search,
@@ -394,6 +468,16 @@
                 closeDialog,
                 checkboxArray,
                 checkboxAll,
+                openDialogResetPassword,
+                popupResetPassword,
+                handleResetPassword,
+                password,
+                refPassword,
+                setValidationErrors,
+                getValidationErrors,
+                hasValidationErrors,
+                resetValidateErrors,
+                isPwd
             }
         }
     })

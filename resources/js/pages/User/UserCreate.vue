@@ -475,7 +475,6 @@ export default defineComponent({
     })
 
     for (const key in payload) {
-    //    if(!user['is_teacher'] && ['is_teacher', 'is_super_admin'].includes(key)){
         if( refInput[key]){
          watch(user[key], (): void => {
             resetValidateErrors(key)
