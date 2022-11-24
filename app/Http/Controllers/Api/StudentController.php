@@ -40,7 +40,7 @@ class StudentController extends Controller
         }
 
         if (isset($data['student_code'])) {
-            $condition[] = ['student_code' => $data['student_code']];
+            $condition[] = ['student_code', '=', $data['student_code']];
         }
 
         $user = $this->studentRepository->getListPaginateBy($condition, $relationships, $columns, $paginate);
@@ -141,7 +141,7 @@ class StudentController extends Controller
             return $this->responseSuccess([
                 'student' => $student->load(['learningOutcomes'])
             ]);
-        }catch (\Exception $exception) {
+        } catch (\Exception $exception) {
             Log::error('Error update learning outcome student', [
                 'method' => __METHOD__,
                 'message' => $exception->getMessage()
