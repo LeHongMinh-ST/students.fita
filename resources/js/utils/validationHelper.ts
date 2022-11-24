@@ -1,17 +1,19 @@
-import { ref } from 'vue'
+import {ref} from 'vue'
 
 export function validationHelper(): any {
-    const errors = ref([])
+    const errors = ref<any[]>([])
 
-    const getValidationErrorMessages = (field: any): Array<any> => {
+    const getValidationErrorMessages = (field: string): Array<any> => {
         if (!errors.value) {
             return []
         }
         const keys = Object.keys(errors.value)
         const key = keys.find(element => element.toLowerCase() === field.toLowerCase())
         if (key) {
-            if(errors.value[key])
-            return errors.value[key]
+            // @ts-ignore
+            if (errors.value[key]) { // @ts-ignore
+                return errors.value[key]
+            }
         }
         return []
     }
@@ -38,13 +40,16 @@ export function validationHelper(): any {
     const resetValidateErrors = (field: any): void => {
         const keys = Object.keys(errors.value)
         const key = keys.find(element => element.toLowerCase() === field.toLowerCase())
-        if(key)
-                if (errors.value[key]) {
+        if (key) { // @ts-ignore
+            if (errors.value[key]) {
+                // @ts-ignore
                 delete errors.value[key]
             }
+        }
     }
 
     const showValidationError = (): void => {
+        // @ts-ignore
         this.$q.notify({
             type: 'negative',
             message: 'Vui lòng kiểm tra lại dữ liệu nhập vào!',

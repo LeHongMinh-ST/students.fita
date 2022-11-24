@@ -18,6 +18,7 @@ export interface IStudentResult {
     training_type?: number,
     school_year?: string,
     email?: string,
+    email_edu?: string,
     phone?:string,
     thumbnail?: string,
     citizen_identification?: string,

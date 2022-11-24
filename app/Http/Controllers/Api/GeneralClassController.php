@@ -55,6 +55,17 @@ class GeneralClassController extends Controller
         return $this->responseSuccess(['class' => $class]);
     }
 
+    public function getALl(Request $request): JsonResponse
+    {
+        $data = $request->all();
+        $condition = [];
+        if (isset($data['q'])) {
+            $condition[] = ['name', 'like', '%' . $data['q'] . '%'];
+        }
+        $classes = $this->generalClassRepository->allBy($condition);
+        return $this->responseSuccess(['classes' => $classes]);
+    }
+
     public function show($id): JsonResponse
     {
         $relationships = ['students', 'department'];
