@@ -277,4 +277,47 @@ export default {
         })
     },
 
+    //AUTHOR: TRUONGTN
+    /*begin */
+
+    getAllStudent<T>(params: object = {}): AxiosPromise<IResult<T>> {
+        return apiAxios({
+            method: 'get',
+            url: '/students',
+            params: params
+        })
+    },
+
+    getStudentById<T>(id: string): AxiosPromise<IResult<T>> {
+        return apiAxios({
+            method: 'get',
+            url: `/students/${id}`
+        })
+    },
+
+    updateStudent<T>(data: any, id: string): AxiosPromise<IResult<T>> {
+        return apiAxios({
+            method: 'put',
+            url: `/students/${id}`,
+            data: data
+        })
+    },
+
+    createStudent<T>(data: any): AxiosPromise<IResult<T>> {
+        return apiAxios({
+            method: 'post',
+            url: '/students',
+            data: data
+        })
+    },
+
+    deleteStudent<T>(id: string): AxiosPromise<IResult<T>> {
+        return apiAxios({
+            method: 'delete',
+            url: `/students/${id}`,
+        })
+    },
+
+    /*end */
+
 }
