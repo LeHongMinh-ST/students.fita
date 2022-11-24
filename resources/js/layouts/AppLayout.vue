@@ -70,31 +70,6 @@
             </q-item-section>
           </q-item>
 
-          <q-separator class="q-my-md"/>
-
-          <q-item v-for="link in links2" :key="link.text" v-ripple clickable>
-            <q-item-section avatar>
-              <q-icon color="grey" :name="link.icon"/>
-            </q-item-section>
-            <q-item-section>
-              <q-item-label>{{ link.text }}</q-item-label>
-            </q-item-section>
-          </q-item>
-
-          <q-separator class="q-mt-md q-mb-xs"/>
-
-          <q-item-label header class="text-weight-bold text-uppercase">
-            More from Youtube
-          </q-item-label>
-
-          <q-item v-for="link in links3" :key="link.text" v-ripple clickable>
-            <q-item-section avatar>
-              <q-icon color="grey" :name="link.icon"/>
-            </q-item-section>
-            <q-item-section>
-              <q-item-label>{{ link.text }}</q-item-label>
-            </q-item-section>
-          </q-item>
 
           <q-separator class="q-my-md"/>
           <q-item-label header class="text-weight-bold">
@@ -130,7 +105,7 @@ import {useRouter} from "vue-router/dist/vue-router";
 import {useStore} from "vuex";
 
 export default defineComponent({
-  name: 'Home',
+  name: 'AppLayout',
 
   setup() {
     const store = useStore()
@@ -161,20 +136,10 @@ export default defineComponent({
 
       links1: [
         {icon: 'fa-solid fa-home', text: 'Bảng điều khiển', routeName: 'Home'},
-        {icon: 'fa-solid fa-users', text: 'Quản lý sinh viên', routeName: 'Student'},
+        {icon: 'fa-solid fa-address-card', text: 'Quản lý sinh viên', routeName: 'Student'},
+        {icon: 'fa-solid fa-building-user', text: 'Quản lý bộ môn', routeName: 'Department'},
+{icon: 'fa-solid fa-users', text: 'Danh sách lớp học', routeName: 'Classes'},
         {icon: 'subscriptions', text: 'Subscriptions'}
-      ],
-      links2: [
-        {icon: 'folder', text: 'Library'},
-        {icon: 'restore', text: 'History'},
-        {icon: 'watch_later', text: 'Watch later'},
-        {icon: 'thumb_up_alt', text: 'Liked videos'}
-      ],
-      links3: [
-        {icon: fabYoutube, text: 'YouTube Premium'},
-        {icon: 'local_movies', text: 'Movies & Shows'},
-        {icon: 'videogame_asset', text: 'Gaming'},
-        {icon: 'live_tv', text: 'Live'}
       ],
       linksSystem: [
         {icon: 'fa-solid fa-user', text: 'Người dùng', routeName: 'User'},

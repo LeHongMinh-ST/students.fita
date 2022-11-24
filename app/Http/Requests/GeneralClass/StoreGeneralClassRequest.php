@@ -2,9 +2,9 @@
 
 namespace App\Http\Requests\GeneralClass;
 
-use Illuminate\Foundation\Http\FormRequest;
+use App\Http\Requests\BaseRequest;
 
-class StoreGeneralClassRequest extends FormRequest
+class StoreGeneralClassRequest extends BaseRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -25,7 +25,7 @@ class StoreGeneralClassRequest extends FormRequest
     {
         return [
             'name' => 'required',
-            'class_code' => 'required|unique',
+            'class_code' => 'required|unique:general_classes',
         ];
     }
 

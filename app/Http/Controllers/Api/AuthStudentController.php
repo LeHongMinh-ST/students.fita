@@ -27,7 +27,7 @@ class AuthStudentController extends Controller
     {
         request()->merge([$this->username() => request()->input('user_name')]);
         $credentials = request([$this->username(), 'password']);
-        if (!$token = auth('api')->attempt($credentials)) {
+        if (!$token = auth('student')->attempt($credentials)) {
             return response()->json(['error' => 'Unauthorized'], 401);
         }
 
@@ -36,14 +36,14 @@ class AuthStudentController extends Controller
 
     public function logout(): JsonResponse
     {
-        auth('api')->logout();
+        auth('student')->logout();
 
         return response()->json(['message' => 'Đăng xuất thành công']);
     }
 
     public function me(): JsonResponse
     {
-        $user = auth('api')->user();
+        $user = auth('student')->user();
 
         if (empty($user)) {
             return response()->json(['error' => 'Unauthorized'], 401);

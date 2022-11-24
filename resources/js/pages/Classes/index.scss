@@ -1,0 +1,60 @@
+
+.classes-wrapper {
+  .filter-wrapper {
+    margin-top: 20px;
+    margin-bottom: 20px;
+
+    .filter-wrapper-content {
+      padding: 10px 20px;
+
+      .filter-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+    }
+  }
+
+  .table-wrapper {
+    margin-top: 20px;
+
+    .table-wrapper-title {
+      padding: 0px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+
+      .table-wrapper-filter {
+        width: 75%;
+        display: flex;
+        justify-content: flex-start;
+        align-items: center;
+
+        .q-btn {
+          height: 35px;
+        }
+
+        .table-wrapper-search {
+          margin-top: 20px;
+          width: 20vw;
+        }
+      }
+    }
+
+    .role-table {
+      tr {
+        th {
+          text-transform: uppercase;
+          font-weight: bold;
+          color: #949597;
+        }
+
+        td {
+          .text-link {
+            color: #337ab7;
+          }
+        }
+      }
+    }
+  }
+}
