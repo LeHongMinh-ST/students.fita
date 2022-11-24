@@ -1,5 +1,6 @@
 import {ref} from 'vue'
-
+import {useQuasar} from "quasar";
+const $q = useQuasar()
 export function validationHelper(): any {
     const errors = ref<any[]>([])
 
@@ -49,8 +50,7 @@ export function validationHelper(): any {
     }
 
     const showValidationError = (): void => {
-        // @ts-ignore
-        this.$q.notify({
+        $q.notify({
             type: 'negative',
             message: 'Vui lòng kiểm tra lại dữ liệu nhập vào!',
             icon: 'report_problem',

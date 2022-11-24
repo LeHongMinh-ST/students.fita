@@ -300,5 +300,11 @@ export default {
             url: '/students',
             data: data
         })
-    }
+    },
+    getStudent<T>(id: number): AxiosPromise<IResult<T>> {
+        return apiAxios({
+            method: 'get',
+            url: `/students/${id}`
+        })
+    },
 }

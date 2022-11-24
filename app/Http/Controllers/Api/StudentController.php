@@ -54,8 +54,7 @@ class StudentController extends Controller
     {
         $relationships = ['generalClass', 'families', 'learningOutcomes', 'reports'];
         $columns = ['*'];
-
-        return $this->responseSuccess(['student' => $this->studentRepository->findById($id, $columns, $relationships)]);
+        return $this->responseSuccess(['student' => $this->studentRepository->getFirstBy(['id'=> $id], $columns, $relationships)]);
     }
 
     public function store(StoretStudentRequest $request): JsonResponse
