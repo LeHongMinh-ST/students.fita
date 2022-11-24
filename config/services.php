@@ -31,4 +31,15 @@ return [
         'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
     ],
 
+    'google' => [
+        'client_id' => env('GOOGLE_APP_ID', '1027201556468-ba4hrdbpane0nvmm2gk12n8do0ollub7.apps.googleusercontent.com'),
+        'client_secret' => env('GOOGLE_APP_SECRET', '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'),
+        'redirect' => env('GOOGLE_APP_CALLBACK_URL'),
+    ],
+
+    'microsoft' => [
+        'client_id' => env('MICROSOFT_APP_ID'),
+        'client_secret' => env('MICROSOFT_APP_SECRET'),
+        'redirect' => env('MICROSOFT_APP_CALLBACK_URL'),
+    ],
 ];
