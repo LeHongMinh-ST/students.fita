@@ -1,8 +1,10 @@
-import axios, { AxiosPromise } from 'axios';
+import axios, {AxiosPromise} from 'axios';
 import IResult from "../models/IResult";
 import router from '../router';
-import { store } from '../store';
-import { AuthMutationTypes } from "../store/modules/auth/mutation-types";
+import {store} from '../store';
+import {AuthMutationTypes} from "../store/modules/auth/mutation-types";
+import {IParams} from "../models/IParams";
+import {IStudentResult} from "../models/IStudentResult";
 
 // @ts-ignore
 const baseUrl = import.meta.env.VITE_ADMIN_URL;
@@ -156,6 +158,13 @@ export default {
             data: data
         })
     },
+    getAllDepartment<T>(params: IParams): AxiosPromise<IResult<T>> {
+        return apiAxios({
+            method: 'get',
+            url: `/departments/all`,
+            params: params
+        })
+    },
     getDepartment<T>(id: string): AxiosPromise<IResult<T>> {
         return apiAxios({
             method: 'get',
@@ -231,6 +240,14 @@ export default {
             params: params
         })
     },
+    getAllClasses<T>(params: object = {}): AxiosPromise<IResult<T>> {
+        return apiAxios({
+            method: 'get',
+            url: '/classes/all',
+            params: params
+        })
+    },
+
 
     createClass<T>(data: any): AxiosPromise<IResult<T>> {
         return apiAxios({
@@ -277,4 +294,17 @@ export default {
         })
     },
 
+    createStudent<T>(data: IStudentResult):AxiosPromise<IResult<T>> {
+        return apiAxios({
+            method: 'post',
+            url: '/students',
+            data: data
+        })
+    },
+    getStudent<T>(id: number): AxiosPromise<IResult<T>> {
+        return apiAxios({
+            method: 'get',
+            url: `/students/${id}`
+        })
+    },
 }

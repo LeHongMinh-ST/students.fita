@@ -12,7 +12,7 @@ use BenSampo\Enum\Enum;
  */
 final class StudentTempStatus extends Enum
 {
-    const NotApproved = 1;
+    const Pending = 1;
     const ClassMonitorApproved = 2;
     const TeacherApproved = 3;
     const Approved = 4;

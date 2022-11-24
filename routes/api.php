@@ -58,6 +58,7 @@ Route::group(['middleware' => ['jwt.auth', 'auth.admin']], function () {
 
     Route::prefix('classes')->group(function () {
         Route::get('/', [GeneralClassController::class, 'index'])->middleware('permission:class-index');
+        Route::get('/all', [GeneralClassController::class, 'getALl'])->middleware('permission:class-index');
         Route::post('/', [GeneralClassController::class, 'store'])->middleware('permission:class-create');
         Route::get('/{id}', [GeneralClassController::class, 'show'])->middleware('permission:class-index');
         Route::put('/{id}', [GeneralClassController::class, 'update'])->middleware('permission:class-update');
@@ -67,6 +68,7 @@ Route::group(['middleware' => ['jwt.auth', 'auth.admin']], function () {
 
     Route::prefix('departments')->group(function () {
         Route::get('/', [DepartmentController::class, 'index'])->middleware('permission:department-index');
+        Route::get('/all', [DepartmentController::class, 'getAll'])->middleware('permission:department-index');
         Route::post('/', [DepartmentController::class, 'store'])->middleware('permission:department-create');
         Route::put('/{id}', [DepartmentController::class, 'update'])->middleware('permission:department-update');
         Route::delete('/delete-selected', [DepartmentController::class, 'deleteSelected'])->middleware('permission:department-delete');
