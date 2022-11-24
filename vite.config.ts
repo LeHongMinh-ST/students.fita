@@ -11,6 +11,10 @@ export default defineConfig({
             input: ['resources/js/app.ts'],
             refresh: true,
         }),
-        quasar()
+        quasar(),
+
     ],
+    build: {
+        sourcemap: true,
+    },
 });
