@@ -21,4 +21,10 @@ return [
         'code' => 'department',
         'description' => 'Quản lý toàn bộ chức năng liên quan đến bộ môn'
     ],
+
+    [
+        'name' => 'Quản lý báo cáo',
+        'code' => 'report',
+        'description' => 'Quản lý toàn bộ chức năng liên quan đến báo cáo'
+    ],
 ];

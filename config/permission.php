@@ -158,4 +158,29 @@ return [
         'group_code' => 'department',
         'description' => 'Có quyền xóa bộ môn'
     ],
+
+    [
+        'code' => 'report-index',
+        'name' => 'Xem toàn bộ danh sách báo cáo phản ánh',
+        'group_code' => 'report',
+        'description' => 'Có quyền xem danh sách báo cáo phản ánh'
+    ],
+    [
+        'code' => 'report-create',
+        'name' => 'Tạo mới báo cáo phản ánh',
+        'group_code' => 'report',
+        'description' => 'Có quyền tạo mới báo cáo phản ánh'
+    ],
+    [
+        'code' => 'report-update',
+        'name' => 'Cập nhật thông tin báo cáo phản ánh',
+        'group_code' => 'report',
+        'description' => 'Có quyền cập nhật thông tin báo cáo phản ánh'
+    ],
+    [
+        'code' => 'report-delete',
+        'name' => 'Xoá báo cáo phản ánh',
+        'group_code' => 'report',
+        'description' => 'Có quyền xóa báo cáo phản ánh'
+    ],
 ];

@@ -53,6 +53,7 @@
                         >
                             <q-tab name="home" label="Thông tin chung" />
                             <q-tab name="learning_outcome" label="Kết quả học tập" />
+                            <q-tab name="report" label="Báo cáo phản án" />
                         </q-tabs>
 
                         <q-separator />
@@ -67,7 +68,10 @@
                                 <div class="text-h6">Kết quả học tập</div>
                                 Lorem ipsum dolor sit amet consectetur adipisicing elit.
                             </q-tab-panel>
-
+                            <q-tab-panel name="report">
+                                <div class="text-h6">Báo cáo phản án</div>
+                                Lorem ipsum dolor sit amet consectetur adipisicing elit.
+                            </q-tab-panel>
 
                         </q-tab-panels>
                     </q-card>

@@ -5,6 +5,7 @@ use App\Http\Controllers\Api\AuthStudentController;
 use App\Http\Controllers\Api\DepartmentController;
 use App\Http\Controllers\Api\GeneralClassController;
 use App\Http\Controllers\Api\PermissionController;
+use App\Http\Controllers\Api\ReportController;
 use App\Http\Controllers\Api\RoleController;
 use App\Http\Controllers\Api\StudentController;
 use App\Http\Controllers\Api\UserController;
@@ -84,6 +85,14 @@ Route::group(['middleware' => ['jwt.auth', 'auth.admin']], function () {
         Route::get('/{id}', [RoleController::class, 'show'])->middleware('permission:role-index');
         Route::put('/{id}', [RoleController::class, 'update'])->middleware('permission:role-update');
         Route::delete('/{id}', [RoleController::class, 'destroy'])->middleware('permission:role-delete');
+    });
+
+    Route::prefix('reports')->group(function () {
+        Route::get('/', [ReportController::class, 'index'])->middleware('permission:report-index');
+        Route::post('/', [ReportController::class, 'store'])->middleware('permission:report-create');
+        Route::get('/{id}', [ReportController::class, 'show'])->middleware('permission:report-index');
+        Route::put('/{id}', [ReportController::class, 'update'])->middleware('permission:report-update');
+        Route::delete('/{id}', [ReportController::class, 'destroy'])->middleware('permission:report-delete');
     });
 
     Route::prefix('permissions')->group(function () {
