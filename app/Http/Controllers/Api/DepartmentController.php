@@ -3,9 +3,9 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Department\DeleteDepartmentRequest;
 use App\Http\Requests\Department\StoreDepartmentRequest;
 use App\Http\Requests\Department\UpdateDepartmentRequest;
-use App\Http\Requests\Department\DeleteDepartmentRequest;
 use App\Repositories\Department\DepartmentRepositoryInterface;
 use App\Traits\ResponseTrait;
 use Illuminate\Http\JsonResponse;
@@ -23,7 +23,7 @@ class DepartmentController extends Controller
     public function index(Request $request): JsonResponse
     {
         $data = $request->all();
-        $relationships = [];
+        $relationships = ['createBy', 'updateBy'];
         $columns = ['*'];
         $paginate = $data['limit'] ?? config('constants.limit_of_paginate', 10);
         $condition = [];
@@ -43,6 +43,17 @@ class DepartmentController extends Controller
         $department = $this->departmentRepository->getListPaginateBy($condition, $relationships, $columns, $paginate);
 
         return $this->responseSuccess(['department' => $department]);
+    }
+
+    public function getALl(Request $request): JsonResponse
+    {
+        $data = $request->all();
+        $condition = [];
+        if (isset($data['q'])) {
+            $condition[] = ['name', 'like', '%' . $data['q'] . '%'];
+        }
+        $departments = $this->departmentRepository->allBy($condition);
+        return $this->responseSuccess(['departments' => $departments]);
     }
 
     public function store(StoreDepartmentRequest $request): JsonResponse

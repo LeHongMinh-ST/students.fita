@@ -69,7 +69,7 @@
                                     <q-icon name="fa-solid fa-save" class="q-mr-sm" size="xs"></q-icon>
                                     Lưu
                                 </q-btn>
-                                <q-btn @click="redirectRouter('Role')" no-caps color="warning" class="q-mr-sm">
+                                <q-btn @click="redirectRouter('Classes')" no-caps color="warning" class="q-mr-sm">
                                     <q-icon name="fa-solid fa-rotate-left" class="q-mr-sm" size="xs"></q-icon>
                                     Quay lại
                                 </q-btn>
@@ -100,10 +100,7 @@
     import {
         useQuasar
     } from "quasar"
-    import {
-useRoute,
-        useRouter
-    } from "vue-router/dist/vue-router"
+    import {useRouter} from "vue-router";
     import eventBus from "../../utils/eventBus"
     import {
         validationHelper
@@ -124,7 +121,7 @@ useRoute,
             const optionTeacher=ref<Array<any>>([]);
             const store = useStore()
             const $q = useQuasar()
-            const router = useRoute()
+            const router = useRouter()
             const {
                 setValidationErrors,
                 getValidationErrors,
@@ -138,10 +135,8 @@ useRoute,
             const users = ref<Array<any>>([]);
 
             const redirectRouter = (nameRoute: string): void => {
-                router.push({
-                    name: nameRoute
-                })
-            }
+             router.push({name: nameRoute});
+            };
 
             const rule = {
                 name: [

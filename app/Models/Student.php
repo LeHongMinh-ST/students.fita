@@ -32,6 +32,7 @@ class Student extends Authenticatable implements JWTSubject
         'training_type',
         'school_year',
         'email',
+        'email_edu',
         'phone',
         'nationality',
         'citizen_identification',

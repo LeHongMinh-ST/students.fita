@@ -85,7 +85,6 @@
             <th class="text-left">Bộ môn</th>
             <th class="text-left">Giáo viên</th>
             <th class="text-center">Ngày tạo</th>
-            <th class="text-left">Được tạo bởi</th>
             <th class="text-center">Tác vụ</th>
           </tr>
           </thead>
@@ -97,21 +96,20 @@
               </td>
               <td class="text-center">{{ index + +1 + +page.perPage * (page.currentPage - 1) }}</td>
               <td class="text-left">
-                  <span @click="redirectRouter('RoleUpdate', {id: classItem.id})"
+                  <span @click="redirectRouter('ClassesDetail', {id: getValueLodash(classItem, 'id', 0)})"
                         class="text-bold cursor-pointer text-link">
                     {{ getValueLodash(classItem, 'class_code', '') }}
                   </span>
               </td>
               <td class="text-left">
-                  <span @click="redirectRouter('RoleUpdate', {id: classItem.id})"
+                  <span @click="redirectRouter('ClassesDetail', {id: getValueLodash(classItem, 'id', 0)})"
                         class="text-bold cursor-pointer text-link">
                     {{ getValueLodash(classItem, 'name', '') }}
                   </span>
               </td>
-              <td class="text-left"> {{ getValueLodash(classItem.department, 'name', '') }}</td>
-              <td class="text-left"> {{ getValueLodash(classItem, 'teacher_id', '') }}</td>
+              <td class="text-left"> {{ getValueLodash(classItem.department, 'name', 'Không có bộ môn') }}</td>
+              <td class="text-left"> {{ getValueLodash(classItem, 'teacher.full_name', 'Không có giáo viên') }}</td>
               <td class="text-center">{{ handleFormatDate(getValueLodash(classItem, 'created_at', '')) }}</td>
-              <td class="text-left">{{ getValueLodash(classItem, 'create_by.full_name', '') }}</td>
               <td class="text-center">
                 <div class="inline cursor-pointer">
                   <q-icon name="menu" size="sm"></q-icon>
@@ -119,8 +117,9 @@
                     <q-list style="min-width: 100px">
                       <q-item clickable v-close-popup
                               @click="redirectRouter('ClassesDetail', {id: getValueLodash(classItem, 'id', 0)})">
-                        <q-item-section>
-                                                    <span><q-icon name="fa-solid fa-pen-to-square" class="q-mr-sm"
+                        <q-item-section>  
+                          
+                                                    <span><q-icon name="fa-solid fa-eye" class="q-mr-sm"
                                                                   size="xs"></q-icon>Xem chi tiết</span>
                         </q-item-section>
                       </q-item>

@@ -50,3 +50,7 @@ export const formatTimeFrom = (stringDate: any): string => {
     moment.locale('vi');
     return moment(stringDate).fromNow();
 }
+
+export const convertTime = (time: string) => {
+    return /^\d{10}$/.test(time) ? moment.unix(Number(time)).format('DD/MM/YYYY') : time
+}
