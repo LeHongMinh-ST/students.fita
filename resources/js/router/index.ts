@@ -44,12 +44,6 @@ const routeAdmin: Array<RouteRecordRaw> = [
         meta: {isAuthenticated: true},
     },
     {
-        path: 'students-infomation',
-        name: 'student-infomation',
-        component: () => import('../pages/Student/TraCuuSv.vue'),
-        meta: {isAuthenticated: true},
-    },
-    {
         path: 'classes',
         meta: {isAuthenticated: true},
         children: [
