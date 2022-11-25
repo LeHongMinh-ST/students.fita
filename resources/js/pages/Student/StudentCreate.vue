@@ -484,6 +484,7 @@ export default defineComponent({
         const handleUpload = () => {
             if (image.value) {
                 imageUrl.value = URL.createObjectURL(image.value);
+                console.log(image.value)
             }
         }
 
@@ -515,7 +516,16 @@ export default defineComponent({
         }
 
         const handleCreateStudent = () => {
-            api.createStudent<IStudentResult>(student.value).then(res => {
+
+            const formData = new FormData()
+            Object.keys(student.value).map(function (objectKey) {
+                const value = student.value[objectKey];
+                formData.append(objectKey, value)
+            });
+
+            formData.append('image', image.value)
+
+            api.createStudent<IStudentResult>(formData).then(res => {
                 console.log(res)
             }).catch(error => {
                 let errors = _.get(error.response, 'data.error', {})

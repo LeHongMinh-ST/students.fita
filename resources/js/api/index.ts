@@ -294,7 +294,7 @@ export default {
         })
     },
 
-    createStudent<T>(data: IStudentResult):AxiosPromise<IResult<T>> {
+    createStudent<T>(data: FormData):AxiosPromise<IResult<T>> {
         return apiAxios({
             method: 'post',
             url: '/students',

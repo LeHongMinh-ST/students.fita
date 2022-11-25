@@ -94,6 +94,7 @@ export default defineComponent({
         const {student, getStudent} = useStudent()
         const userId = ref<string>('')
         const tab = ref<string>('home')
+
         onMounted(() => {
             userId.value = <string>route.params.id
             getStudent(userId.value)
