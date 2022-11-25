@@ -11,9 +11,10 @@
             <q-breadcrumbs-el label="Thông tin sinh viên" />
         </q-breadcrumbs>
         <q-card class="table-wrapper">
-
+            <div style="height: 20px;"></div>
             <div class="body-search">
-                <div class="box-search">
+                <div class="bg">
+                   <div class="box-search">
                     <div class="lbmsv">Nhập mã sinh viên</div>
                     <input @keyup.enter="getListDepartment" v-model="search" placeholder="Nhập mã sinh viên"
                      class="iputsmv" type="text" name="msv" id="msv">
@@ -21,6 +22,8 @@
                         <q-btn  @click="getListDepartment" no-caps class="q-mr-sm btn">OK</q-btn>
                     </div>
                 </div>
+                </div>
+
             </div>
 
             <q-card-section class="table-wrapper-title">
@@ -71,7 +74,7 @@
                                     {{ getValueLodash(item, "full_name", "") }}
                                 </td>
                                 <td class="text-center">
-                                    {{ getValueLodash(item, "gender", "") }}
+                                    {{ gender[getValueLodash(item, "gender", "")] }}
                                 </td>
                                 <td class="text-left">
                                     {{ getValueLodash(item, "countryside", "") }}
@@ -255,6 +258,11 @@ export default defineComponent({
         position: "top-right"})
     }
 
+    const gender = {
+        "0": "Nam",
+        "1": "Nữ"
+    }
+
     watch(
       () => page?.value?.currentPage,
       () => getListDepartment()
@@ -323,6 +331,7 @@ export default defineComponent({
         checkboxAll,
         resetListIdDelete,
         departmentCurrent,
+        gender
 
     };
   },
