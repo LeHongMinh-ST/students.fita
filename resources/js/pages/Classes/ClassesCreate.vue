@@ -71,7 +71,7 @@
                                     <q-icon name="fa-solid fa-save" class="q-mr-sm" size="xs"></q-icon>
                                     Lưu
                                 </q-btn>
-                                <q-btn @click="redirectRouter('ClassesIndex')" no-caps color="warning" class="q-mr-sm">
+                                <q-btn @click="redirectRouter('Classes')" no-caps color="warning" class="q-mr-sm">
                                     <q-icon name="fa-solid fa-rotate-left" class="q-mr-sm" size="xs"></q-icon>
                                     Quay lại
                                 </q-btn>
