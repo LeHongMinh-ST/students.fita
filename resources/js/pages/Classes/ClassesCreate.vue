@@ -69,7 +69,7 @@
                                     <q-icon name="fa-solid fa-save" class="q-mr-sm" size="xs"></q-icon>
                                     Lưu
                                 </q-btn>
-                                <q-btn @click="redirectRouter('Classes')" no-caps color="warning" class="q-mr-sm">
+                                <q-btn @click="redirectRouter('Role')" no-caps color="warning" class="q-mr-sm">
                                     <q-icon name="fa-solid fa-rotate-left" class="q-mr-sm" size="xs"></q-icon>
                                     Quay lại
                                 </q-btn>
@@ -100,7 +100,10 @@
     import {
         useQuasar
     } from "quasar"
-    import {useRouter} from "vue-router";
+    import {
+useRoute,
+        useRouter
+    } from "vue-router/dist/vue-router"
     import eventBus from "../../utils/eventBus"
     import {
         validationHelper
@@ -121,7 +124,7 @@
             const optionTeacher=ref<Array<any>>([]);
             const store = useStore()
             const $q = useQuasar()
-            const router = useRouter()
+            const router = useRoute()
             const {
                 setValidationErrors,
                 getValidationErrors,
@@ -135,8 +138,10 @@
             const users = ref<Array<any>>([]);
 
             const redirectRouter = (nameRoute: string): void => {
-             router.push({name: nameRoute});
-            };
+                router.push({
+                    name: nameRoute
+                })
+            }
 
             const rule = {
                 name: [
@@ -212,14 +217,13 @@
                 getListDepartment();
                 getListUserIsLecturers();
                 idClass.value = <string> router.params.id
-                console.log("aaaaaaa"+idClass.value);
+                
                 if(idClass.value) {
                     handleGetClass(idClass.value);
                 }
             })
 
             const handleSave = (): void => {
-                console.log("aaaaaaaaaaaaaaa");
                 const data  = JSON.parse(JSON.stringify(payload));
                 if(idClass.value){
                     api.updateClass(data, idClass.value).then(res => {
@@ -250,7 +254,7 @@
                     }
                     }).catch(error => {
                     let errors = _.get(error.response, 'data.error', {})
-                    console.log('errors', errors)
+                   
                     if (Object.keys(errors).length === 0) {
                         let message = _.get(error.response, 'data.message', '')
                         $q.notify({
