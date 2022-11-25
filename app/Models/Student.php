@@ -2,6 +2,9 @@
 
 namespace App\Models;
 
+use App\Enums\Student\StudentRole;
+use App\Enums\Student\StudentSocialPolicyObject;
+use App\Enums\Student\StudentStatus;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -118,4 +121,29 @@ class Student extends Authenticatable implements JWTSubject
         });
     }
 
+    public function getThumbnailUrlAttribute(): string
+    {
+        return asset("/storage/{$this->thumbnail}");
+    }
+
+    public function getSocialPolicyObjectTextAttribute(): string
+    {
+        return StudentSocialPolicyObject::getDescription($this->social_policy_object);
+    }
+
+    public function getRoleTextAttribute(): string
+    {
+        return StudentRole::getDescription($this->role);
+    }
+
+    public function getStatusTextAttribute(): string
+    {
+        return StudentStatus::getDescription($this->status);
+    }
+    protected $appends = [
+        'thumbnail_url',
+        'role_text',
+        'status_text',
+        'social_policy_object_text',
+    ];
 }

@@ -16,9 +16,7 @@
                         <q-card-section>
                            <div class="q-pa-md">
                                <div class="avatar">
-                                   <q-img class="avatar-student" :src="student.thumbnail ?? '/images/User-Default.jpg'">
-
-                                   </q-img>
+                                   <q-img class="avatar-student" :src="`${student.thumbnail_url}` ?? '/images/User-Default.jpg'"/>
                                </div>
 
                                <div class="student-name text-center">
