@@ -1,4 +1,4 @@
-export default interface IRoleResult {
+export default interface IClassesResult {
     id: number,
     name: string,
     description?: string,

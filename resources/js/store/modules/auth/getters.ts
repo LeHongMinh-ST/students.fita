@@ -1,5 +1,5 @@
 import {GetterTree} from 'vuex'
-import {isAuthenticated, authUser, accessToken, isAuthenticatedStudent} from '../../../@type'
+import {isAuthenticated, authUser, accessToken} from '../../../@type'
 import {RootState} from '../../index'
 import {State} from './state'
 

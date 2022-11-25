@@ -40,6 +40,7 @@ Route::group(['prefix' => 'auth'], function () {
 Route::group(['middleware' => ['jwt.auth', 'auth.admin']], function () {
     Route::prefix('users')->group(function () {
         Route::get('/', [UserController::class, 'index'])->middleware('permission:user-index');
+        Route::delete('/delete-selected', [UserController::class, 'deleteSelected'])->middleware('permission:user-delete');
         Route::post('/', [UserController::class, 'store'])->middleware('permission:user-create');
         Route::get('/{id}', [UserController::class, 'show'])->middleware('permission:user-index');
         Route::put('/{id}', [UserController::class, 'update'])->middleware('permission:user-update');
@@ -57,14 +58,17 @@ Route::group(['middleware' => ['jwt.auth', 'auth.admin']], function () {
 
     Route::prefix('classes')->group(function () {
         Route::get('/', [GeneralClassController::class, 'index'])->middleware('permission:class-index');
+        Route::get('/all', [GeneralClassController::class, 'getALl'])->middleware('permission:class-index');
         Route::post('/', [GeneralClassController::class, 'store'])->middleware('permission:class-create');
         Route::get('/{id}', [GeneralClassController::class, 'show'])->middleware('permission:class-index');
         Route::put('/{id}', [GeneralClassController::class, 'update'])->middleware('permission:class-update');
+        Route::put('/{id}/add-student', [GeneralClassController::class, 'addStudentToClass'])->middleware('permission:class-update');
         Route::delete('/{id}', [GeneralClassController::class, 'destroy'])->middleware('permission:class-delete');
     });
 
     Route::prefix('departments')->group(function () {
         Route::get('/', [DepartmentController::class, 'index'])->middleware('permission:department-index');
+        Route::get('/all', [DepartmentController::class, 'getAll'])->middleware('permission:department-index');
         Route::post('/', [DepartmentController::class, 'store'])->middleware('permission:department-create');
         Route::put('/{id}', [DepartmentController::class, 'update'])->middleware('permission:department-update');
         Route::delete('/delete-selected', [DepartmentController::class, 'deleteSelected'])->middleware('permission:department-delete');
