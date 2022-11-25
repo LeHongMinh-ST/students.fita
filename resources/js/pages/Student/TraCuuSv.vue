@@ -19,7 +19,10 @@
                     <input @keyup.enter="getListDepartment" v-model="search" placeholder="Nhập mã sinh viên"
                      class="iputsmv" type="text" name="msv" id="msv">
                     <div class="ss-sbm">
-                        <q-btn  @click="getListDepartment" no-caps class="q-mr-sm btn">OK</q-btn>
+                        <q-btn  @click="getListDepartment" no-caps class="q-mr-sm btn">
+                            <q-icon name="fa-solid fa-search" class="q-mr-sm" size="xs"></q-icon>
+                            Tìm kiếm
+                        </q-btn>
                     </div>
                 </div>
                 </div>
@@ -56,6 +59,7 @@
                             <th class="text-center">Khoa</th>
                             <th class="text-center">Email</th>
                             <th class="text-center">SĐT</th>
+                            <th class="text-center">Tác vụ</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -88,6 +92,10 @@
                                 <td class="text-left">
                                     {{ getValueLodash(item, "email", "") }}
                                 </td>
+                                <td class="text-left">
+                                    {{ getValueLodash(item, "phone", "") }}
+                                </td>
+
                                 <td class="text-left">
                                     {{ getValueLodash(item, "phone", "") }}
                                 </td>
