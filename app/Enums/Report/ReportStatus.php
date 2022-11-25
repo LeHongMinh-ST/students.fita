@@ -4,14 +4,9 @@ namespace App\Enums\Report;
 
 use BenSampo\Enum\Enum;
 
-/**
- * @method static static OptionOne()
- * @method static static OptionTwo()
- * @method static static OptionThree()
- */
 final class ReportStatus extends Enum
 {
-    const OptionOne = 0;
-    const OptionTwo = 1;
-    const OptionThree = 2;
+    const Pending = 1;
+    const Seen = 2;
+    const Approved = 3;
 }

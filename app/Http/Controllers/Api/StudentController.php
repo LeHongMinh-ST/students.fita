@@ -45,6 +45,18 @@ class StudentController extends Controller
             $condition[] = ['student_code', '=', $data['student_code']];
         }
 
+        if (isset($data['class_id'])) {
+            $condition[] = ['class_id', '=', $data['class_id']];
+        }
+
+        if (isset($data['status'])) {
+            $condition[] = ['status', '=', $data['status']];
+        }
+
+        if (isset($data['role'])) {
+            $condition[] = ['role', '=', $data['role']];
+        }
+
         $user = $this->studentRepository->getListPaginateBy($condition, $relationships, $columns, $paginate);
 
         return $this->responseSuccess(['students' => $user]);

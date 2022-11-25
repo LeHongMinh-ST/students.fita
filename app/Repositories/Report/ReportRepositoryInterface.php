@@ -2,7 +2,9 @@
 
 namespace App\Repositories\Report;
 
-interface ReportRepositoryInterface
+use App\Repositories\Base\BaseRepositoryInterface;
+
+interface ReportRepositoryInterface extends BaseRepositoryInterface
 {
 
 }
