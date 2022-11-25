@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Role\StoreRoleRequest;
+use App\Http\Requests\Student\StoretStudentRequest;
 use App\Http\Requests\Student\UpdateStudentRequest;
 use App\Jobs\CrawlDataLearningOutcomeJob;
 use App\Repositories\Student\StudentRepositoryInterface;
@@ -12,6 +13,7 @@ use App\Traits\ResponseTrait;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 
 class StudentController extends Controller
 {
@@ -40,7 +42,7 @@ class StudentController extends Controller
         }
 
         if (isset($data['student_code'])) {
-            $condition[] = ['student_code' => $data['student_code']];
+            $condition[] = ['student_code', '=', $data['student_code']];
         }
 
         $user = $this->studentRepository->getListPaginateBy($condition, $relationships, $columns, $paginate);
@@ -52,17 +54,28 @@ class StudentController extends Controller
     {
         $relationships = ['generalClass', 'families', 'learningOutcomes', 'reports'];
         $columns = ['*'];
-
-        return $this->responseSuccess(['student' => $this->studentRepository->findById($id, $columns, $relationships)]);
+        return $this->responseSuccess(['student' => $this->studentRepository->getFirstBy(['id'=> $id], $columns, $relationships)]);
     }
 
-    public function create(StoreRoleRequest $request): JsonResponse
+    public function store(StoretStudentRequest $request): JsonResponse
     {
         try {
             $data = $request->all();
-            $student = $this->studentRepository->create($data);
+            $authId = auth()->id();
+            if ($request->hasFile('image')) {
+                $path = Storage::disk('public')->putFile('images/students/thumbnail', $request->file('image'));
+                $data['thumbnail'] = $path;
+            }
+
+            $data['email_edu'] = $data['student_code'] . config('vnua.mail_student');
+
+            $student = $this->studentRepository->create(array_merge($data, [
+                'created_by' => $authId,
+                'updated_by' => $authId
+            ]));
+
             $this->extractedStudentRelationship($data, $student);
-            return $this->responseSuccess(['student' => $student]);
+            return $this->responseSuccess(['student' => $student->load(['learningOutcomes', 'families'])]);
 
         } catch (\Exception $exception) {
             Log::error('Error store student', [
@@ -78,7 +91,17 @@ class StudentController extends Controller
         try {
             $data = $request->all();
             $student = $this->studentRepository->findById($id);
-            $student?->fill($data);
+
+            if ($request->hasFile('image')) {
+                $path = Storage::disk('public')->putFile('images/students/thumbnail', $request->file('image'));
+                $data['thumbnail'] = $path;
+            }
+
+            $data['email_edu'] = $data['student_code'] . config('vnua.mail_student');
+
+            $student?->fill(array_merge($data, [
+                'updated_by' => auth()->id(),
+            ]));
             $student = $this->studentRepository->createOrUpdate($student);
             $this->extractedStudentRelationship($data, $student);
 
@@ -125,6 +148,9 @@ class StudentController extends Controller
                 $student->reports()->updateOrCreate(['id' => $reports['id'] ?? 0], $reports);
             }
         }
+
+        //Lấy dữ liệu học tập
+        app(CrawlDataLearningOutcomeService::class)->crawlData($student?->student_code);
     }
 
     public function updateDataLearningOutcome($studentId): JsonResponse
@@ -135,7 +161,7 @@ class StudentController extends Controller
             return $this->responseSuccess([
                 'student' => $student->load(['learningOutcomes'])
             ]);
-        }catch (\Exception $exception) {
+        } catch (\Exception $exception) {
             Log::error('Error update learning outcome student', [
                 'method' => __METHOD__,
                 'message' => $exception->getMessage()

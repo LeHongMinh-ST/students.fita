@@ -1,0 +1,36 @@
+import {IFamilyResult} from "./IFamilyResult";
+import IClassesResult from "./IClassesResult";
+
+export interface IStudentResult {
+    id?: number,
+    full_name: string,
+    description?: string,
+    user_name?: string,
+    student_code: string,
+    gender?: number,
+    permanent_residence?: string,
+    class_id?: number,
+    major?: string,
+    dob?: string,
+    pob?: string,
+    address?: string,
+    countryside?:string,
+    training_type?: number,
+    school_year?: string,
+    email?: string,
+    email_edu?: string,
+    phone?:string,
+    thumbnail?: string,
+    citizen_identification?: string,
+    nationality?: number,
+    ethnic?: number,
+    religion?: number,
+    academic_level?: number,
+    social_policy_object?: number,
+    note?: string,
+    status?: number,
+    role?: number,
+    families?: IFamilyResult[],
+    general_class?: IClassesResult,
+    learning_outcomes?: {}
+}

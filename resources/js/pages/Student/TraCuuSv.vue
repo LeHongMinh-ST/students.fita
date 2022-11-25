@@ -10,60 +10,20 @@
             <q-breadcrumbs-el label="Bảng điều khiển" icon="home" :to="{ name: 'Home' }" />
             <q-breadcrumbs-el label="Thông tin sinh viên" />
         </q-breadcrumbs>
-        <q-slide-transition>
-            <q-card class="filter-wrapper" v-if="isFilter">
-                <div class="filter-wrapper-content">
-                    <div class="filter-header">
-                        <div class="filter-header-text">Lọc dữ liệu</div>
-                        <div class="filter-header-button">
-                            <q-btn round icon="fa-solid fa-xmark" @click="closeFilter" size="sm" />
-                        </div>
-                    </div>
-                </div>
-                <q-card-section>
-                    <q-btn color="primary" no-caps outline class="q-mr-sm">
-                        Thêm bộ lọc
-                    </q-btn>
-                    <q-btn color="primary" no-caps class="q-mr-sm"> Áp dụng </q-btn>
-                </q-card-section>
-            </q-card>
-        </q-slide-transition>
         <q-card class="table-wrapper">
-            <q-card-section class="table-wrapper-title">
-                <div class="table-wrapper-filter">
-                    <q-slide-transition>
-                        <q-btn v-if="checkboxArray.length > 0" color="primary" no-caps outline class="q-mr-sm">
-                            Hành động
-                            <q-icon name="fa-solid fa-caret-down" class="q-ml-sm" size="xs"></q-icon>
 
-                            <q-menu>
-                                <q-list style="min-width: 100px">
-                                    <q-item clickable v-close-popup @click="openDialogDeleteSelect(checkboxArray)">
-                                        <q-item-section>
-                                            <span>
-                                                <q-icon name="fa-solid fa-trash" class="q-mr-sm" size="xs"></q-icon>Xoá
-                                                ({{ checkboxArray.length }} bản ghi)
-                                            </span>
-                                        </q-item-section>
-                                    </q-item>
-                                </q-list>
-                            </q-menu>
-                        </q-btn>
-                    </q-slide-transition>
-                    <q-btn class="q-mr-sm" no-caps color="primary" @click="toggleFilter">
-                        <q-icon name="fa-solid fa-filter" class="q-mr-sm" size="xs"></q-icon>
-                        Lọc dữ liệu
-                    </q-btn>
-
-                    <div class="table-wrapper-search">
-                        <q-input bottom-slots v-model="search" label="Nhập từ khóa để tìm kiếm" outlined dense>
-                            <!-- <template v-slot:append>
-                                <q-icon v-if="search !== ''" name="close" @click="search = ''" class="cursor-pointer" />
-                                <q-icon name="search" />
-                            </template> -->
-                        </q-input>
+            <div class="body-search">
+                <div class="box-search">
+                    <div class="lbmsv">Nhập mã sinh viên</div>
+                    <input @keyup.enter="getListDepartment" v-model="search" placeholder="Nhập mã sinh viên"
+                     class="iputsmv" type="text" name="msv" id="msv">
+                    <div class="ss-sbm">
+                        <q-btn  @click="getListDepartment" no-caps class="q-mr-sm btn">OK</q-btn>
                     </div>
                 </div>
+            </div>
+
+            <q-card-section class="table-wrapper-title">
                 <div class="table-wrapper-action">
                     <q-btn no-caps @click="onClickCreateBtn" color="secondary" class="q-mr-sm">
                         <q-icon name="fa-solid fa-plus" class="q-mr-sm" size="xs"></q-icon>
@@ -295,15 +255,15 @@ export default defineComponent({
         position: "top-right"})
     }
 
-
     watch(
       () => page?.value?.currentPage,
       () => getListDepartment()
     );
-    watch(
-      () => search.value,
-      () => getListDepartment()
-    );
+    // watch(
+    //   () => search.value,
+    //   () => getListDepartment()
+    // );
+
     watch(
       () => checkboxAll.value,
       (value) => {
@@ -363,6 +323,7 @@ export default defineComponent({
         checkboxAll,
         resetListIdDelete,
         departmentCurrent,
+
     };
   },
 });

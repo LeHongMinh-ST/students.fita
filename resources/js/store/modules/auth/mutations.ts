@@ -1,6 +1,6 @@
 import { MutationTree } from 'vuex'
 
-import {isAuthenticated, authUser, accessToken, isAuthenticatedStudent} from '../../../@type'
+import {isAuthenticated, authUser, accessToken} from '../../../@type'
 
 import { State } from './state'
 
