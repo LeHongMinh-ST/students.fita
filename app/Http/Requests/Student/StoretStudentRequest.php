@@ -25,7 +25,6 @@ class StoretStudentRequest extends BaseRequest
     {
         return [
             'full_name' => 'required',
-            'class_id' => 'required',
             'role' => 'required',
             'status' => 'required',
             'gender' => 'required',
