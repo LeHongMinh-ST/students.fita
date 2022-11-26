@@ -112,9 +112,9 @@ class DepartmentController extends Controller
 
     public function getAllId(): JsonResponse
     {
-        $dapartments = $this->departmentRepository->all()?->pluck('id')?->toArray();
+        $departments = $this->departmentRepository->all()?->pluck('id')?->toArray();
         return $this->responseSuccess([
-            'dapartments' => $dapartments
+            'departments' => $departments
         ]);
     }
 
