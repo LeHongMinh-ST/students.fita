@@ -29,7 +29,7 @@ return [
         StudentStatus::Reserve => 'Bảo lưu'
     ],
     StudentGender::class => [
-        StudentGender::Male => 'Name',
+        StudentGender::Male => 'Nam',
         StudentGender::Female => 'Nữ',
         StudentGender::Other => 'Khác',
     ],

@@ -4,6 +4,7 @@ import router from '../router';
 import {store} from '../store';
 import {AuthMutationTypes} from "../store/modules/auth/mutation-types";
 import {IParams} from "../models/IParams";
+import {UnwrapRef} from "vue";
 import {IStudentResult} from "../models/IStudentResult";
 
 // @ts-ignore
@@ -307,4 +308,10 @@ export default {
             url: `/students/${id}`
         })
     },
+    updateLearningOutcome<T>(id: number): AxiosPromise<IResult<T>> {
+        return apiAxios({
+            method: 'put',
+            url: `/students/update-learning-outcome/${id}`
+        })
+    }
 }

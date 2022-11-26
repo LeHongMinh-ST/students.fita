@@ -256,6 +256,18 @@
                             @update:model-value="() => resetValidateErrors('class_id')"
                         />
                     </div>
+                    <div class="form-group">
+                        <label class="text-bold">Chuyên ngành</label>
+                        <q-input
+                            outlined
+                            dense
+                            v-model="student.major"
+                            :error-message="getValidationErrors('major')"
+                            :error="hasValidationErrors('major')"
+                            @update:model-value="() => resetValidateErrors('major')"
+                        />
+                    </div>
+
                     <div class="family-wrapper q-mt-lg q-mb-lg">
                         <label class="text-bold label-family">Thông tin gia đình</label>
                         <div class="family-list q-pa-md">

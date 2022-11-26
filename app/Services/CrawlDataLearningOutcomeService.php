@@ -96,7 +96,7 @@ class CrawlDataLearningOutcomeService
             $dataProcessed['cumulative_average_10'] = @$dataCrawler['row-diemTK'][2];
             $dataProcessed['cumulative_average_4'] = @$dataCrawler['row-diemTK'][3];
             $dataProcessed['credits'] = @$dataCrawler['row-diemTK'][4];
-            $dataProcessed['cumulative_average_4'] = @$dataCrawler['row-diemTK'][5];
+            $dataProcessed['cumulative_credits'] = @$dataCrawler['row-diemTK'][5];
             $dataProcessed['type_average'] = @$dataCrawler['row-diemTK'][6];
         }
         $dataProcessed['detail'] = [];
