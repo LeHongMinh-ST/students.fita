@@ -8,7 +8,7 @@ const student = ref<IStudentResult>({full_name: "", student_code: ""})
 const isError = ref<boolean>(false)
 const isLoading = ref<boolean>(false)
 
-const getStudent = (id: string): void => {
+const getStudent = (id: number): void => {
     isError.value = false
     isLoading.value = true
     api.getStudent<IStudentResult>(id).then((res) => {

@@ -29,7 +29,7 @@ return [
         StudentStatus::Reserve => 'Bảo lưu'
     ],
     StudentGender::class => [
-        StudentGender::Male => 'Name',
+        StudentGender::Male => 'Nam',
         StudentGender::Female => 'Nữ',
         StudentGender::Other => 'Khác',
     ],
@@ -45,7 +45,7 @@ return [
         LearningOutcomeTypeAverage::Excellent => 'Xuất xắc',
     ],
     StudentTempStatus::class => [
-        StudentTempStatus::NotApproved => 'Chưa phê duyệt',
+        StudentTempStatus::Pending => 'Chờ phê duyệt',
         StudentTempStatus::ClassMonitorApproved => 'Cán bộ lớp duyệt',
         StudentTempStatus::TeacherApproved => 'Giáo viên chủ nhiệm đã duyệt',
         StudentTempStatus::Approved => 'Đã phê duyệt',
