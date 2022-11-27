@@ -14,17 +14,17 @@
             <div style="height: 20px;"></div>
             <div class="body-search">
                 <div class="bg">
-                   <div class="box-search">
-                    <div class="lbmsv">Nhập mã sinh viên</div>
-                    <input @keyup.enter="getListDepartment" v-model="search" placeholder="Nhập mã sinh viên"
-                     class="iputsmv" type="text" name="msv" id="msv">
-                    <div class="ss-sbm">
-                        <q-btn  @click="getListDepartment" no-caps class="q-mr-sm btn">
-                            <q-icon name="fa-solid fa-search" class="q-mr-sm" size="xs"></q-icon>
-                            Tìm kiếm
-                        </q-btn>
+                    <div class="box-search">
+                        <div class="lbmsv">Nhập mã sinh viên</div>
+                        <input @keyup.enter="getListDepartment" v-model="search" placeholder="Nhập mã sinh viên"
+                            class="iputsmv" type="text" name="msv" id="msv">
+                        <div class="ss-sbm">
+                            <q-btn @click="getListDepartment" no-caps class="q-mr-sm btn">
+                                <q-icon name="fa-solid fa-search" class="q-mr-sm" size="xs"></q-icon>
+                                Tìm kiếm
+                            </q-btn>
+                        </div>
                     </div>
-                </div>
                 </div>
 
             </div>
@@ -56,7 +56,7 @@
                             <th class="text-left">Quê quán</th>
                             <th class="text-left">Ngày sinh</th>
                             <th class="text-center">Lớp</th>
-                            <th class="text-center">Khoa</th>
+                            <th class="text-center">Chuyên ngành</th>
                             <th class="text-center">Email</th>
                             <th class="text-center">SĐT</th>
                             <th class="text-center">Tác vụ</th>
@@ -83,8 +83,12 @@
                                 <td class="text-left">
                                     {{ getValueLodash(item, "countryside", "") }}
                                 </td>
+
                                 <td class="text-left">
                                     {{ getValueLodash(item, "dob", "") }}
+                                </td>
+                                <td class="text-left">
+                                    {{ getValueLodash(item, "class_id", "") }}
                                 </td>
                                 <td class="text-left">
                                     {{ getValueLodash(item, "major", "") }}
@@ -96,9 +100,6 @@
                                     {{ getValueLodash(item, "phone", "") }}
                                 </td>
 
-                                <td class="text-left">
-                                    {{ getValueLodash(item, "phone", "") }}
-                                </td>
                                 <td class="text-center">
                                     <div class="inline cursor-pointer">
                                         <q-icon name="menu" size="sm"></q-icon>
@@ -152,7 +153,9 @@
     </div>
 </template>
 
-<style lang="css" src="./index.scss"></style>
+<style lang="css" src="./index.scss">
+
+</style>
 <script lang="ts">
 import _ from "lodash";
 import { useQuasar } from "quasar";
@@ -170,185 +173,189 @@ import { formatDate } from "../../utils/helpers";
 // import DeleteDepartment from "./Delete.vue";
 
 export default defineComponent({
-  name: "TraCuuSv",
-  components: {
-    // DeleteDepartment,
-    // CreateOrUpdateDepartment
-  },
-  setup() {
-    const {proxy} = getCurrentInstance();
-    const $q = useQuasar();
-    const store = useStore();
-    const search = ref<string>("");
-    const items = ref<Array<any>>([]);
-    const itemIDs = ref<Array<number>>([]);
-    const checkboxArray = ref<Array<number>>([]);
-    const checkboxAll = ref<boolean | string>(false);
-    const departmentCurrent = ref<any>({})
-    const page = ref<IPage>({
-      currentPage: 1,
-      total: 0,
-      perPage: 10,
-    });
+    name: "TraCuuSv",
+    components: {
+        // DeleteDepartment,
+        // CreateOrUpdateDepartment
+    },
+    setup() {
+        const { proxy } = getCurrentInstance();
+        const $q = useQuasar();
+        const store = useStore();
+        const search = ref<string>("");
+        const items = ref<Array<any>>([]);
+        const itemIDs = ref<Array<number>>([]);
+        const checkboxArray = ref<Array<number>>([]);
+        const checkboxAll = ref<boolean | string>(false);
+        const departmentCurrent = ref<any>({})
+        const page = ref<IPage>({
+            currentPage: 1,
+            total: 0,
+            perPage: 10,
+        });
 
-    const currentPage = ref<number>(1);
-    const loadingDepartments = ref<boolean>(false);
-    const isFilter = ref<boolean>(false);
-    const router = useRouter();
-    const toggleFilter = (): void => {
-      isFilter.value = !isFilter.value;
-    };
-    const closeFilter = (): void => {
-      isFilter.value = false;
-    };
+        const currentPage = ref<number>(1);
+        const loadingDepartments = ref<boolean>(false);
+        const isFilter = ref<boolean>(false);
+        const router = useRouter();
+        const toggleFilter = (): void => {
+            isFilter.value = !isFilter.value;
+        };
+        const closeFilter = (): void => {
+            isFilter.value = false;
+        };
 
-    const onClickCreateBtn = async () => {
-        proxy.$refs.popupRef?.onChangeDialog()
-    }
-
-    const handleFormatDate = (value: string): string => {
-      return formatDate(value);
-    };
-
-    const getListDepartment = (): void => {
-      loadingDepartments.value = true;
-      const payload: StudentFilter = {
-        page: 1,
-      };
-
-      if (search.value) {
-        payload.student_code = search.value;
-      }
-
-      payload.page = page?.value?.currentPage;
-      api
-        .getAllStudent<IPaginate<any[]>>(payload)
-        .then((res) => {
-        items.value = _.get(res, "data.data.students.data");
-          itemIDs.value = items.value.map(department => department.id);
-          page.value.currentPage = _.get(res,"data.data.department.current_page", 1);
-          page.value.total = _.get(res, "data.data.department.last_page", 0);
-          page.value.perPage = _.get(res, "data.data.department.per_page", 0);
-        })
-        .catch(() => {
-            generateNotify("Không tải được dữ liệu")
-        })
-        .finally(() => (loadingDepartments.value = false));
-    };
-
-    const openDialogDelete = async (id: number) => {
-        proxy.$refs.popupDeleteRef?.setDepartmentId(id)
-        proxy.$refs.popupDeleteRef?.onChangeDialog()
-    };
-
-    const openDialogUpdate = async (department: any) => {
-        if(!department) return;
-        proxy.$refs.popupRef?.setDepartmentCurrent(department)
-        proxy.$refs.popupRef?.onChangeDialog()
-    };
-
-    const openDialogDeleteSelect = async (checkboxArray: any) => {
-        proxy.$refs.popupDeleteRef?.setListIdDepartment(checkboxArray)
-        proxy.$refs.popupDeleteRef?.onChangeDialog()
-
-    };
-
-    const getValueLodash = (res: object, data: string, d: any = null) => {
-        return _.get(res, data, d);
-    };
-
-    const generateNotify = (message: string, isSuccess=false) => {
-        isSuccess ? $q.notify({icon: "check",
-        message: message,
-        color: "positive",
-        position: "top-right",}) :
-        $q.notify({ icon: "report_problem",
-        message: message,
-        color: "negative",
-        position: "top-right"})
-    }
-
-    const redirectRouter = (nameRoute: string): void => {
-            router.push({name: nameRoute})
-    }
-
-    const gender = {
-        "0": "Nam",
-        "1": "Nữ"
-    }
-
-    watch(
-      () => page?.value?.currentPage,
-      () => getListDepartment()
-    );
-    // watch(
-    //   () => search.value,
-    //   () => getListDepartment()
-    // );
-
-    watch(
-      () => checkboxAll.value,
-      (value) => {
-        if (value === true) {
-          checkboxArray.value = itemIDs.value;
+        const onClickCreateBtn = async () => {
+            proxy.$refs.popupRef?.onChangeDialog()
         }
 
-        if (value === false) {
-          checkboxArray.value = [];
+        const handleFormatDate = (value: string): string => {
+            return formatDate(value);
+        };
+
+        const getListDepartment = (): void => {
+            loadingDepartments.value = true;
+            const payload: StudentFilter = {
+                page: 1,
+            };
+
+            if (search.value) {
+                payload.student_code = search.value;
+            }
+
+            payload.page = page?.value?.currentPage;
+            api
+                .getAllStudent<IPaginate<any[]>>(payload)
+                .then((res) => {
+                    items.value = _.get(res, "data.data.students.data");
+                    itemIDs.value = items.value.map(department => department.id);
+                    page.value.currentPage = _.get(res, "data.data.department.current_page", 1);
+                    page.value.total = _.get(res, "data.data.department.last_page", 0);
+                    page.value.perPage = _.get(res, "data.data.department.per_page", 0);
+                })
+                .catch(() => {
+                    generateNotify("Không tải được dữ liệu")
+                })
+                .finally(() => (loadingDepartments.value = false));
+        };
+
+        const openDialogDelete = async (id: number) => {
+            proxy.$refs.popupDeleteRef?.setDepartmentId(id)
+            proxy.$refs.popupDeleteRef?.onChangeDialog()
+        };
+
+        const openDialogUpdate = async (department: any) => {
+            if (!department) return;
+            proxy.$refs.popupRef?.setDepartmentCurrent(department)
+            proxy.$refs.popupRef?.onChangeDialog()
+        };
+
+        const openDialogDeleteSelect = async (checkboxArray: any) => {
+            proxy.$refs.popupDeleteRef?.setListIdDepartment(checkboxArray)
+            proxy.$refs.popupDeleteRef?.onChangeDialog()
+
+        };
+
+        const getValueLodash = (res: object, data: string, d: any = null) => {
+            return _.get(res, data, d);
+        };
+
+        const generateNotify = (message: string, isSuccess = false) => {
+            isSuccess ? $q.notify({
+                icon: "check",
+                message: message,
+                color: "positive",
+                position: "top-right",
+            }) :
+                $q.notify({
+                    icon: "report_problem",
+                    message: message,
+                    color: "negative",
+                    position: "top-right"
+                })
         }
-      }
-    );
 
-    watch(
-      () => checkboxArray.value,
-      (value) => {
-        if (value.length < itemIDs.value.length) {
-          checkboxAll.value = "maybe";
+        const redirectRouter = (nameRoute: string): void => {
+            router.push({ name: nameRoute })
         }
 
-        if (value.length == 0) {
-          checkboxAll.value = false;
+        const gender = {
+            "0": "Nam",
+            "1": "Nữ"
         }
-      }
-    );
 
-    onMounted(() => {
-      store.commit(`home/${HomeMutationTypes.SET_TITLE}`, "Quản lý bộ môn");
-      eventBus.$on("notify-success", (message: string) => {
-        generateNotify(message, true)
-      });
-        getListDepartment();
+        watch(
+            () => page?.value?.currentPage,
+            () => getListDepartment()
+        );
+        // watch(
+        //   () => search.value,
+        //   () => getListDepartment()
+        // );
 
-    });
+        watch(
+            () => checkboxAll.value,
+            (value) => {
+                if (value === true) {
+                    checkboxArray.value = itemIDs.value;
+                }
 
-    const resetListIdDelete = () => {
-        checkboxArray.value = [];
-    }
+                if (value === false) {
+                    checkboxArray.value = [];
+                }
+            }
+        );
 
-    return {
-        openDialogUpdate,
-        search,
-        isFilter,
-        toggleFilter,
-        closeFilter,
-        handleFormatDate,
-        onClickCreateBtn,
-        getValueLodash,
-        currentPage,
-        items,
-        loadingDepartments,
-        getListDepartment,
-        page,
-        openDialogDelete,
-        openDialogDeleteSelect,
-        checkboxArray,
-        checkboxAll,
-        resetListIdDelete,
-        departmentCurrent,
-        gender,
-        redirectRouter
+        watch(
+            () => checkboxArray.value,
+            (value) => {
+                if (value.length < itemIDs.value.length) {
+                    checkboxAll.value = "maybe";
+                }
 
-    };
-  },
+                if (value.length == 0) {
+                    checkboxAll.value = false;
+                }
+            }
+        );
+
+        onMounted(() => {
+            store.commit(`home/${HomeMutationTypes.SET_TITLE}`, "Quản lý bộ môn");
+            eventBus.$on("notify-success", (message: string) => {
+                generateNotify(message, true)
+            });
+            getListDepartment();
+
+        });
+
+        const resetListIdDelete = () => {
+            checkboxArray.value = [];
+        }
+
+        return {
+            openDialogUpdate,
+            search,
+            isFilter,
+            toggleFilter,
+            closeFilter,
+            handleFormatDate,
+            onClickCreateBtn,
+            getValueLodash,
+            currentPage,
+            items,
+            loadingDepartments,
+            getListDepartment,
+            page,
+            openDialogDelete,
+            openDialogDeleteSelect,
+            checkboxArray,
+            checkboxAll,
+            resetListIdDelete,
+            departmentCurrent,
+            gender,
+            redirectRouter
+
+        };
+    },
 });
 </script>
