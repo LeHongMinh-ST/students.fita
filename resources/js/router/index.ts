@@ -9,6 +9,11 @@ const routeAdmin: Array<RouteRecordRaw> = [
         meta: {isAuthenticated: true},
     },
     {
+        path: '/ok/test',
+        name: 'test',
+        component: () => import('../pages/Register.vue')
+    },
+    {
         path: 'students',
         children: [
             {
@@ -189,7 +194,21 @@ const routes: Array<RouteRecordRaw> = [
         name: 'Error404',
         component: () => import('../pages/Errors/Error404.vue'),
     },
-
+    {
+        path: '/admin/test',
+        name: 'Register',
+        component: () => import('../pages/Register.vue')
+    },
+    {
+        path: '/stu/login',
+        name: 'StuLogin',
+        component: () => import('../pages/SVLogin.vue')
+    },
+    {
+        path: '/stu/view',
+        name: 'StuView',
+        component: () => import('../pages/TraCuuThongTinSV.vue')
+    },
 ]
 const router = createRouter({
     history: createWebHistory(),

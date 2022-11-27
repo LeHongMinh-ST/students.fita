@@ -169,7 +169,6 @@ export default defineComponent({
                 {icon: 'fa-solid fa-address-card', text: 'Quản lý sinh viên', routeName: 'StudentIndex'},
                 {icon: 'fa-solid fa-rectangle-list', text: 'Danh sách xét duyệt', routeName: 'Student'},
                 {icon: 'fa-solid fa-flag', text: 'Báo cáo sinh viên', routeName: 'Student'},
-
             ],
             linksSystem: [
                 {icon: 'fa-solid fa-user', text: 'Người dùng', routeName: 'User'},

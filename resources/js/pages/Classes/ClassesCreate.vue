@@ -85,17 +85,32 @@
 </template>
 
 <script lang="ts">
-import {defineComponent, onMounted, reactive, ref} from "vue"
-import api from "../../api"
-import {useStore} from "vuex"
-import {useQuasar} from "quasar"
-import {useRoute, useRouter} from "vue-router/dist/vue-router"
-import eventBus from "../../utils/eventBus"
-import {validationHelper} from "../../utils/validationHelper"
-import {IDepartmentResult} from "../../models/IDepartmentResult";
-import IUserResult from "../../models/IUserResult";
-import IPaginate from "../../models/IPaginate";
-import _ from "lodash";
+    import {
+        defineComponent,
+        onMounted,
+        reactive,
+        ref,
+        watch
+    } from "vue"
+    import api from "../../api"
+    import {
+        HomeMutationTypes
+    } from "../../store/modules/home/mutation-types"
+    import {
+        useStore
+    } from "vuex"
+    import {
+        useQuasar
+    } from "quasar"
+    import {useRouter} from "vue-router";
+    import eventBus from "../../utils/eventBus"
+    import {
+        validationHelper
+    } from "../../utils/validationHelper"
+    import { IDepartmentResult } from "../../models/IDepartmentResult";
+    import IUserResult from "../../models/IUserResult";
+    import IPaginate from "../../models/IPaginate";
+    import _ from "lodash";
 
 
 export default defineComponent({
@@ -116,8 +131,22 @@ export default defineComponent({
             resetValidateErrors
         } = validationHelper()
 
-        const idClass = ref("")
-        const departments = ref<Array<any>>([]);
+    export default defineComponent({
+        name: "ClassesCreate",
+        setup() {
+            const model = ref<any>([]);
+            const modelTeacher = ref<any>([]);
+            const optionDeparment=ref<Array<any>>([]);
+            const optionTeacher=ref<Array<any>>([]);
+            const store = useStore()
+            const $q = useQuasar()
+            const router = useRouter()
+            const {
+                setValidationErrors,
+                getValidationErrors,
+                hasValidationErrors,
+                resetValidateErrors
+            } = validationHelper()
 
         const users = ref<Array<any>>([]);
 
@@ -125,20 +154,9 @@ export default defineComponent({
             router.push({name: nameRoute})
         }
 
-        const rule = {
-            name: [
-                (val: any) => val || "Trường họ và tên không được bỏ trống!",
-            ],
-            class_code: [
-                (val: any) => val || "Trường họ và tên không được bỏ trống!",
-            ],
-            teacher_id: [
-                (val: any) => val || "Trường họ và tên không được bỏ trống!",
-            ],
-            department_id: [
-                (val: any) => val || "Trường họ và tên không được bỏ trống!",
-            ],
-        };
+            const redirectRouter = (nameRoute: string): void => {
+             router.push({name: nameRoute});
+            };
 
         const refInput: any = {
             name: ref<any>(null),

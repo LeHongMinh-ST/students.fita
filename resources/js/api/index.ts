@@ -295,19 +295,49 @@ export default {
         })
     },
 
-    createStudent<T>(data: FormData):AxiosPromise<IResult<T>> {
+    //AUTHOR: TRUONGTN
+    /*begin */
+
+    getAllStudent<T>(params: object = {}): AxiosPromise<IResult<T>> {
+        return apiAxios({
+            method: 'get',
+            url: '/students',
+            params: params
+        })
+    },
+
+    getStudentById<T>(id: string): AxiosPromise<IResult<T>> {
+        return apiAxios({
+            method: 'get',
+            url: `/students/${id}`
+        })
+    },
+
+    updateStudent<T>(data: any, id: string): AxiosPromise<IResult<T>> {
+        return apiAxios({
+            method: 'put',
+            url: `/students/${id}`,
+            data: data
+        })
+    },
+
+    createStudent<T>(data: any): AxiosPromise<IResult<T>> {
         return apiAxios({
             method: 'post',
             url: '/students',
             data: data
         })
     },
-    getStudent<T>(id: number): AxiosPromise<IResult<T>> {
+
+    deleteStudent<T>(id: string): AxiosPromise<IResult<T>> {
         return apiAxios({
-            method: 'get',
-            url: `/students/${id}`
+            method: 'delete',
+            url: `/students/${id}`,
         })
     },
+
+    /*end */
+
     updateLearningOutcome<T>(id: number): AxiosPromise<IResult<T>> {
         return apiAxios({
             method: 'put',
