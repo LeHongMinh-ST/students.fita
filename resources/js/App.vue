@@ -12,15 +12,12 @@ import AppLayout from './layouts/AppLayout.vue'
 import AuthLayout from './layouts/AuthLayout.vue'
 import {mapState} from 'vuex'
 import {computed, defineComponent} from 'vue'
-import Vue3EasyDataTable from 'vue3-easy-data-table';
-import 'vue3-easy-data-table/dist/style.css';
 
 export default defineComponent({
   name: 'App',
   components: {
     AppLayout,
     AuthLayout,
-    Vue3EasyDataTable,
 
 
   },

@@ -126,8 +126,6 @@
 import { defineComponent, ref, watch } from 'vue'
 import _ from 'lodash'
 import type { Header, Item } from "vue3-easy-data-table";
-import Vue3EasyDataTable from 'vue3-easy-data-table';
-import 'vue3-easy-data-table/dist/style.css';
 import IStudent from "../models/IStudent";
 
 

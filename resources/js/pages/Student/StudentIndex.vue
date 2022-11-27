@@ -179,7 +179,6 @@ export default defineComponent({
         // CreateOrUpdateDepartment
     },
     setup() {
-        const { proxy } = getCurrentInstance();
         const $q = useQuasar();
         const store = useStore();
         const search = ref<string>("");
@@ -204,10 +203,6 @@ export default defineComponent({
         const closeFilter = (): void => {
             isFilter.value = false;
         };
-
-        const onClickCreateBtn = async () => {
-            proxy.$refs.popupRef?.onChangeDialog()
-        }
 
         const handleFormatDate = (value: string): string => {
             return formatDate(value);
@@ -239,22 +234,6 @@ export default defineComponent({
                 .finally(() => (loadingDepartments.value = false));
         };
 
-        const openDialogDelete = async (id: number) => {
-            proxy.$refs.popupDeleteRef?.setDepartmentId(id)
-            proxy.$refs.popupDeleteRef?.onChangeDialog()
-        };
-
-        const openDialogUpdate = async (department: any) => {
-            if (!department) return;
-            proxy.$refs.popupRef?.setDepartmentCurrent(department)
-            proxy.$refs.popupRef?.onChangeDialog()
-        };
-
-        const openDialogDeleteSelect = async (checkboxArray: any) => {
-            proxy.$refs.popupDeleteRef?.setListIdDepartment(checkboxArray)
-            proxy.$refs.popupDeleteRef?.onChangeDialog()
-
-        };
 
         const getValueLodash = (res: object, data: string, d: any = null) => {
             return _.get(res, data, d);
@@ -288,11 +267,6 @@ export default defineComponent({
             () => page?.value?.currentPage,
             () => getListDepartment()
         );
-        // watch(
-        //   () => search.value,
-        //   () => getListDepartment()
-        // );
-
         watch(
             () => checkboxAll.value,
             (value) => {
@@ -333,21 +307,19 @@ export default defineComponent({
         }
 
         return {
-            openDialogUpdate,
+
             search,
             isFilter,
             toggleFilter,
             closeFilter,
             handleFormatDate,
-            onClickCreateBtn,
+
             getValueLodash,
             currentPage,
             items,
             loadingDepartments,
             getListDepartment,
             page,
-            openDialogDelete,
-            openDialogDeleteSelect,
             checkboxArray,
             checkboxAll,
             resetListIdDelete,

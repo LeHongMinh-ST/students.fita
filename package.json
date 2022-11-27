@@ -22,7 +22,6 @@
         "vue": "^3.2.36",
         "vue-loader": "^17.0.0",
         "vue-router": "^4.1.4",
-        "vue3-easy-data-table": "^1.5.12",
         "vuex": "^4.0.2",
         "vuex-persistedstate": "^4.1.0",
         "webfontloader": "^1.0.0"
