@@ -306,7 +306,7 @@ export default {
         })
     },
 
-    getStudentById<T>(id: string): AxiosPromise<IResult<T>> {
+    getStudentById<T>(id: number): AxiosPromise<IResult<T>> {
         return apiAxios({
             method: 'get',
             url: `/students/${id}`

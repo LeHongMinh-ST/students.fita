@@ -11,7 +11,7 @@ const isLoading = ref<boolean>(false)
 const getStudent = (id: number): void => {
     isError.value = false
     isLoading.value = true
-    api.getStudent<IStudentResult>(id).then((res) => {
+    api.getStudentById<IStudentResult>(id).then((res) => {
         student.value = _.get(res, 'data.data.student', {full_name: "", student_code: ""})
     }).catch(() => {
         isError.value = true

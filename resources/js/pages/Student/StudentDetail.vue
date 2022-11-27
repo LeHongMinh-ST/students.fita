@@ -241,7 +241,7 @@
                                                     <strong>Học kỳ {{ learningOutcome.semester }} - Năm học
                                                         {{
                                                             learningOutcome.year_school_start
-                                                        }}-{{ learningOutcome.year_school_start }}</strong>
+                                                        }}-{{ learningOutcome.year_school_end }}</strong>
                                                 </div>
                                                 <div class="item-body">
                                                     <q-markup-table>
