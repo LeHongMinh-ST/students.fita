@@ -10,7 +10,7 @@
                 <div class="bg">
                     <div class="box-search text-center q-pt-md">
                         <label class="q-pa-sm q-mt-lg text-bold">Nhập mã sinh viên</label>
-                        <q-input outlined dense class="q-pa-sm" @keyup.enter="handleGetStudent"
+                        <q-input outlined dense class="q-pa-sm q-mt-sm" @keyup.enter="handleGetStudent"
                                  :error-message="getValidationErrors('studentCode')"
                                  :error="hasValidationErrors('studentCode')"
                                  @update:model-value="() => resetValidateErrors('studentCode')"
