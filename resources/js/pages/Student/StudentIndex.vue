@@ -1,11 +1,5 @@
 <template>
     <div class="role-wrapper">
-        <!-- <div class="popup">
-            <CreateOrUpdateDepartment ref="popupRef" :getListDepartment="getListDepartment"
-                :department="departmentCurrent" />
-            <DeleteDepartment ref="popupDeleteRef" :getListDepartment="getListDepartment"
-                :resetListIdDelete="resetListIdDelete" />
-        </div> -->
         <q-breadcrumbs>
             <q-breadcrumbs-el label="Bảng điều khiển" icon="home" :to="{ name: 'Home' }" />
             <q-breadcrumbs-el label="Thông tin sinh viên" />
@@ -14,12 +8,16 @@
             <div style="height: 20px;"></div>
             <div class="body-search">
                 <div class="bg">
-                    <div class="box-search">
-                        <div class="lbmsv">Nhập mã sinh viên</div>
-                        <input @keyup.enter="getListDepartment" v-model="search" placeholder="Nhập mã sinh viên"
-                            class="iputsmv" type="text" name="msv" id="msv">
-                        <div class="ss-sbm">
-                            <q-btn @click="getListDepartment" no-caps class="q-mr-sm btn">
+                    <div class="box-search text-center q-pt-md">
+                        <label class="q-pa-sm q-mt-lg text-bold">Nhập mã sinh viên</label>
+                        <q-input outlined dense class="q-pa-sm" @keyup.enter="handleGetStudent"
+                                 :error-message="getValidationErrors('studentCode')"
+                                 :error="hasValidationErrors('studentCode')"
+                                 @update:model-value="() => resetValidateErrors('studentCode')"
+                                 v-model="studentCode"
+                                 placeholder="Nhập mã sinh viên"/>
+                        <div class="ss-sbm q-mt-md">
+                            <q-btn @click="handleGetStudent" no-caps class="q-mr-sm btn">
                                 <q-icon name="fa-solid fa-search" class="q-mr-sm" size="xs"></q-icon>
                                 Tìm kiếm
                             </q-btn>
@@ -35,69 +33,56 @@
                         <q-icon name="fa-solid fa-plus" class="q-mr-sm" size="xs"></q-icon>
                         Tạo mới
                     </q-btn>
-                    <q-btn no-caps @click="getListDepartment" color="secondary" class="q-mr-sm">
-                        <q-icon name="fa-solid fa-refresh" class="q-mr-sm" size="xs"></q-icon>
-                        Tải lại
-                    </q-btn>
+
                 </div>
             </q-card-section>
             <q-separator inset />
             <q-card-section>
                 <q-markup-table class="role-table">
                     <thead>
-                        <tr>
-                            <th class="text-center" width="4%">
-                                <q-checkbox v-model="checkboxAll" />
-                            </th>
-                            <th class="text-center" width="5%">STT</th>
-                            <th class="text-left">Mã sinh viên</th>
-                            <th class="text-left">Họ tên</th>
-                            <th class="text-center">Giới tính</th>
-                            <th class="text-left">Quê quán</th>
-                            <th class="text-left">Ngày sinh</th>
-                            <th class="text-center">Lớp</th>
-                            <th class="text-center">Chuyên ngành</th>
-                            <th class="text-center">Email</th>
-                            <th class="text-center">SĐT</th>
-                            <th class="text-center">Tác vụ</th>
-                        </tr>
+                    <tr>
+                        <th class="text-center" width="5%">STT</th>
+                        <th class="text-left">Mã sinh viên</th>
+                        <th class="text-left">Họ tên</th>
+                        <th class="text-center">Giới tính</th>
+
+                        <th class="text-left">Ngày sinh</th>
+                        <th class="text-center">Lớp</th>
+                        <th class="text-center">Chuyên ngành</th>
+                        <th class="text-center">Email</th>
+                        <th class="text-center">SĐT</th>
+                        <th class="text-center">Tác vụ</th>
+                    </tr>
                     </thead>
                     <tbody>
                         <template v-if="items && items.length > 0">
                             <tr v-for="(item, index) in items" :key="index">
                                 <td class="text-center">
-                                    <q-checkbox v-model="checkboxArray" :val="getValueLodash(item, 'id', 0)" />
-                                </td>
-                                <td class="text-center">
                                     {{ index + +1 + +page.perPage * (page.currentPage - 1) }}
                                 </td>
                                 <td class="text-left">
-                                    {{ getValueLodash(item, "student_code", "") }}
+                                    {{ getValueLodash(item, "student_code", "") ?? "Chưa cập nhật"}}
                                 </td>
                                 <td class="text-left">
-                                    {{ getValueLodash(item, "full_name", "") }}
+                                    {{ getValueLodash(item, "full_name", "") ?? "Chưa cập nhật"}}
                                 </td>
                                 <td class="text-center">
-                                    {{ gender[getValueLodash(item, "gender", "")] }}
+                                    {{ getValueLodash(item, "gender_text", "") ?? "Chưa cập nhật"}}
                                 </td>
                                 <td class="text-left">
-                                    {{ getValueLodash(item, "countryside", "") }}
+                                    {{ getValueLodash(item, "dob", "") ?? "Chưa cập nhật"}}
                                 </td>
-
-                                <td class="text-left">
-                                    {{ getValueLodash(item, "dob", "") }}
+                                <td class="text-center">
+                                    {{ getValueLodash(item, "general_class.name",  "") ?? "Chưa cập nhật"}}
                                 </td>
-                                <td class="text-left">
-                                    {{ getValueLodash(item, "class_id", "") }}
+                                <td class="text-center">
+                                    {{ getValueLodash(item, "major", "") ?? "Chưa cập nhật"}}
                                 </td>
-                                <td class="text-left">
-                                    {{ getValueLodash(item, "major", "") }}
+                                <td class="text-center">
+                                    {{ getValueLodash(item, "email",  "") ?? "Chưa cập nhật"}}
                                 </td>
-                                <td class="text-left">
-                                    {{ getValueLodash(item, "email", "") }}
-                                </td>
-                                <td class="text-left">
-                                    {{ getValueLodash(item, "phone", "") }}
+                                <td class="text-center">
+                                    {{ getValueLodash(item, "phone", "") ?? "Chưa cập nhật"}}
                                 </td>
 
                                 <td class="text-center">
@@ -117,16 +102,6 @@
                                                         </span>
                                                     </q-item-section>
                                                 </q-item>
-                                                <q-item clickable v-close-popup @click="
-                                                    openDialogDelete(
-                                                        getValueLodash(item, 'id', 0)
-                                                    )
-                                                ">
-                                                    <span>
-                                                        <q-icon name="fa-solid fa-trash" class="q-mr-sm" size="xs">
-                                                        </q-icon>Xoá
-                                                    </span>
-                                                </q-item>
                                             </q-list>
                                         </q-menu>
                                     </div>
@@ -135,14 +110,14 @@
                         </template>
                         <template v-else>
                             <tr>
-                                <td colspan="7" class="text-center">
-                                    <img class="imgEmpty" src="/images/empty.png" alt="" />
+                                <td colspan="11" class="text-center">
+                                    <img class="imgEmpty" src="/images/empty.png" alt=""/>
                                 </td>
                             </tr>
                         </template>
                     </tbody>
-                    <q-inner-loading :showing="loadingDepartments" label-class="text-teal"
-                        label-style="font-size: 1.1em" />
+                    <q-inner-loading :showing="loading" label-class="text-teal"
+                                     label-style="font-size: 1.1em"/>
                 </q-markup-table>
                 <div v-if="page.total > 1" class="q-pt-lg flex flex-center">
                     <q-pagination v-model="page.currentPage" :max="page.total" direction-links :max-pages="10" />
@@ -153,40 +128,31 @@
     </div>
 </template>
 
-<style lang="css" src="./index.scss">
-
-</style>
 <script lang="ts">
 import _ from "lodash";
-import { useQuasar } from "quasar";
-import { defineComponent, getCurrentInstance, onMounted, ref, watch } from "vue";
-import { useRouter } from "vue-router";
-import { useStore } from "vuex";
+import {useQuasar} from "quasar";
+import {defineComponent, onMounted, ref, watch} from "vue";
+import {useRouter} from "vue-router";
+import {useStore} from "vuex";
 import api from "../../api";
-import { IDepartmentResult } from "../../models/IDepartmentResult";
-import { IPage, IPayload, StudentFilter } from "../../models/IPage";
+import {IPage, StudentFilter} from "../../models/IPage";
 import IPaginate from "../../models/IPaginate";
-import { HomeMutationTypes } from "../../store/modules/home/mutation-types";
+import {HomeMutationTypes} from "../../store/modules/home/mutation-types";
 import eventBus from "../../utils/eventBus";
-import { formatDate } from "../../utils/helpers";
-// import CreateOrUpdateDepartment from "./CreateOrUpdate.vue";
+import {formatDate} from "../../utils/helpers";
+import {validationHelper} from "../../utils/validationHelper";
 // import DeleteDepartment from "./Delete.vue";
 
 export default defineComponent({
-    name: "TraCuuSv",
-    components: {
-        // DeleteDepartment,
-        // CreateOrUpdateDepartment
-    },
+    name: "StudentIndex",
     setup() {
         const $q = useQuasar();
         const store = useStore();
-        const search = ref<string>("");
+        const studentCode = ref<string>("");
         const items = ref<Array<any>>([]);
         const itemIDs = ref<Array<number>>([]);
-        const checkboxArray = ref<Array<number>>([]);
-        const checkboxAll = ref<boolean | string>(false);
-        const departmentCurrent = ref<any>({})
+        const {setValidationErrors, getValidationErrors, hasValidationErrors, resetValidateErrors} = validationHelper()
+
         const page = ref<IPage>({
             currentPage: 1,
             total: 0,
@@ -194,7 +160,7 @@ export default defineComponent({
         });
 
         const currentPage = ref<number>(1);
-        const loadingDepartments = ref<boolean>(false);
+        const loading = ref<boolean>(false);
         const isFilter = ref<boolean>(false);
         const router = useRouter();
         const toggleFilter = (): void => {
@@ -208,30 +174,34 @@ export default defineComponent({
             return formatDate(value);
         };
 
-        const getListDepartment = (): void => {
-            loadingDepartments.value = true;
+        const handleGetStudent = (): void => {
+
+
+            if (!studentCode.value) {
+                setValidationErrors({
+                    studentCode: ['Vui lòng nhập mã sinh viên']
+                })
+                return
+            }
+            loading.value = true;
             const payload: StudentFilter = {
                 page: 1,
             };
-
-            if (search.value) {
-                payload.student_code = search.value;
-            }
-
+            payload.student_code = studentCode.value;
             payload.page = page?.value?.currentPage;
             api
                 .getAllStudent<IPaginate<any[]>>(payload)
                 .then((res) => {
                     items.value = _.get(res, "data.data.students.data");
                     itemIDs.value = items.value.map(department => department.id);
-                    page.value.currentPage = _.get(res, "data.data.department.current_page", 1);
-                    page.value.total = _.get(res, "data.data.department.last_page", 0);
-                    page.value.perPage = _.get(res, "data.data.department.per_page", 0);
+                    page.value.currentPage = _.get(res, "data.data.students.current_page", 1);
+                    page.value.total = _.get(res, "data.data.students.last_page", 0);
+                    page.value.perPage = _.get(res, "data.data.students.per_page", 0);
                 })
                 .catch(() => {
                     generateNotify("Không tải được dữ liệu")
                 })
-                .finally(() => (loadingDepartments.value = false));
+                .finally(() => (loading.value = false));
         };
 
 
@@ -265,69 +235,126 @@ export default defineComponent({
 
         watch(
             () => page?.value?.currentPage,
-            () => getListDepartment()
-        );
-        watch(
-            () => checkboxAll.value,
-            (value) => {
-                if (value === true) {
-                    checkboxArray.value = itemIDs.value;
-                }
-
-                if (value === false) {
-                    checkboxArray.value = [];
-                }
-            }
+            () => handleGetStudent()
         );
 
-        watch(
-            () => checkboxArray.value,
-            (value) => {
-                if (value.length < itemIDs.value.length) {
-                    checkboxAll.value = "maybe";
-                }
-
-                if (value.length == 0) {
-                    checkboxAll.value = false;
-                }
-            }
-        );
 
         onMounted(() => {
-            store.commit(`home/${HomeMutationTypes.SET_TITLE}`, "Quản lý bộ môn");
+            store.commit(`home/${HomeMutationTypes.SET_TITLE}`, "Tra cứu thông tin sinh viên");
             eventBus.$on("notify-success", (message: string) => {
                 generateNotify(message, true)
             });
-            getListDepartment();
-
         });
 
-        const resetListIdDelete = () => {
-            checkboxArray.value = [];
-        }
+
 
         return {
-
-            search,
+            studentCode,
             isFilter,
             toggleFilter,
             closeFilter,
             handleFormatDate,
-
+            getValidationErrors,
+            hasValidationErrors,
             getValueLodash,
             currentPage,
             items,
-            loadingDepartments,
-            getListDepartment,
+            loading,
+            handleGetStudent,
             page,
-            checkboxArray,
-            checkboxAll,
-            resetListIdDelete,
-            departmentCurrent,
             gender,
-            redirectRouter
-
+            redirectRouter,
+            resetValidateErrors
         };
     },
 });
 </script>
+
+<style scoped lang="scss">
+
+.table-wrapper {
+    margin-top: 20px;
+}
+.body-search {
+    width: 100%;
+    height: 170px;
+
+    div.bg {
+        // background-color: #7FC1ED;
+        border-radius: 5px;
+        width: 440px;
+        height: 170px;
+        margin: 0 auto;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
+        div.box-search {
+            width: 400px;
+            height: 170px;
+            border: 1px solid black;
+            border-radius: 5px;
+            margin: 0px auto;
+            position: relative;
+            background-color: #ffffff;
+            label {
+                font-size: 16px;
+            }
+
+            div.lbmsv {
+                width: 100%;
+                text-align: center;
+                margin: 15px 0px;
+            }
+
+            input.iputsmv {
+                width: 80%;
+                margin: 0px 40px;
+                margin-bottom: 15px;
+
+            }
+
+            div.ss-sbm {
+                width: 100%;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+            }
+
+            q-btn.btn {
+                margin: 0px auto;
+                width: 50px;
+                height: 25px;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                cursor: pointer;
+                background-color: antiquewhite;
+                border-radius: 5px;
+            }
+        }
+    }
+
+
+}
+
+input.iputsmv:focus {
+    border: 1px solid rgb(58, 161, 202);
+    outline: none;
+}
+
+// table, th, td {
+//     border: 1px solid rgb(94, 94, 94);
+//     border-collapse: collapse;
+// }
+// tr{
+//     background-color: #F9F9F9;
+//     color: #000080;
+
+//     th{
+//         color: #ffffff !important;
+//         background-color: #2D8ECE !important;
+//     }
+// }
+
+</style>
