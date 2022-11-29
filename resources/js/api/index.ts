@@ -1,11 +1,9 @@
-import axios, {AxiosPromise} from 'axios';
+import axios, { AxiosPromise } from 'axios';
+import { IParams } from "../models/IParams";
 import IResult from "../models/IResult";
 import router from '../router';
-import {store} from '../store';
-import {AuthMutationTypes} from "../store/modules/auth/mutation-types";
-import {IParams} from "../models/IParams";
-import {UnwrapRef} from "vue";
-import {IStudentResult} from "../models/IStudentResult";
+import { store } from '../store';
+import { AuthMutationTypes } from "../store/modules/auth/mutation-types";
 
 // @ts-ignore
 const baseUrl = import.meta.env.VITE_ADMIN_URL;
