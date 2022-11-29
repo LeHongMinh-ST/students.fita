@@ -366,11 +366,12 @@
                   </q-card-section>
                   <q-separator/>
                   <q-card-section>
-                      <q-btn @click="handleCreateStudent" no-caps color="secondary" class="q-mr-sm">
+                      <q-btn @click="handleUpdateStudent" no-caps color="secondary" class="q-mr-sm">
                           <q-icon name="fa-solid fa-save" class="q-mr-sm" size="xs"></q-icon>
                           Lưu
                       </q-btn>
-                      <q-btn @click="redirectRouter('StudentIndex')" no-caps color="warning" class="q-mr-sm">
+                      <q-btn @click="redirectRouter('StudentDetail', {id: student?.id})" no-caps color="warning"
+                             class="q-mr-sm">
                           <q-icon name="fa-solid fa-rotate-left" class="q-mr-sm" size="xs"></q-icon>
                           Quay lại
                       </q-btn>
@@ -424,7 +425,7 @@
   </template>
 
   <script lang="ts">
-  import {defineComponent, onMounted, ref, watch} from "vue";
+  import {defineComponent, onMounted, ref} from "vue";
   import {useStore} from "vuex";
   import {HomeMutationTypes} from "../../store/modules/home/mutation-types";
   import {useRoute, useRouter} from "vue-router";
@@ -446,6 +447,7 @@
   import api from "../../api"
   import {TrainingTypeEnum} from "../../enums/trainingType.enum";
   import {StudentSocialPolicyObjectEnum} from "../../enums/studentSocialPolicyObject.enum";
+  import eventBus from "../../utils/eventBus";
 
   export default defineComponent({
       name: "StudentCreate",
@@ -488,29 +490,33 @@
               }
           }
 
-          const syudentCode = ref<any>("")
+          const studentCode = ref<any>("")
 
           onMounted(() => {
               store.commit(`home/${HomeMutationTypes.SET_TITLE}`, 'Quản lý sinh viên')
               getAllClasses()
 
-              syudentCode.value = <string>route.params.id
-            if (syudentCode.value) {
-                getInfoStudent(syudentCode.value);
-            }
+              studentCode.value = route.params.id
+              if (studentCode.value) {
+                  getStudent(parseInt(studentCode.value));
+              }
           })
 
-          const getInfoStudent = (params: any) => {
-            api.getStudentById<IStudentResult>(params).then(res => {
-            student.value = _.get(res, 'data.data', [])
-                console.log(student.value);
-            }).catch(error => {
+          const getStudent = (id: number) => {
+              api.getStudentById<IStudentResult>(id).then(res => {
+                  student.value = _.get(res, 'data.data.student', [])
+              }).catch(() => {
+                  $q.notify({
+                      icon: 'report_problem',
+                      message: 'Không lấy được thông tin sinh viên',
+                      color: 'negative',
+                      position: 'top-right'
+                  })
+              })
+          }
 
-            }).finally(()=> {})
-        }
-
-          const redirectRouter = (nameRoute: string): void => {
-              router.push({name: nameRoute})
+          const redirectRouter = (nameRoute: string, params: any | [] = null): void => {
+              router.push({name: nameRoute, params: params})
           }
 
           const addFamily = () => {
@@ -529,25 +535,43 @@
 
               return isCheck
           }
+          const isRequest = ref<boolean>(false)
+          const handleUpdateStudent = () => {
+              if (!isRequest.value) {
+                  isRequest.value = true
+                  const formData = new FormData()
 
-          const handleCreateStudent = () => {
-              api.createStudent<IStudentResult>(student.value).then(res => {
-                  console.log(res)
-              }).catch(error => {
-                  let errors = _.get(error.response, 'data.error', {})
-                  if (Object.keys(errors).length === 0) {
-                      let message = _.get(error.response, 'data.message', '')
-                      $q.notify({
-                          icon: 'report_problem',
-                          message,
-                          color: 'negative',
-                          position: 'top-right'
-                      })
-                  }
-                  if (Object.keys(errors).length > 0) {
-                      setValidationErrors(errors)
-                  }
-              })
+                  Object.keys(student.value).map(function (objectKey) {
+                      const value = student.value[objectKey];
+                      formData.append(objectKey, value)
+                  });
+
+                  formData.append('image', image.value)
+                  api.updateStudent<IStudentResult>(formData, parseInt(studentCode.value)).then(res => {
+                      if (res) {
+                          eventBus.$emit('notify-success', 'Cập nhật sinh viên thành công')
+                          const id = _.get(res, 'data.data.student.id', '')
+                          redirectRouter('StudentDetail', {id: id})
+                      }
+                  }).catch(error => {
+                      let errors = _.get(error.response, 'data.error', {})
+                      if (Object.keys(errors).length === 0) {
+                          let message = _.get(error.response, 'data.message', '')
+                          $q.notify({
+                              icon: 'report_problem',
+                              message,
+                              color: 'negative',
+                              position: 'top-right'
+                          })
+                      }
+                      if (Object.keys(errors).length > 0) {
+                          setValidationErrors(errors)
+                      }
+                  }).finally(()=> {
+                      isRequest.value = false
+                  })
+              }
+
           }
 
           return {
@@ -556,7 +580,7 @@
               redirectRouter,
               getValidationErrors,
               hasValidationErrors,
-              handleCreateStudent,
+              handleUpdateStudent,
               genderList,
               dob,
               image,

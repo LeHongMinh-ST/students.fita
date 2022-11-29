@@ -29,7 +29,7 @@ const routeAdmin: Array<RouteRecordRaw> = [
                 meta: {isAuthenticated: true},
             },
             {
-                path: 'update/:id',
+                path: ':id/edit',
                 name: 'StudentUpdate',
                 component: () => import('../pages/Student/StudentUpdate.vue'),
                 meta: {isAuthenticated: true},
@@ -60,7 +60,7 @@ const routeAdmin: Array<RouteRecordRaw> = [
                 meta: {isAuthenticated: true},
             },
             {
-                path: 'update/:id',
+                path: ':id/edit',
                 name: 'ClassesUpdate',
                 component: () => import('../pages/Classes/ClassesCreate.vue'),
                 meta: {isAuthenticated: true},
@@ -138,7 +138,7 @@ const routeAdmin: Array<RouteRecordRaw> = [
                 meta: {isAuthenticated: true},
             },
             {
-                path: 'update/:id',
+                path: ':id/edit',
                 name: 'UserUpdate',
                 component: () => import('../pages/User/UserCreate.vue'),
                 meta: {isAuthenticated: true},
@@ -162,7 +162,7 @@ const routeAdmin: Array<RouteRecordRaw> = [
                 meta: {isAuthenticated: true},
             },
             {
-                path: 'update/:id',
+                path: ':id/edit',
                 name: 'RoleUpdate',
                 component: () => import('../pages/Role/RoleUpdate.vue'),
                 meta: {isAuthenticated: true},

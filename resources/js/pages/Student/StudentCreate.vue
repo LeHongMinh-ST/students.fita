@@ -458,6 +458,7 @@ import _ from "lodash";
 import api from "../../api"
 import {TrainingTypeEnum} from "../../enums/trainingType.enum";
 import {StudentSocialPolicyObjectEnum} from "../../enums/studentSocialPolicyObject.enum";
+import eventBus from "../../utils/eventBus";
 
 export default defineComponent({
     name: "StudentCreate",
@@ -506,8 +507,8 @@ export default defineComponent({
             getAllClasses()
         })
 
-        const redirectRouter = (nameRoute: string): void => {
-            router.push({name: nameRoute})
+        const redirectRouter = (nameRoute: string, params: any | [] = null): void => {
+            router.push({name: nameRoute, params: params})
         }
 
         const addFamily = () => {
@@ -527,33 +528,46 @@ export default defineComponent({
             return isCheck
         }
 
+        const isRequest = ref<boolean>(false)
+
         const handleCreateStudent = () => {
 
-            const formData = new FormData()
-            Object.keys(student.value).map(function (objectKey) {
-                const value = student.value[objectKey];
-                formData.append(objectKey, value)
-            });
+            if (!isRequest.value) {
+                isRequest.value = true
+                const formData = new FormData()
 
-            formData.append('image', image.value)
+                Object.keys(student.value).map(function (objectKey) {
+                    const value = student.value[objectKey];
+                    formData.append(objectKey, value)
+                });
 
-            api.createStudent<IStudentResult>(formData).then(res => {
-                console.log(res)
-            }).catch(error => {
-                let errors = _.get(error.response, 'data.error', {})
-                if (Object.keys(errors).length === 0) {
-                    let message = _.get(error.response, 'data.message', '')
-                    $q.notify({
-                        icon: 'report_problem',
-                        message,
-                        color: 'negative',
-                        position: 'top-right'
-                    })
-                }
-                if (Object.keys(errors).length > 0) {
-                    setValidationErrors(errors)
-                }
-            })
+                formData.append('image', image.value)
+
+                api.createStudent<IStudentResult>(formData).then(res => {
+                    if (res) {
+                        eventBus.$emit('notify-success', 'Tạo mới sinh viên thành công')
+                        const id = _.get(res, 'data.data.student.id', '')
+                        redirectRouter('StudentDetail', {id: id})
+                    }
+                }).catch(error => {
+                    let errors = _.get(error.response, 'data.error', {})
+                    if (Object.keys(errors).length === 0) {
+                        let message = _.get(error.response, 'data.message', '')
+                        $q.notify({
+                            icon: 'report_problem',
+                            message,
+                            color: 'negative',
+                            position: 'top-right'
+                        })
+                    }
+                    if (Object.keys(errors).length > 0) {
+                        setValidationErrors(errors)
+                    }
+                }).finally(()=> {
+                    isRequest.value = false
+                })
+            }
+
         }
 
         return {

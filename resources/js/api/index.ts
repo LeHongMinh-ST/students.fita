@@ -311,9 +311,9 @@ export default {
         })
     },
 
-    updateStudent<T>(data: any, id: string): AxiosPromise<IResult<T>> {
+    updateStudent<T>(data: any, id: number): AxiosPromise<IResult<T>> {
         return apiAxios({
-            method: 'put',
+            method: 'post',
             url: `/students/${id}`,
             data: data
         })

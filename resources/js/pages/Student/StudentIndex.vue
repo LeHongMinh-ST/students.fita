@@ -61,10 +61,17 @@
                                     {{ index + +1 + +page.perPage * (page.currentPage - 1) }}
                                 </td>
                                 <td class="text-left">
-                                    {{ getValueLodash(item, "student_code", "") ?? "Chưa cập nhật"}}
+                                     <span class="cursor-pointer text-bold text-primary"
+                                           @click="redirectRouter('StudentDetail',{id: item?.id})">
+                                           {{ getValueLodash(item, "student_code", "") ?? "Chưa cập nhật" }}
+                                    </span>
                                 </td>
                                 <td class="text-left">
-                                    {{ getValueLodash(item, "full_name", "") ?? "Chưa cập nhật"}}
+                                    <span class="cursor-pointer text-bold text-primary"
+                                          @click="redirectRouter('StudentDetail',{id: item?.id})">
+                                        {{ getValueLodash(item, "full_name", "") ?? "Chưa cập nhật" }}
+                                    </span>
+
                                 </td>
                                 <td class="text-center">
                                     {{ getValueLodash(item, "gender_text", "") ?? "Chưa cập nhật"}}

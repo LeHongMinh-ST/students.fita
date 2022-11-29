@@ -69,7 +69,7 @@ return new class extends Migration
         $table->string('phone')->nullable();
         $table->string('thumbnail')->nullable();
         $table->string('citizen_identification')->nullable();
-        $table->integer('nationality')->nullable();
+        $table->string('nationality')->nullable();
         $table->integer('ethnic')->nullable();
         $table->integer('religion')->nullable();
         $table->integer('academic_level')->nullable();

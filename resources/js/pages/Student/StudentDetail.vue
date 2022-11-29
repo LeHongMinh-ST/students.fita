@@ -2,7 +2,7 @@
     <div class="student-wrapper">
         <q-breadcrumbs>
             <q-breadcrumbs-el label="Bảng điều khiển" icon="home" :to="{name: 'Home'}"/>
-            <q-breadcrumbs-el label="Sinh viên"/>
+            <q-breadcrumbs-el :to="{name: 'StudentIndex'}" label="Sinh viên"/>
             <q-breadcrumbs-el label="Thông tin sinh viên"/>
         </q-breadcrumbs>
         <div class="main">
@@ -48,7 +48,9 @@
                                 </div>
                                 <q-separator/>
                                 <div class="main-action q-mt-md text-center">
-                                    <q-btn color="secondary" class="q-mr-sm q-mb-sm" outline>
+                                    <q-btn color="secondary" class="q-mr-sm q-mb-sm" outline
+                                           @click="redirectRouter('StudentUpdate',{id: student?.id})"
+                                    >
                                         <q-icon name="fa-solid fa-pen-to-square" class="q-mr-sm"
                                                 size="xs"></q-icon>
                                         Chỉnh sửa
@@ -508,19 +510,34 @@ import {useRoute} from "vue-router";
 import api from '../../api'
 import {IStudentResult} from "../../models/IStudentResult";
 import {useQuasar} from "quasar";
+import {useRouter} from "vue-router/dist/vue-router";
+import eventBus from "../../utils/eventBus";
 
 export default defineComponent({
     name: "StudentDetail",
     setup() {
         const route = useRoute()
+        const router = useRouter()
         const {student, getStudent} = useStudent()
         const userId = ref<string>('')
         const tab = ref<string>('home')
         const $q = useQuasar()
+
+
+
         onMounted(() => {
             userId.value = <string>route.params.id
             getStudent(parseInt(userId.value))
+            eventBus.$on('notify-success', message => {
+                $q.notify({
+                    icon: 'check',
+                    message: message,
+                    color: 'positive',
+                    position: 'top-right'
+                })
+            })
         })
+
         const loading = ref<boolean>(false)
         const handleUpdateLearningOutcome = () => {
             loading.value = true
@@ -537,9 +554,11 @@ export default defineComponent({
                 loading.value = false
             })
         }
-
+        const redirectRouter = (nameRoute: string, params: any | [] = null): void => {
+            router.push({name: nameRoute, params: params})
+        }
         return {
-            student, tab, handleUpdateLearningOutcome, loading
+            student, tab, handleUpdateLearningOutcome, loading, redirectRouter
         }
     }
 })
