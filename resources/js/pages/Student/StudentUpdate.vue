@@ -424,10 +424,10 @@
   </template>
 
   <script lang="ts">
-  import {defineComponent, onMounted, ref} from "vue";
+  import {defineComponent, onMounted, ref, watch} from "vue";
   import {useStore} from "vuex";
   import {HomeMutationTypes} from "../../store/modules/home/mutation-types";
-  import {useRouter} from "vue-router";
+  import {useRoute, useRouter} from "vue-router";
   import {useQuasar} from "quasar";
   import {validationHelper} from "../../utils/validationHelper";
   import {convertTime} from "../../utils/helpers";
@@ -461,6 +461,7 @@
           const studentSocialPolicyObjectList = STUDENT_SOCIAL_POLICY_OBJECT_LIST
 
           const {setValidationErrors, getValidationErrors, hasValidationErrors, resetValidateErrors} = validationHelper()
+          const route = useRoute()
 
 
           const {classes, getAllClasses} = useClass()
@@ -487,11 +488,26 @@
               }
           }
 
+          const syudentCode = ref<any>("")
 
           onMounted(() => {
               store.commit(`home/${HomeMutationTypes.SET_TITLE}`, 'Quản lý sinh viên')
               getAllClasses()
+
+              syudentCode.value = <string>route.params.id
+            if (syudentCode.value) {
+                getInfoStudent(syudentCode.value);
+            }
           })
+
+          const getInfoStudent = (params: any) => {
+            api.getStudentById<IStudentResult>(params).then(res => {
+            student.value = _.get(res, 'data.data', [])
+                console.log(student.value);
+            }).catch(error => {
+
+            }).finally(()=> {})
+        }
 
           const redirectRouter = (nameRoute: string): void => {
               router.push({name: nameRoute})

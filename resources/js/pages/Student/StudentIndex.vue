@@ -90,11 +90,8 @@
                                         <q-icon name="menu" size="sm"></q-icon>
                                         <q-menu touch-position>
                                             <q-list style="min-width: 100px">
-                                                <q-item clickable v-close-popup @click="
-                                                    openDialogUpdate(
-                                                        item || null
-                                                    )
-                                                ">
+                                                <q-item clickable v-close-popup
+                                                @click="redirectRouter('StudentUpdate', {id: getValueLodash(item, 'id', 0) })">
                                                     <q-item-section>
                                                         <span>
                                                             <q-icon name="fa-solid fa-pen-to-square" class="q-mr-sm"
@@ -224,8 +221,8 @@ export default defineComponent({
                 })
         }
 
-        const redirectRouter = (nameRoute: string): void => {
-            router.push({ name: nameRoute })
+        const redirectRouter = (nameRoute: string, params: any | [] = null): void => {
+                router.push({name: nameRoute, params: params})
         }
 
         const gender = {
