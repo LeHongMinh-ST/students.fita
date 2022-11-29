@@ -1,5 +1,5 @@
-import {createRouter, createWebHistory, RouteRecordRaw} from 'vue-router'
-import {store} from "../store"
+import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router'
+import { store } from "../store"
 
 const routeAdmin: Array<RouteRecordRaw> = [
     {
@@ -66,7 +66,7 @@ const routeAdmin: Array<RouteRecordRaw> = [
                 meta: {isAuthenticated: true},
             },
             {
-                path: '/:id',
+                path: ':id',
                 name: 'ClassesDetail',
                 component: () => import('../pages/Classes/ClassesDetail.vue'),
                 meta: {isAuthenticated: true},
