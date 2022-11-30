@@ -17,7 +17,9 @@ export default defineComponent({
   name: 'App',
   components: {
     AppLayout,
-    AuthLayout
+    AuthLayout,
+
+
   },
   computed: {
     ...mapState('auth', [

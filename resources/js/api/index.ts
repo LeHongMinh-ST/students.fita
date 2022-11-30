@@ -1,10 +1,9 @@
-import axios, {AxiosPromise} from 'axios';
+import axios, { AxiosPromise } from 'axios';
+import { IParams } from "../models/IParams";
 import IResult from "../models/IResult";
 import router from '../router';
-import {store} from '../store';
-import {AuthMutationTypes} from "../store/modules/auth/mutation-types";
-import {IParams} from "../models/IParams";
-import {IStudentResult} from "../models/IStudentResult";
+import { store } from '../store';
+import { AuthMutationTypes } from "../store/modules/auth/mutation-types";
 
 // @ts-ignore
 const baseUrl = import.meta.env.VITE_ADMIN_URL;
@@ -294,17 +293,53 @@ export default {
         })
     },
 
-    createStudent<T>(data: IStudentResult):AxiosPromise<IResult<T>> {
+    //AUTHOR: TRUONGTN
+    /*begin */
+
+    getAllStudent<T>(params: object = {}): AxiosPromise<IResult<T>> {
+        return apiAxios({
+            method: 'get',
+            url: '/students',
+            params: params
+        })
+    },
+
+    getStudentById<T>(id: number): AxiosPromise<IResult<T>> {
+        return apiAxios({
+            method: 'get',
+            url: `/students/${id}`
+        })
+    },
+
+    updateStudent<T>(data: any, id: string): AxiosPromise<IResult<T>> {
+        return apiAxios({
+            method: 'put',
+            url: `/students/${id}`,
+            data: data
+        })
+    },
+
+    createStudent<T>(data: any): AxiosPromise<IResult<T>> {
         return apiAxios({
             method: 'post',
             url: '/students',
             data: data
         })
     },
-    getStudent<T>(id: number): AxiosPromise<IResult<T>> {
+
+    deleteStudent<T>(id: string): AxiosPromise<IResult<T>> {
         return apiAxios({
-            method: 'get',
-            url: `/students/${id}`
+            method: 'delete',
+            url: `/students/${id}`,
         })
     },
+
+    /*end */
+
+    updateLearningOutcome<T>(id: number): AxiosPromise<IResult<T>> {
+        return apiAxios({
+            method: 'put',
+            url: `/students/update-learning-outcome/${id}`
+        })
+    }
 }

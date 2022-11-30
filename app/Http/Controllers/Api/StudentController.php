@@ -12,6 +12,7 @@ use App\Services\CrawlDataLearningOutcomeService;
 use App\Traits\ResponseTrait;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 
@@ -45,6 +46,18 @@ class StudentController extends Controller
             $condition[] = ['student_code', '=', $data['student_code']];
         }
 
+        if (isset($data['class_id'])) {
+            $condition[] = ['class_id', '=', $data['class_id']];
+        }
+
+        if (isset($data['status'])) {
+            $condition[] = ['status', '=', $data['status']];
+        }
+
+        if (isset($data['role'])) {
+            $condition[] = ['role', '=', $data['role']];
+        }
+
         $user = $this->studentRepository->getListPaginateBy($condition, $relationships, $columns, $paginate);
 
         return $this->responseSuccess(['students' => $user]);
@@ -59,6 +72,7 @@ class StudentController extends Controller
 
     public function store(StoretStudentRequest $request): JsonResponse
     {
+        DB::beginTransaction();
         try {
             $data = $request->all();
             $authId = auth()->id();
@@ -75,9 +89,11 @@ class StudentController extends Controller
             ]));
 
             $this->extractedStudentRelationship($data, $student);
+            DB::commit();
             return $this->responseSuccess(['student' => $student->load(['learningOutcomes', 'families'])]);
 
         } catch (\Exception $exception) {
+            DB::rollBack();
             Log::error('Error store student', [
                 'method' => __METHOD__,
                 'message' => $exception->getMessage()
@@ -88,6 +104,7 @@ class StudentController extends Controller
 
     public function update(UpdateStudentRequest $request, $id): JsonResponse
     {
+        DB::beginTransaction();
         try {
             $data = $request->all();
             $student = $this->studentRepository->findById($id);
@@ -105,8 +122,10 @@ class StudentController extends Controller
             $student = $this->studentRepository->createOrUpdate($student);
             $this->extractedStudentRelationship($data, $student);
 
+            DB::commit();
             return $this->responseSuccess();
         } catch (\Exception $exception) {
+            DB::rollBack();
             Log::error('Error update student', [
                 'method' => __METHOD__,
                 'message' => $exception->getMessage()

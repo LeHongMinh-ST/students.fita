@@ -1,5 +1,5 @@
-import {createRouter, createWebHistory, RouteRecordRaw} from 'vue-router'
-import {store} from "../store"
+import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router'
+import { store } from "../store"
 
 const routeAdmin: Array<RouteRecordRaw> = [
     {
@@ -7,6 +7,11 @@ const routeAdmin: Array<RouteRecordRaw> = [
         name: 'Home',
         component: () => import('../pages/Home.vue'),
         meta: {isAuthenticated: true},
+    },
+    {
+        path: '/ok/test',
+        name: 'test',
+        component: () => import('../pages/Register.vue')
     },
     {
         path: 'students',
@@ -61,9 +66,39 @@ const routeAdmin: Array<RouteRecordRaw> = [
                 meta: {isAuthenticated: true},
             },
             {
-                path: '/:id',
+                path: ':id',
                 name: 'ClassesDetail',
                 component: () => import('../pages/Classes/ClassesDetail.vue'),
+                meta: {isAuthenticated: true},
+            },
+        ]
+    },
+    {
+        path: 'report-student',
+        meta: {isAuthenticated: true},
+        children: [
+            {
+                path: '',
+                name: 'ReportStudent',
+                component: () => import('../pages/ReportStudent/ReportStudentIndex.vue'),
+                meta: {isAuthenticated: true},
+            },
+            {
+                path: 'create',
+                name: 'ReportStudentCreate',
+                component: () => import('../pages/ReportStudent/ReportStudentCreate.vue'),
+                meta: {isAuthenticated: true},
+            },
+            {
+                path: 'update/:id',
+                name: 'ReportStudentUpdate',
+                component: () => import('../pages/ReportStudent/ReportStudentUpdate.vue'),
+                meta: {isAuthenticated: true},
+            },
+            {
+                path: ':id',
+                name: 'ReportStudentDetail',
+                component: () => import('../pages/ReportStudent/ReportStudentDetail.vue'),
                 meta: {isAuthenticated: true},
             },
         ]
@@ -189,7 +224,21 @@ const routes: Array<RouteRecordRaw> = [
         name: 'Error404',
         component: () => import('../pages/Errors/Error404.vue'),
     },
-
+    {
+        path: '/admin/test',
+        name: 'Register',
+        component: () => import('../pages/Register.vue')
+    },
+    {
+        path: '/stu/login',
+        name: 'StuLogin',
+        component: () => import('../pages/SVLogin.vue')
+    },
+    {
+        path: '/stu/view',
+        name: 'StuView',
+        component: () => import('../pages/TraCuuThongTinSV.vue')
+    },
 ]
 const router = createRouter({
     history: createWebHistory(),
