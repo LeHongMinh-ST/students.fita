@@ -74,6 +74,48 @@ const routeAdmin: Array<RouteRecordRaw> = [
         ]
     },
     {
+        path: 'report-student',
+        meta: {isAuthenticated: true},
+        children: [
+            {
+                path: '',
+                name: 'ReportStudent',
+                component: () => import('../pages/ReportStudent/ReportStudentIndex.vue'),
+                meta: {isAuthenticated: true},
+            },
+            {
+                path: 'create',
+                name: 'ReportStudentCreate',
+                component: () => import('../pages/ReportStudent/ReportStudentCreate.vue'),
+                meta: {isAuthenticated: true},
+            },
+            {
+                path: 'update/:id',
+                name: 'ReportStudentUpdate',
+                component: () => import('../pages/ReportStudent/ReportStudentUpdate.vue'),
+                meta: {isAuthenticated: true},
+            },
+            {
+                path: ':id',
+                name: 'ReportStudentDetail',
+                component: () => import('../pages/ReportStudent/ReportStudentDetail.vue'),
+                meta: {isAuthenticated: true},
+            },
+        ]
+    },
+    {
+        path: 'review-list',
+        meta: {isAuthenticated: true},
+        children: [
+            {
+                path: '',
+                name: 'ReviewListIndex',
+                component: () => import('../pages/ReviewList/ReviewListIndex.vue'),
+                meta: {isAuthenticated: true},
+            },
+        ]
+    },
+    {
         path: 'departments',
         meta: {isAuthenticated: true},
         children: [
