@@ -104,6 +104,18 @@ const routeAdmin: Array<RouteRecordRaw> = [
         ]
     },
     {
+        path: 'review-list',
+        meta: {isAuthenticated: true},
+        children: [
+            {
+                path: '',
+                name: 'ReviewListIndex',
+                component: () => import('../pages/ReviewList/ReviewListIndex.vue'),
+                meta: {isAuthenticated: true},
+            },
+        ]
+    },
+    {
         path: 'departments',
         meta: {isAuthenticated: true},
         children: [
