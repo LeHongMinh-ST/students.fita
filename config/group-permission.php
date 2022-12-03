@@ -21,7 +21,16 @@ return [
         'code' => 'department',
         'description' => 'Quản lý toàn bộ chức năng liên quan đến bộ môn'
     ],
-
+    [
+        'name' => 'Quản lý sinh viên',
+        'code' => 'student',
+        'description' => 'Quản lý toàn bộ chức năng liên quan đến sinh viên'
+    ],
+    [
+        'name' => 'Quản lý lớp học',
+        'code' => 'class',
+        'description' => 'Quản lý toàn bộ chức năng liên quan đến lớp học'
+    ],
     [
         'name' => 'Quản lý báo cáo',
         'code' => 'report',

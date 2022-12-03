@@ -85,6 +85,7 @@
                         <th class="text-left">Email</th>
                         <th class="text-left">Số điện thoại</th>
                         <th class="text-left">Chức danh</th>
+                        <th class="text-left">Vai trò</th>
                         <th class="text-center">Tác vụ</th>
                     </tr>
                     </thead>
@@ -105,8 +106,13 @@
                             <td class="text-left">{{ getValueLodash(user, 'email', '') }}</td>
                             <td class="text-left">{{ getValueLodash(user, 'phone', '') }}</td>
                             <td class="text-left">
-                                <q-badge v-if="getValueLodash(user, 'is_super_admin', 0) != 0" align="middle" color='blue'>Quản trị viên</q-badge>
                                 <q-badge v-if="getValueLodash(user, 'is_teacher', 0) != 0" align="middle" color='green'>Giảng viên</q-badge>
+                                <q-badge v-else align="middle" color='blue'>Quản trị</q-badge>
+
+                            </td>
+                            <td class="text-left">
+                                <q-badge v-if="user?.is_super_admin" align="middle" color='red'>Supper Admin</q-badge>
+                                <q-badge v-else-if="user?.role?.name" align="middle" color='green'>{{ getValueLodash(user, 'role.name', '') ?? ''}}</q-badge>
                             </td>
                             <td class="text-center">
                                 <div class="inline cursor-pointer">

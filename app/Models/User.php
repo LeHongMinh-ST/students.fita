@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Hash;
 use Laravel\Sanctum\HasApiTokens;
 use PHPOpenSourceSaver\JWTAuth\Contracts\JWTSubject;
 
@@ -73,6 +74,11 @@ class User extends Authenticatable implements JWTSubject
         return [];
     }
 
+    public function setPasswordAttribute($password)
+    {
+        $this->attributes['passowrd'] = Hash::make($password);
+    }
+
     public function role(): BelongsTo
     {
         return $this->belongsTo(Role::class);
@@ -80,7 +86,7 @@ class User extends Authenticatable implements JWTSubject
 
     public function socials(): MorphMany
     {
-        return $this->morphMany(Social::class,'socialable');
+        return $this->morphMany(Social::class, 'socialable');
     }
 
     public function department(): BelongsTo

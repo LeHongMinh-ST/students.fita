@@ -183,4 +183,52 @@ return [
         'group_code' => 'report',
         'description' => 'Có quyền xóa báo cáo phản ánh'
     ],
+    [
+        'code' => 'student-index',
+        'name' => 'Xem toàn bộ danh sách sinh viên',
+        'group_code' => 'student',
+        'description' => 'Có quyền xem danh sách sinh viên'
+    ],
+    [
+        'code' => 'student-create',
+        'name' => 'Tạo mới sinh viên',
+        'group_code' => 'student',
+        'description' => 'Có quyền tạo mới sinh viên'
+    ],
+    [
+        'code' => 'student-update',
+        'name' => 'Cập nhật thông tin sinh viên',
+        'group_code' => 'student',
+        'description' => 'Có quyền cập nhật thông tin sinh viên'
+    ],
+    [
+        'code' => 'student-delete',
+        'name' => 'Xoá sinh viên',
+        'group_code' => 'student',
+        'description' => 'Có quyền xóa sinh viên'
+    ],
+    [
+        'code' => 'class-index',
+        'name' => 'Xem toàn bộ danh sách lớp học',
+        'group_code' => 'class',
+        'description' => 'Có quyền xem danh sách lớp học'
+    ],
+    [
+        'code' => 'class-create',
+        'name' => 'Tạo mới lớp học',
+        'group_code' => 'class',
+        'description' => 'Có quyền tạo mới lớp học'
+    ],
+    [
+        'code' => 'class-update',
+        'name' => 'Cập nhật thông tin lớp học',
+        'group_code' => 'class',
+        'description' => 'Có quyền cập nhật thông tin lớp học'
+    ],
+    [
+        'code' => 'class-delete',
+        'name' => 'Xoá lớp học',
+        'group_code' => 'class',
+        'description' => 'Có quyền xóa lớp học'
+    ],
 ];

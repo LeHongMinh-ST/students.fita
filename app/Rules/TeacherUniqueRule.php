@@ -32,8 +32,7 @@ class TeacherUniqueRule implements Rule
             $user = User::query()->where(['teacher_code' =>$value])->where('id', '<>', $this->id)->first();
         } else {
             $user = User::query()->where(['teacher_code' =>$value])->first();
-            dd($user);
-        }
+            }
         return !$user;
     }
 
