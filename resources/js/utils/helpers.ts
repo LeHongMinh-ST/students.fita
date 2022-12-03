@@ -1,6 +1,8 @@
 import {VALIDATE_EMAIL_REGEX, VALIDATE_PHONE_REGEX_RULE} from "./constants";
 import moment from 'moment'
-
+import _ from "lodash";
+import IPermissionResult from "../models/IPermissionResult";
+import { store } from "../store"
 export const isValidEmail = (email: string): boolean => {
     let result = false
     if (email && typeof email === 'string') {

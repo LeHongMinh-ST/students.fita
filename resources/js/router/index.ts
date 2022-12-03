@@ -1,5 +1,7 @@
-import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router'
-import { store } from "../store"
+import {createRouter, createWebHistory, RouteRecordRaw} from 'vue-router'
+import {store} from "../store"
+import _ from "lodash";
+import IPermissionResult from "../models/IPermissionResult";
 
 const routeAdmin: Array<RouteRecordRaw> = [
     {
@@ -20,25 +22,25 @@ const routeAdmin: Array<RouteRecordRaw> = [
                 path: '',
                 name: 'StudentIndex',
                 component: () => import('../pages/Student/StudentIndex.vue'),
-                meta: {isAuthenticated: true},
+                meta: {isAuthenticated: true, permission: 'student-index'},
             },
             {
                 path: 'create',
                 name: 'StudentCreate',
                 component: () => import('../pages/Student/StudentCreate.vue'),
-                meta: {isAuthenticated: true},
+                meta: {isAuthenticated: true, permission: 'student-create'},
             },
             {
                 path: ':id/edit',
                 name: 'StudentUpdate',
                 component: () => import('../pages/Student/StudentUpdate.vue'),
-                meta: {isAuthenticated: true},
+                meta: {isAuthenticated: true, permission: 'student-update'},
             },
             {
                 path: ':id',
                 name: 'StudentDetail',
                 component: () => import('../pages/Student/StudentDetail.vue'),
-                meta: {isAuthenticated: true},
+                meta: {isAuthenticated: true,permission: 'student-index'},
             },
         ],
         meta: {isAuthenticated: true},
@@ -51,25 +53,25 @@ const routeAdmin: Array<RouteRecordRaw> = [
                 path: '',
                 name: 'Classes',
                 component: () => import('../pages/Classes/ClassesIndex.vue'),
-                meta: {isAuthenticated: true},
+                meta: {isAuthenticated: true, permission: 'class-index'},
             },
             {
                 path: 'create',
                 name: 'ClassesCreate',
                 component: () => import('../pages/Classes/ClassesCreate.vue'),
-                meta: {isAuthenticated: true},
+                meta: {isAuthenticated: true,permission: 'class-create'},
             },
             {
                 path: ':id/edit',
                 name: 'ClassesUpdate',
                 component: () => import('../pages/Classes/ClassesCreate.vue'),
-                meta: {isAuthenticated: true},
+                meta: {isAuthenticated: true, permission: 'class-update'},
             },
             {
                 path: ':id',
                 name: 'ClassesDetail',
                 component: () => import('../pages/Classes/ClassesDetail.vue'),
-                meta: {isAuthenticated: true},
+                meta: {isAuthenticated: true, permission: 'class-index'},
             },
         ]
     },
@@ -81,25 +83,25 @@ const routeAdmin: Array<RouteRecordRaw> = [
                 path: '',
                 name: 'ReportStudent',
                 component: () => import('../pages/ReportStudent/ReportStudentIndex.vue'),
-                meta: {isAuthenticated: true},
+                meta: {isAuthenticated: true, permission: 'report-index'}
             },
             {
                 path: 'create',
                 name: 'ReportStudentCreate',
                 component: () => import('../pages/ReportStudent/ReportStudentCreate.vue'),
-                meta: {isAuthenticated: true},
+                meta: {isAuthenticated: true, permission: 'report-create'},
             },
             {
                 path: 'update/:id',
                 name: 'ReportStudentUpdate',
                 component: () => import('../pages/ReportStudent/ReportStudentUpdate.vue'),
-                meta: {isAuthenticated: true},
+                meta: {isAuthenticated: true, permission: 'report-update'},
             },
             {
                 path: ':id',
                 name: 'ReportStudentDetail',
                 component: () => import('../pages/ReportStudent/ReportStudentDetail.vue'),
-                meta: {isAuthenticated: true},
+                meta: {isAuthenticated: true, permission: 'report-index'},
             },
         ]
     },
@@ -111,7 +113,7 @@ const routeAdmin: Array<RouteRecordRaw> = [
                 path: '',
                 name: 'ReviewListIndex',
                 component: () => import('../pages/ReviewList/ReviewListIndex.vue'),
-                meta: {isAuthenticated: true},
+                meta: {isAuthenticated: true, permission: 'student-update'},
             },
         ]
     },
@@ -123,7 +125,7 @@ const routeAdmin: Array<RouteRecordRaw> = [
                 path: '',
                 name: 'Department',
                 component: () => import('../pages/Department/DepartmentIndex.vue'),
-                meta: {isAuthenticated: true},
+                meta: {isAuthenticated: true, permission: 'department-index'},
             },
         ]
     },
@@ -135,19 +137,19 @@ const routeAdmin: Array<RouteRecordRaw> = [
                 path: '',
                 name: 'User',
                 component: () => import('../pages/User/UserIndex.vue'),
-                meta: {isAuthenticated: true},
+                meta: {isAuthenticated: true, permission: 'user-index'},
             },
             {
                 path: ':id/edit',
                 name: 'UserUpdate',
                 component: () => import('../pages/User/UserCreate.vue'),
-                meta: {isAuthenticated: true},
+                meta: {isAuthenticated: true, permission: 'user-create'},
             },
             {
                 path: 'create',
                 name: 'UserCreate',
                 component: () => import('../pages/User/UserCreate.vue'),
-                meta: {isAuthenticated: true},
+                meta: {isAuthenticated: true, permission: 'user-update'},
             }
         ]
     },
@@ -159,19 +161,19 @@ const routeAdmin: Array<RouteRecordRaw> = [
                 path: '',
                 name: 'Role',
                 component: () => import('../pages/Role/RoleIndex.vue'),
-                meta: {isAuthenticated: true},
+                meta: {isAuthenticated: true, permission: 'role-index'},
             },
             {
                 path: ':id/edit',
                 name: 'RoleUpdate',
                 component: () => import('../pages/Role/RoleUpdate.vue'),
-                meta: {isAuthenticated: true},
+                meta: {isAuthenticated: true, permission: 'role-update'},
             },
             {
                 path: 'create',
                 name: 'RoleCreate',
                 component: () => import('../pages/Role/RoleCreate.vue'),
-                meta: {isAuthenticated: true},
+                meta: {isAuthenticated: true, permission: 'role-create'},
             }
         ]
     },
@@ -231,6 +233,12 @@ const routes: Array<RouteRecordRaw> = [
         name: 'LoginGoogle',
         component: () => import('../pages/LoginGoogle.vue')
     },
+
+    {
+        path: '/error-403',
+        name: 'Error403',
+        component: () => import('../pages/Errors/Error403.vue'),
+    },
     {
         path: '/:catchAll(.*)*',
         name: 'Error404',
@@ -263,6 +271,11 @@ router.beforeEach((to, from, next) => {
             if (to.name === 'Login') {
                 next({name: 'Home'})
             }
+            const permission = to.meta.permission
+            // @ts-ignore
+            if (!checkPermission(permission)) {
+                next({name: 'Error403'})
+            }
             next()
         }
         next({name: 'Login'})
@@ -270,6 +283,11 @@ router.beforeEach((to, from, next) => {
         if (store.state.authStudent.isAuthenticated) {
             if (to.name === 'LoginStudent') {
                 next({name: 'HomeStudent'})
+            }
+            const permission = to.meta.permission
+            // @ts-ignore
+            if (permission && !checkPermission(permission)) {
+                next({name: 'Error403'})
             }
             next()
         }
@@ -284,6 +302,11 @@ router.beforeEach((to, from, next) => {
     }
 });
 
-
+const checkPermission = (permission: string): boolean => {
+    if (!permission) return true
+    if (_.get(store.state.auth.authUser, 'is_super_admin', 0)) return true
+    const permissions = _.get(store.state.auth.authUser, 'role.permissions', [])
+    return permissions.some((item: IPermissionResult) => item.code === permission)
+}
 // @ts-ignore
 export default router

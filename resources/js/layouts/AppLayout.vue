@@ -59,43 +59,51 @@
                         </a>
                     </div>
                 </div>
-                <q-separator class="q-my-md"/>
+                <q-separator class="q-my-md"
+                             v-if="checkPermission('department-index')||checkPermission('class-index') ||checkPermission('dashboard-index')"/>
                 <q-list padding>
-                    <q-item-label header class="text-weight-bold">
+                    <q-item-label header class="text-weight-bold"
+                                  v-if="checkPermission('department-index')||checkPermission('class-index') ||checkPermission('dashboard-index')">
                         Quản lý chung
                     </q-item-label>
                     <q-item v-for="link in links1" :key="link.text" v-ripple clickable
-                            @click="redirectRouteName(link.routeName)">
+                            :active="checkActive(link.routeName)" active-class="bg-grey text-white"
+                            @click="redirectRouteName(link.routeName)" v-show="checkPermission(link.permission)">
                         <q-item-section avatar>
-                            <q-icon color="grey" :name="link.icon"/>
+                            <q-icon :color="checkActive(link.routeName) ? 'white' : 'grey'" :name="link.icon"/>
                         </q-item-section>
                         <q-item-section>
                             <q-item-label>{{ link.text }}</q-item-label>
                         </q-item-section>
                     </q-item>
 
-                    <q-separator class="q-my-md"/>
+                    <q-separator class="q-my-md"
+                                 v-if="checkPermission('student-index')||checkPermission('report-index') "/>
 
-                    <q-item-label header class="text-weight-bold">
+                    <q-item-label header class="text-weight-bold"
+                                  v-if="checkPermission('student-index')||checkPermission('report-index') ">
                         Quản lý thông tin
                     </q-item-label>
                     <q-item v-for="link in links2" :key="link.text" v-ripple clickable
-                            @click="redirectRouteName(link.routeName)">
+                            :active="checkActive(link.routeName)" active-class="bg-grey text-white"
+                            v-show="checkPermission(link.permission)" @click="redirectRouteName(link.routeName)">
                         <q-item-section avatar>
-                            <q-icon color="grey" :name="link.icon"/>
+                            <q-icon :color="checkActive(link.routeName) ? 'white' : 'grey'" :name="link.icon"/>
                         </q-item-section>
                         <q-item-section>
                             <q-item-label>{{ link.text }}</q-item-label>
                         </q-item-section>
                     </q-item>
-                    <q-separator class="q-my-md"/>
-                    <q-item-label header class="text-weight-bold">
+                    <q-separator v-if="checkPermission('user-index')||checkPermission('role-index') " class="q-my-md"/>
+                    <q-item-label header class="text-weight-bold"
+                                  v-if="checkPermission('user-index')||checkPermission('role-index') ">
                         Quản trị hệ thống
                     </q-item-label>
                     <q-item v-for="link in linksSystem" :key="link.text" v-ripple clickable
-                            @click="redirectRouteName(link.routeName)">
+                            :active="checkActive(link.routeName)" active-class="bg-grey text-white"
+                            @click="redirectRouteName(link.routeName)" v-show="checkPermission(link.permission)">
                         <q-item-section avatar>
-                            <q-icon color="grey" :name="link.icon"/>
+                            <q-icon :color="checkActive(link.routeName) ? 'white' : 'grey'" :name="link.icon"/>
                         </q-item-section>
                         <q-item-section>
                             <q-item-label>{{ link.text }}</q-item-label>
@@ -119,9 +127,10 @@
 <script lang="ts">
 import {computed, defineComponent, ref} from 'vue'
 import {fabYoutube} from '@quasar/extras/fontawesome-v6'
-import {useRouter} from "vue-router/dist/vue-router";
+import {useRoute, useRouter} from "vue-router/dist/vue-router";
 import {useStore} from "vuex";
 import {AuthActionTypes} from "../store/modules/auth/actions-type";
+import {permissionHelper} from "../utils/permissionHelper";
 
 export default defineComponent({
     name: 'AppLayout',
@@ -130,6 +139,13 @@ export default defineComponent({
         const store = useStore()
         const leftDrawerOpen = ref(false)
         const router = useRouter()
+        const route = useRoute()
+
+        const checkActive = (routerName: string): boolean => {
+            return route.name === routerName
+        }
+
+        const {checkPermission} = permissionHelper()
 
         const auth = store.getters["auth/getAuthUser"]
 
@@ -143,6 +159,7 @@ export default defineComponent({
 
         const redirectRouteName = (routeName: string): void => {
             router.push({name: routeName})
+            checkActive()
         }
 
         const title = computed(() => {
@@ -158,21 +175,47 @@ export default defineComponent({
             logout,
             toggleLeftDrawer,
             redirectRouteName,
-
+            checkPermission,
+            checkActive,
             links1: [
-                {icon: 'fa-solid fa-home', text: 'Bảng điều khiển', routeName: 'Home'},
-                {icon: 'fa-solid fa-building-user', text: 'Quản lý bộ môn', routeName: 'Department'},
-                {icon: 'fa-solid fa-users', text: 'Quản lý lớp học', routeName: 'Classes'},
+                {icon: 'fa-solid fa-home', text: 'Bảng điều khiển', routeName: 'Home', permission: 'dashboard-index'},
+                {
+                    icon: 'fa-solid fa-building-user',
+                    text: 'Quản lý bộ môn',
+                    routeName: 'Department',
+                    permission: 'department-index'
+                },
+                {icon: 'fa-solid fa-users', text: 'Quản lý lớp học', routeName: 'Classes', permission: 'class-index'},
             ],
 
             links2: [
-                {icon: 'fa-solid fa-address-card', text: 'Quản lý sinh viên', routeName: 'StudentIndex'},
-                {icon: 'fa-solid fa-rectangle-list', text: 'Danh sách xét duyệt', routeName: 'ReviewListIndex'},
-                {icon: 'fa-solid fa-flag', text: 'Báo cáo sinh viên', routeName: 'ReportStudent'},
+                {
+                    icon: 'fa-solid fa-address-card',
+                    text: 'Quản lý sinh viên',
+                    routeName: 'StudentIndex',
+                    permission: 'student-index'
+                },
+                {
+                    icon: 'fa-solid fa-rectangle-list',
+                    text: 'Danh sách xét duyệt',
+                    routeName: 'ReviewListIndex',
+                    permission: 'student-update'
+                },
+                {
+                    icon: 'fa-solid fa-flag',
+                    text: 'Báo cáo sinh viên',
+                    routeName: 'ReportStudent',
+                    permission: 'report-index'
+                },
             ],
             linksSystem: [
-                {icon: 'fa-solid fa-user', text: 'Người dùng', routeName: 'User'},
-                {icon: 'fa-solid fa-user-shield', text: 'Nhóm và phân quyền', routeName: 'Role'},
+                {icon: 'fa-solid fa-user', text: 'Người dùng', routeName: 'User', permission: 'user-index'},
+                {
+                    icon: 'fa-solid fa-user-shield',
+                    text: 'Nhóm và phân quyền',
+                    routeName: 'Role',
+                    permission: 'role-index'
+                },
             ],
         }
     }

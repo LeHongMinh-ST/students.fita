@@ -51,7 +51,9 @@ class AuthController extends Controller
             return response()->json(['error' => 'Unauthorized'], 401);
         };
 
-        return response()->json($user);
+        return response()->json($user->load(['role' => function($role) {
+            return $role->with(['permissions']);
+        }]));
     }
 
     /**
