@@ -45,7 +45,7 @@ class UpdateUserRequest extends BaseRequest
         return [
             'user_name' => 'tên tài khoản',
             'full_name' => 'họ và tên',
-            'teacher_code' => 'mã giảng viên'
+            'teacher_code' => 'mã giảng viên',
         ];
     }
 }

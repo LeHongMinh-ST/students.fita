@@ -13,6 +13,7 @@ use App\Repositories\User\UserRepositoryInterface;
 use App\Traits\ResponseTrait;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
@@ -60,6 +61,7 @@ class UserController extends Controller
 
     public function store(StoreUserRequest $request): JsonResponse
     {
+        DB::beginTransaction();
         try {
             $data = $request->all();
             $authId = auth()->id();
@@ -67,9 +69,11 @@ class UserController extends Controller
                 'created_by' => $authId,
                 'updated_by' => $authId
             ]));
+            DB::commit();
             return $this->responseSuccess(['user' => $user]);
 
         } catch (\Exception $exception) {
+            DB::rollBack();
             Log::error('Error store user', [
                 'method' => __METHOD__,
                 'message' => $exception->getMessage()
@@ -80,6 +84,8 @@ class UserController extends Controller
 
     public function update(UpdateUserRequest $request, $id): JsonResponse
     {
+        DB::beginTransaction();
+
         try {
             $data = $request->all();
             if ($request->hasFile('image')) {
@@ -89,8 +95,10 @@ class UserController extends Controller
             $this->userRepository->updateById($id, array_merge($data, [
                 'updated_by' => auth()->id()
             ]));
+            DB::commit();
             return $this->responseSuccess();
         } catch (\Exception $exception) {
+            DB::rollBack();
             Log::error('Error update user', [
                 'method' => __METHOD__,
                 'message' => $exception->getMessage()

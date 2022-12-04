@@ -47,7 +47,6 @@ export const STUDENT_STATUS_LIST = [
 export const STUDENT_ROLE_LIST = [
     {label: 'Sinh viên', value: StudentRoleEnum.Normal},
     {label: 'Lớp trưởng', value: StudentRoleEnum.ClassMonitor},
-    {label: 'Cán bộ lớp', value: StudentRoleEnum.Officer},
 ]
 
 export const STUDENT_SOCIAL_POLICY_OBJECT_LIST = [

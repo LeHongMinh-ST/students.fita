@@ -79,12 +79,14 @@ class StudentController extends Controller
         try {
             $data = $request->all();
             $authId = auth()->id();
+
             if ($request->hasFile('image')) {
                 $path = Storage::disk('public')->putFile('images/students/thumbnail', $request->file('image'));
                 $data['thumbnail'] = $path;
             }
 
             $data['email_edu'] = $data['student_code'] . config('vnua.mail_student');
+            $data['password'] = $data['dob'];
 
             $student = $this->studentRepository->create(array_merge($data, [
                 'created_by' => $authId,

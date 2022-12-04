@@ -15,27 +15,34 @@
                 </q-toolbar-title>
                 <q-space/>
                 <div class="q-gutter-sm row items-center no-wrap">
-                    <q-btn round dense flat icon="fas fa-heart" style="color:#9d4182 !important;" type="a" href="https://github.com/sponsors/pratik227" target="_blank">
-                    </q-btn>
-                    <q-btn round dense flat color="white" icon="notifications">
-                        <q-badge color="red" text-color="white" floating>
-                            5
-                        </q-badge>
-                        <q-menu
-                        >
-                            <q-list style="min-width: 100px">
-                                <messages></messages>
-                                <q-card class="text-center no-shadow no-border">
-                                    <q-btn label="View All" style="max-width: 120px !important;" flat dense
-                                           class="text-indigo-8"></q-btn>
-                                </q-card>
-                            </q-list>
-                        </q-menu>
-                    </q-btn>
+
                     <q-btn round flat>
                         <q-avatar size="26px">
-                            <img src="https://cdn.quasar.dev/img/boy-avatar.png">
+                            <img :src="auth.thumbnail ? auth.thumbnail_url : 'https://cdn.quasar.dev/img/avatar4.jpg'">
                         </q-avatar>
+                        <q-menu>
+                            <div class="row no-wrap q-pa-md">
+
+                                <div class="column items-center">
+
+                                    <q-avatar size="72px">
+                                        <img
+                                            :src="auth.thumbnail ? auth.thumbnail_url : 'https://cdn.quasar.dev/img/avatar4.jpg'">
+                                    </q-avatar>
+
+                                    <div class="text-subtitle1 q-mt-md q-mb-xs">{{ auth.full_name }}</div>
+
+                                    <q-btn
+                                        color="primary"
+                                        label="Đăng xuất"
+                                        push
+                                        size="sm"
+                                        v-close-popup
+                                        @click="logout"
+                                    />
+                                </div>
+                            </div>
+                        </q-menu>
                     </q-btn>
                 </div>
             </q-toolbar>
@@ -61,9 +68,10 @@
                     <q-item-label header class="text-weight-bold">
                         Thông tin sinh viên
                     </q-item-label>
-                    <q-item v-for="link in links1" :key="link.text" v-ripple clickable @click="redirectRouteName(link.routeName)">
+                    <q-item v-for="link in links1" :key="link.text" v-ripple clickable active-class="bg-grey text-white"
+                            :active="checkActive(link.routeName)" @click="redirectRouteName(link.routeName)">
                         <q-item-section avatar>
-                            <q-icon color="grey" :name="link.icon"/>
+                            <q-icon :color="checkActive(link.routeName) ? 'white' : 'grey'" :name="link.icon"/>
                         </q-item-section>
                         <q-item-section>
                             <q-item-label>{{ link.text }}</q-item-label>
@@ -72,14 +80,15 @@
 
                 </q-list>
 
-                <q-separator class="q-my-md"/>
-                <q-list padding>
+                <q-separator v-if="checkClassMonitor()" class="q-my-md"/>
+                <q-list  v-if="checkClassMonitor()" padding>
                     <q-item-label header class="text-weight-bold">
                         Quản lý lớp học
                     </q-item-label>
-                    <q-item v-for="link in links2" :key="link.text" v-ripple clickable @click="redirectRouteName(link.routeName)">
+                    <q-item v-for="link in links2" :key="link.text" v-ripple clickable active-class="bg-grey text-white"
+                            :active="checkActive(link.routeName)" @click="redirectRouteName(link.routeName)">
                         <q-item-section avatar>
-                            <q-icon color="grey" :name="link.icon"/>
+                            <q-icon :color="checkActive(link.routeName) ? 'white' : 'grey'" :name="link.icon"/>
                         </q-item-section>
                         <q-item-section>
                             <q-item-label>{{ link.text }}</q-item-label>
@@ -101,10 +110,12 @@
 </template>
 
 <script lang="ts">
-import {defineComponent, ref, computed } from 'vue'
+import {computed, defineComponent, ref} from 'vue'
 import {fabYoutube} from '@quasar/extras/fontawesome-v6'
-import {useRouter} from "vue-router/dist/vue-router";
+import {useRouter, useRoute} from "vue-router/dist/vue-router";
 import {useStore} from "vuex";
+import {AuthStudentActionTypes} from "../store/modules/auth_student/actions-type";
+import {permissionHelper} from "../utils/permissionHelper";
 
 export default defineComponent({
     name: 'StudentLayout',
@@ -113,13 +124,26 @@ export default defineComponent({
         const store = useStore()
         const leftDrawerOpen = ref(false)
         const router = useRouter()
+        const route = useRoute()
+
+        const {checkClassMonitor} = permissionHelper()
 
         function toggleLeftDrawer(): void {
             leftDrawerOpen.value = !leftDrawerOpen.value
         }
 
+        const checkActive = (routerName: string): boolean => {
+            return route.name === routerName
+        }
+
+        const auth = store.getters["authStudent/getAuthUserStudent"]
+
         const redirectRouteName = (routeName: string): void => {
             router.push({name: routeName})
+        }
+
+        const logout = (): void => {
+            store.dispatch(`authStudent/${AuthStudentActionTypes.LOGOUT_ACTION_STUDENT}`)
         }
 
         const title = computed(() => {
@@ -129,20 +153,21 @@ export default defineComponent({
 
         return {
             fabYoutube,
-
+            checkActive,
             leftDrawerOpen,
             title,
-
+            auth,
             toggleLeftDrawer,
             redirectRouteName,
-
+            logout,
+            checkClassMonitor,
             links1: [
                 {icon: 'fa-solid fa-address-card', text: 'Hồ sơ sinh viên', routeName: 'HomeStudent'},
                 {icon: 'fa-solid fa-users', text: 'Thông tin lớp học', routeName: 'ClassStudent'},
             ],
             links2: [
-                {icon: 'fa-solid fa-circle-info', text: 'Duyệt thông tin', routeName: 'HomeStudent'},
-                {icon: 'fa-solid fa-flag', text: 'Phản ánh lớp học', routeName: 'ClassStudent'},
+                {icon: 'fa-solid fa-circle-info', text: 'Duyệt thông tin', routeName: 'RequestIndex'},
+                {icon: 'fa-solid fa-flag', text: 'Phản ánh lớp học', routeName: 'ClassStudent',},
             ]
         }
     }

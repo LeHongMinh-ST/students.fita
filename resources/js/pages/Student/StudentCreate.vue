@@ -146,7 +146,7 @@
                         />
                     </div>
                     <div class="form-group">
-                        <label class="text-bold">Ngày sinh</label>
+                        <label class="text-bold">Ngày sinh  <span class="required">*</span></label>
                         <q-input outlined dense v-model="student.dob"
                                  :error-message="getValidationErrors('dob')"
                                  :error="hasValidationErrors('dob')"

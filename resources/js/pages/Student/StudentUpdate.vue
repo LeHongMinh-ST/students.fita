@@ -146,7 +146,7 @@
                           />
                       </div>
                       <div class="form-group">
-                          <label class="text-bold">Ngày sinh</label>
+                          <label class="text-bold">Ngày sinh  <span class="required">*</span></label>
                           <q-input outlined dense v-model="student.dob"
                                    :error-message="getValidationErrors('dob')"
                                    :error="hasValidationErrors('dob')"
@@ -547,7 +547,11 @@
 
                   Object.keys(student.value).map(function (objectKey) {
                       const value = student.value[objectKey];
-                      formData.append(objectKey, value)
+                      if (value == null) {
+                          formData.append(objectKey, "")
+                      } else {
+                          formData.append(objectKey, value)
+                      }
                   });
 
                   formData.append('image', image.value)

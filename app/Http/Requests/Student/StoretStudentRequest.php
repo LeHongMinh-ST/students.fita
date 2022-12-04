@@ -30,6 +30,8 @@ class StoretStudentRequest extends BaseRequest
             'gender' => 'required',
             'student_code' => 'required|unique:students',
             'school_year' => 'required',
+            'dob' => 'required',
+
         ];
     }
 
@@ -42,7 +44,8 @@ class StoretStudentRequest extends BaseRequest
             'role' => 'vai trò',
             'student_code' => 'mã sinh viên',
             'status' => 'tình trạng sinh viên',
-            'gender' => 'giới tính'
+            'gender' => 'giới tính',
+            'dob' => 'ngày sinh',
         ];
     }
 }

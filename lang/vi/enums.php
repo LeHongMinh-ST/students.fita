@@ -12,7 +12,7 @@ return [
     StudentRole::class => [
         StudentRole::Normal => 'Sinh viên',
         StudentRole::ClassMonitor => 'Lớp trưởng',
-        StudentRole::Officer => 'Cán bộ lớp'
+//        StudentRole::Officer => 'Cán bộ lớp'
     ],
     StudentSocialPolicyObject::class => [
         StudentSocialPolicyObject::None => 'Không có',

@@ -14,5 +14,5 @@ final class StudentRole extends Enum implements LocalizedEnum
 {
     const Normal = 1;//Sinh viên bình thường
     const ClassMonitor = 2;// Lớp trưởng
-    const Officer = 3;//Cán bộ lớp
+//    const Officer = 3;//Cán bộ lớp
 }
