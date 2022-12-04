@@ -20,7 +20,7 @@ export const store = createStore({
         auth,
         authStudent
     },
-    plugins: [createPersistedState({paths: ['auth']})]
+    plugins: [createPersistedState({paths: ['auth', 'authStudent']})]
 })
 
 export function useStore(): Store {
