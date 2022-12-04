@@ -1,6 +1,6 @@
 <template>
   <div>
-    Đang đăng nhập bằng tài khoản google, vui lòng chờ!
+      Đang liên kết bằng tài khoản Google, vui lòng chờ!
   </div>
 </template>
 
@@ -36,10 +36,14 @@ export default defineComponent({
 
       api.loginSocialCallback<ILoginResult>(PROVIDER_GOOGLE, payload).then(async res => {
         if (res) {
-          store.commit(`auth/${AuthMutationTypes.SET_ACCESS_TOKEN}`, _.get(res, 'data.access_token'))
-          store.commit(`auth/${AuthMutationTypes.SET_LOGIN_STATUS}`, true)
-          await getAuthUser()
-          await router.push({name: 'Home'})
+            if (_.get(res, 'data.back', false)) {
+                router.go(-1)
+            } else {
+                store.commit(`auth/${AuthMutationTypes.SET_ACCESS_TOKEN}`, _.get(res, 'data.access_token'))
+                store.commit(`auth/${AuthMutationTypes.SET_LOGIN_STATUS}`, true)
+                await getAuthUser()
+                await router.push({name: 'Home'})
+            }
         }
       }).catch(error => {
         console.log(error)

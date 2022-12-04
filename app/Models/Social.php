@@ -10,7 +10,7 @@ class Social extends Model
 {
     use HasFactory;
 
-    protected $table = [
+    protected $fillable = [
         'social_id',
         'social_provider',
         'socialable_id',

@@ -104,13 +104,13 @@ abstract class BaseRepository implements BaseRepositoryInterface
     public function getFirstBy(array $condition = [], array $columns = [], array $relations = [])
     {
         $this->make($relations);
-
         $this->applyConditions($condition);
 
         $data = $this->model->select('*');
         if (!empty($columns)) {
             $data = $this->model->select($columns);
         }
+
         return $data->first();
     }
 

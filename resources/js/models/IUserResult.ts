@@ -1,4 +1,5 @@
 import IRoleResult from "./IRoleResult";
+import {ISocialResult} from "./ISocialResult";
 
 export default interface IUserResult {
     id: number,
@@ -19,4 +20,5 @@ export default interface IUserResult {
     role?: IRoleResult,
     thumbnail?: string,
     thumbnail_url?: string,
+    socials?: ISocialResult[]
 }

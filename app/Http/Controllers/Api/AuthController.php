@@ -53,7 +53,7 @@ class AuthController extends Controller
 
         return response()->json($user->load(['role' => function($role) {
             return $role->with(['permissions']);
-        }]));
+        }, 'socials']));
     }
 
     /**
@@ -116,15 +116,33 @@ class AuthController extends Controller
             return $this->responseError('Invalid provider email', [], 422);
         }
 
-
         $social = $this->socialRepository->getFirstBy([
             'social_id' => $userProvider->id,
             'social_provider' => $provider,
             'socialable_type' => User::class
         ]);
-
-        if (!$social) {
+        if (!$social && !auth('api')->check()) {
             return $this->responseError('Bạn chưa liên kết với tài khoản nào !');
+        }
+        if (!$social && auth('api')->check()) {
+            $returnBack = true;
+            $user = auth('api')->user();
+            $user->socials()->create([
+                'social_id' => $userProvider->id,
+                'social_provider' => $provider,
+                'email' => $userProvider->email,
+            ]);
+
+            return response()->json([
+                'back' => $returnBack,
+            ]);
+        }
+
+
+        if (auth('api')->check()) {
+            return response()->json([
+                'back' => true,
+            ]);
         }
 
         $user = $this->userRepository->findById($social->socialable_id);
@@ -133,7 +151,7 @@ class AuthController extends Controller
             return $this->responseError('Không tìm thấy tài khoản!');
         }
 
-        if (!$token = auth()->attempt(['email' => $userProvider->email])) {
+        if (!$token = auth()->attempt(['user_name' => $user->user_name])) {
             return response()->json(['error' => 'Unauthorized'], 401);
         }
 

@@ -138,7 +138,7 @@
                                 <q-icon name="fa-solid fa-lock" class="q-mr-sm" size="xs"></q-icon>
                                 Đổi mật khẩu
                             </q-btn>
-                          
+
                         </q-card-section>
                     </q-card>
                     <q-card>
@@ -146,6 +146,27 @@
                             <div class="widget-title text-bold">Liên kết tài khoản</div>
                         </q-card-section>
                         <q-separator/>
+                        <q-card-section>
+                            <div class="social-card">
+                                <div class="microsoft social-btn q-btn text-white">
+                                    <span><q-icon class="social-icon" name="fa-brands fa-windows" size="md"/><span class="social-text">Liên kết với tài khoản Microsoft</span></span>
+                                </div>
+
+                                <div v-if="socialGoogle.id === null" class="google social-btn q-btn text-white" @click="getUrlSocial('google')">
+                                        <span>
+                                            <q-icon class="social-icon" name="fa-brands fa-google-plus-g" size="md"/>
+                                            <span class="social-text">Liên kết với tài khoản Google</span>
+                                        </span>
+                                </div>
+                                
+                                <div v-else class="google social-btn q-btn text-white">
+                                        <span>
+                                            <q-icon class="social-icon" name="fa-brands fa-google-plus-g" size="md"/>
+                                            <span class="social-text">{{ socialGoogle.email}}</span>
+                                        </span>
+                                </div>
+                            </div>
+                        </q-card-section>
                     </q-card>
                 </div>
                 <q-dialog v-model="isShowDialogResetPassword" @hide="() => isShowDialogResetPassword = false">
@@ -262,6 +283,8 @@ import api from "../../api"
 import eventBus from "../../utils/eventBus";
 import IUserResult from "../../models/IUserResult";
 import {AuthMutationTypes} from "../../store/modules/auth/mutation-types";
+import IRedirectSocialResult from "../../models/IRedirectSocialResult";
+import {ISocialResult} from "../../models/ISocialResult";
 
 export default defineComponent({
     name: "Profile",
@@ -292,6 +315,15 @@ export default defineComponent({
 
         const isPwd = ref<boolean>(true);
 
+        const socialGoogle = ref<ISocialResult>({
+            id: null,
+            email: "",
+            social_id: "",
+            social_provider: "",
+            socialable_id: 0,
+            socialable_type: ""
+        })
+
         onMounted(() => {
             store.commit(`home/${HomeMutationTypes.SET_TITLE}`, 'Thông tin tài khoản')
             profile.value = store.getters['auth/getAuthUser']
@@ -299,6 +331,7 @@ export default defineComponent({
                 imageUrl.value = profile.value.thumbnail_url
             }
 
+            socialGoogle.value = profile.value.socials.find(item => item.social_provider === 'google')
         })
 
         const redirectRouter = (nameRoute: string, params: any | [] = null): void => {
@@ -407,6 +440,22 @@ export default defineComponent({
 
         }
 
+        const getUrlSocial = (provider: string): void => {
+            api.getRedirectSocial<IRedirectSocialResult>(provider).then(res => {
+                const url = _.get(res, 'data.data.url')
+                if (url) {
+                    window.open(url, '_self');
+                }
+            }).catch(() => {
+                $q.notify({
+                    icon: 'report_problem',
+                    message: 'Lỗi không thể kết nối !',
+                    color: 'negative',
+                    position: 'top-right'
+                })
+            })
+        }
+
         return {
             redirectRouter,
             getValidationErrors,
@@ -424,7 +473,9 @@ export default defineComponent({
             password_confirm,
             handleResetPassword,
             isPwd,
-            handleUpdateProfile
+            handleUpdateProfile,
+            getUrlSocial,
+            socialGoogle
         }
     }
 })
@@ -456,7 +507,35 @@ export default defineComponent({
             }
         }
 
+        .social-card {
+            margin: 20px auto;
 
+            .social-btn {
+                margin-bottom: 10px;
+                padding: 5px;
+                cursor: pointer;
+                width: 100%;
+                border-radius: 3px;
+
+                .social-text {
+                    font-size: 0.75vw;
+                    margin-left: 10px;
+                }
+
+                .social-icon {
+                    font-size: 1.5vw !important;
+                }
+            }
+
+            .microsoft {
+                background-color: #00A1F1;
+            }
+
+            .google {
+                background-color: #EA4335;
+            }
+
+        }
     }
 }
 
