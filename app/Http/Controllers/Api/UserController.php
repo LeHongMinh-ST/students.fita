@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Profile\ResetMyPasswordRequest;
 use App\Http\Requests\Role\DeleteRoleRequest;
 use App\Http\Requests\User\DeleteUserRequest;
 use App\Http\Requests\User\ResetPasswordRequest;
@@ -14,6 +15,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 
 class UserController extends Controller
 {
@@ -80,7 +82,10 @@ class UserController extends Controller
     {
         try {
             $data = $request->all();
-
+            if ($request->hasFile('image')) {
+                $path = Storage::disk('public')->putFile('images/user/thumbnail', $request->file('image'));
+                $data['thumbnail'] = $path;
+            }
             $this->userRepository->updateById($id, array_merge($data, [
                 'updated_by' => auth()->id()
             ]));
@@ -130,12 +135,64 @@ class UserController extends Controller
             $password = $request->input('password', '');
 
             $this->userRepository->updateById($id, [
-                'password' => Hash::make($password),
+                'password' => $password,
                 'updated_by' => auth()->id()
             ]);
             return $this->responseSuccess();
         } catch (\Exception $exception) {
             Log::error('Error update user', [
+                'method' => __METHOD__,
+                'message' => $exception->getMessage()
+            ]);
+            return $this->responseError();
+        }
+    }
+
+    public function resetMyPassword(ResetMyPasswordRequest $request): JsonResponse
+    {
+        try {
+            $user = auth('api')->user();
+
+            if (!Hash::check($request->input('password_old', ''), $user->password)) {
+                return $this->responseError('', [
+                    'password_old' => ['Mật khẩu cũ không chính xác!']
+                ], '400');
+            }
+
+            $password = $request->input('password', '');
+
+            $this->userRepository->updateById($user->id, [
+                'password' => $password,
+                'updated_by' => auth()->id()
+            ]);
+            return $this->responseSuccess();
+        } catch (\Exception $exception) {
+            Log::error('Error update user', [
+                'method' => __METHOD__,
+                'message' => $exception->getMessage()
+            ]);
+            return $this->responseError();
+        }
+    }
+
+    public function updateProfile(UpdateUserRequest $request): JsonResponse
+    {
+        try {
+            $auth = auth('api')->user();
+
+            $data = $request->all();
+            if ($request->hasFile('image')) {
+                $path = Storage::disk('public')->putFile('images/user/thumbnail', $request->file('image'));
+                $data['thumbnail'] = $path;
+            }
+
+            $this->userRepository->updateById($auth->id, array_merge($data, [
+                'updated_by' => auth()->id(),
+            ]));
+
+            return $this->responseSuccess();
+        } catch (\Exception $exception) {
+            Log::error('Error update profile', [
                 'method' => __METHOD__,
                 'message' => $exception->getMessage()
             ]);

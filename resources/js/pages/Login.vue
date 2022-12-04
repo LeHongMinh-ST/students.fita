@@ -35,10 +35,10 @@
                   <q-btn label="Đăng nhập" @click="handleLogin" icon-right="fa-solid fa-right-to-bracket" type="button"
                          color="primary"></q-btn>
                 </div>
-                <div>
-                  <router-link class="textLink" :to='{ name: "Register" }'>Đăng ký</router-link>
-                  nếu bạn chưa có tài khoản ?
-                </div>
+<!--                <div>-->
+<!--                  <router-link class="textLink" :to='{ name: "Register" }'>Đăng ký</router-link>-->
+<!--                  nếu bạn chưa có tài khoản ?-->
+<!--                </div>-->
                 <div class="separator">hoặc</div>
                 <div class="social-card">
                   <div class="microsoft social-btn q-btn text-white">

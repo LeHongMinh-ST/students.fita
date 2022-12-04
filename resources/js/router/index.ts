@@ -11,6 +11,12 @@ const routeAdmin: Array<RouteRecordRaw> = [
         meta: {isAuthenticated: true},
     },
     {
+        path: 'profile',
+        name: 'Profile',
+        component: () => import('../pages/Profile/ProfileIndex.vue'),
+        meta: {isAuthenticated: true},
+    },
+    {
         path: '/ok/test',
         name: 'test',
         component: () => import('../pages/Register.vue')
@@ -223,11 +229,11 @@ const routes: Array<RouteRecordRaw> = [
         name: 'Login',
         component: () => import('../pages/Login.vue')
     },
-    {
-        path: '/admin/register',
-        name: 'Register',
-        component: () => import('../pages/Register.vue')
-    },
+    // {
+    //     path: '/admin/register',
+    //     name: 'Register',
+    //     component: () => import('../pages/Register.vue')
+    // },
     {
         path: '/authorize/google/callback',
         name: 'LoginGoogle',
@@ -293,11 +299,11 @@ router.beforeEach((to, from, next) => {
         }
         next({name: 'LoginStudent'})
     } else {
-        // if (store.state.auth.isAuthenticated) {
-        //     if (to.name === 'Login') {
-        //         next({name: 'Home'})
-        //     }
-        // }
+        if (store.state.auth.isAuthenticated) {
+            if (to.name === 'Login') {
+                next({name: 'Home'})
+            }
+        }
         next()
     }
 });

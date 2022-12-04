@@ -17,16 +17,27 @@
                 <div class="q-gutter-sm row items-center no-wrap">
                     <q-btn round flat>
                         <q-avatar size="26px">
-                            <img src="https://cdn.quasar.dev/img/avatar4.jpg">
+                            <img :src="auth.thumbnail ? auth.thumbnail_url : 'https://cdn.quasar.dev/img/avatar4.jpg'">
                         </q-avatar>
                         <q-menu>
                             <div class="row no-wrap q-pa-md">
+
                                 <div class="column items-center">
+
                                     <q-avatar size="72px">
-                                        <img src="https://cdn.quasar.dev/img/avatar4.jpg">
+                                        <img :src="auth.thumbnail ? auth.thumbnail_url : 'https://cdn.quasar.dev/img/avatar4.jpg'">
                                     </q-avatar>
 
                                     <div class="text-subtitle1 q-mt-md q-mb-xs">{{ auth.full_name }}</div>
+                                    <q-btn
+                                        color="primary"
+                                        label="Tài khoản"
+                                        push
+                                        class="q-mb-sm"
+                                        size="sm"
+                                        v-close-popup
+                                        @click="redirectRouteName('Profile')"
+                                    />
 
                                     <q-btn
                                         color="primary"
@@ -159,7 +170,6 @@ export default defineComponent({
 
         const redirectRouteName = (routeName: string): void => {
             router.push({name: routeName})
-            checkActive()
         }
 
         const title = computed(() => {

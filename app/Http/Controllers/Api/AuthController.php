@@ -87,8 +87,6 @@ class AuthController extends Controller
 
     public function callbackProvider($provider): JsonResponse
     {
-        $user = null;
-
         try {
             $userProvider = Socialite::driver($provider)->stateless()->user();
 
@@ -118,12 +116,12 @@ class AuthController extends Controller
             return $this->responseError('Invalid provider email', [], 422);
         }
 
+
         $social = $this->socialRepository->getFirstBy([
             'social_id' => $userProvider->id,
             'social_provider' => $provider,
             'socialable_type' => User::class
         ]);
-
 
         if (!$social) {
             return $this->responseError('Bạn chưa liên kết với tài khoản nào !');

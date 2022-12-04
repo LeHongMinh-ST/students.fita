@@ -324,7 +324,7 @@ export default defineComponent({
             ],
         };
 
-        const isPwd = ref(true);
+        const isPwd = ref<boolean>(true);
 
         const ruleSelect = (val: any) => {
             if (val === null) {
@@ -337,55 +337,63 @@ export default defineComponent({
         const ticked = ref<any>([]);
         const loadingPermission = ref<boolean>(false);
         const permissionArray = ref<any>([]);
-
+        const isRequest = ref<boolean>(false)
         const handleSave = (): void => {
             if (isValidate()) {
-                const data = JSON.parse(JSON.stringify(payload));
-                data.teacher_code = data.is_teacher ? data.teacher_code : null;
-                if (idUser.value) {
-                    api.updateUser(data, idUser.value).then(res => {
-                        if (res) {
-                            eventBus.$emit('notify-success', 'Cập nhật người dùng thành công')
-                            redirectRouter('User')
-                        }
-                    }).catch(error => {
-                        let errors = _.get(error.response, 'data.error', {})
-                        if (Object.keys(errors).length === 0) {
-                            let message = _.get(error.response, 'data.message', '')
-                            $q.notify({
-                                icon: 'report_problem',
-                                message,
-                                color: 'negative',
-                                position: 'top-right'
-                            })
-                        }
-                        if (Object.keys(errors).length > 0) {
-                            setValidationErrors(errors)
-                        }
-                    }).finally(() => $q.loading.hide())
-                } else {
-                    api.createUser<IRoleResult>(data).then(res => {
-                        if (res) {
-                            eventBus.$emit('notify-success', 'Tạo mới người dùng thành công')
-                            redirectRouter('User')
-                        }
-                    }).catch(error => {
-                        let errors = _.get(error.response, 'data.error', {})
-                        console.log('errors', errors)
-                        if (Object.keys(errors).length === 0) {
-                            let message = _.get(error.response, 'data.message', '')
-                            $q.notify({
-                                icon: 'report_problem',
-                                message,
-                                color: 'negative',
-                                position: 'top-right'
-                            })
-                        }
-                        if (Object.keys(errors).length > 0) {
-                            setValidationErrors(errors)
-                        }
-                    }).finally(() => $q.loading.hide())
+                if (!isRequest.value) {
+                    isRequest.value = true
+                    $q.loading.show()
+                    const data = JSON.parse(JSON.stringify(payload));
+                    data.teacher_code = data.is_teacher ? data.teacher_code : null;
+                    if (idUser.value) {
+                        api.updateUser(data, idUser.value).then(res => {
+                            if (res) {
+                                eventBus.$emit('notify-success', 'Cập nhật người dùng thành công')
+                                redirectRouter('User')
+                            }
+                        }).catch(error => {
+                            let errors = _.get(error.response, 'data.error', {})
+                            if (Object.keys(errors).length === 0) {
+                                let message = _.get(error.response, 'data.message', '')
+                                $q.notify({
+                                    icon: 'report_problem',
+                                    message,
+                                    color: 'negative',
+                                    position: 'top-right'
+                                })
+                            }
+                            if (Object.keys(errors).length > 0) {
+                                setValidationErrors(errors)
+                            }
+                        }).finally(() => $q.loading.hide())
+                    } else {
+                        api.createUser<IRoleResult>(data).then(res => {
+                            if (res) {
+                                eventBus.$emit('notify-success', 'Tạo mới người dùng thành công')
+                                redirectRouter('User')
+                            }
+                        }).catch(error => {
+                            let errors = _.get(error.response, 'data.error', {})
+                            if (Object.keys(errors).length === 0) {
+                                let message = _.get(error.response, 'data.message', '')
+                                $q.notify({
+                                    icon: 'report_problem',
+                                    message,
+                                    color: 'negative',
+                                    position: 'top-right'
+                                })
+                            }
+                            if (Object.keys(errors).length > 0) {
+                                setValidationErrors(errors)
+                            }
+                        }).finally(() => {
+
+                            $q.loading.hide()
+                            isRequest.value = false
+                        })
+                    }
                 }
+
             }
         };
 

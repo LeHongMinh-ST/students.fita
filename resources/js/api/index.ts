@@ -1,9 +1,9 @@
-import axios, { AxiosPromise } from 'axios';
-import { IParams } from "../models/IParams";
+import axios, {AxiosPromise} from 'axios';
+import {IParams} from "../models/IParams";
 import IResult from "../models/IResult";
 import router from '../router';
-import { store } from '../store';
-import { AuthMutationTypes } from "../store/modules/auth/mutation-types";
+import {store} from '../store';
+import {AuthMutationTypes} from "../store/modules/auth/mutation-types";
 
 // @ts-ignore
 const baseUrl = import.meta.env.VITE_ADMIN_URL;
@@ -341,5 +341,19 @@ export default {
             method: 'put',
             url: `/students/update-learning-outcome/${id}`
         })
-    }
+    },
+    resetMyPassword<T>(data: any): AxiosPromise<IResult<T>> {
+        return apiAxios({
+            method: 'put',
+            data: data,
+            url: `/profile/reset-password`
+        })
+    },
+    updateProfile<T>(data: FormData): AxiosPromise<IResult<T>> {
+        return apiAxios({
+            method: 'post',
+            data: data,
+            url: `/profile`
+        })
+    },
 }

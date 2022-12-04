@@ -179,8 +179,6 @@ export default defineComponent({
         };
 
         const handleGetStudent = (): void => {
-
-
             if (!studentCode.value) {
                 setValidationErrors({
                     studentCode: ['Vui lòng nhập mã sinh viên']
@@ -193,8 +191,7 @@ export default defineComponent({
             };
             payload.student_code = studentCode.value;
             payload.page = page?.value?.currentPage;
-            api
-                .getAllStudent<IPaginate<any[]>>(payload)
+            api.getAllStudent<IPaginate<any[]>>(payload)
                 .then((res) => {
                     items.value = _.get(res, "data.data.students.data");
                     itemIDs.value = items.value.map(department => department.id);

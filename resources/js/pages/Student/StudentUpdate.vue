@@ -505,6 +505,10 @@
           const getStudent = (id: number) => {
               api.getStudentById<IStudentResult>(id).then(res => {
                   student.value = _.get(res, 'data.data.student', [])
+                  if (student.value.thumbnail) {
+                      imageUrl.value = student.value.thumbnail_url
+
+                  }
               }).catch(() => {
                   $q.notify({
                       icon: 'report_problem',

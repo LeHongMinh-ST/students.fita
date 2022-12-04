@@ -48,6 +48,12 @@ Route::group(['middleware' => ['jwt.auth', 'auth.admin']], function () {
         Route::delete('/{id}', [UserController::class, 'destroy'])->middleware('permission:user-delete');
     });
 
+    Route::prefix('profile')->group(function () {
+        Route::put('/reset-password', [UserController::class, 'resetMyPassword']);
+        Route::post('', [UserController::class, 'updateProfile']);
+
+    });
+
     Route::prefix('students')->group(function () {
         Route::get('/', [StudentController::class, 'index'])->middleware('permission:student-index');
         Route::post('/', [StudentController::class, 'store'])->middleware('permission:student-create');

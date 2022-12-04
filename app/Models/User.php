@@ -33,6 +33,8 @@ class User extends Authenticatable implements JWTSubject
         'is_teacher',
         'teacher_code',
         'phone',
+        'password',
+        'thumbnail'
     ];
 
     /**
@@ -76,7 +78,7 @@ class User extends Authenticatable implements JWTSubject
 
     public function setPasswordAttribute($password)
     {
-        $this->attributes['passowrd'] = Hash::make($password);
+        $this->attributes['password'] = Hash::make($password);
     }
 
     public function role(): BelongsTo
@@ -108,4 +110,13 @@ class User extends Authenticatable implements JWTSubject
     {
         return $this->hasMany(Report::class, 'approved_by');
     }
+
+    public function getThumbnailUrlAttribute(): string
+    {
+        return asset("/storage/{$this->thumbnail}");
+    }
+
+    protected $appends = [
+        'thumbnail_url',
+    ];
 }
