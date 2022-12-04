@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class StudentTemp extends Model
 {
@@ -43,8 +44,33 @@ class StudentTemp extends Model
         'admin_approved',
     ];
 
+    const ONLY_KEY_UPDATE = [
+        'gender',
+        'permanent_residence',
+        'major',
+        'dob',
+        'pob',
+        'address',
+        'countryside',
+        'training_type',
+        'email',
+        'phone',
+        'nationality',
+        'citizen_identification',
+        'ethnic',
+        'religion',
+        'academic_level',
+        'thumbnail',
+        'social_policy_object',
+    ];
+
     public function students(): BelongsTo
     {
         return $this->belongsTo(Student::class);
+    }
+
+    public function families(): HasMany
+    {
+        return $this->hasMany(FamilyTemp::class, 'student_temp_id');
     }
 }

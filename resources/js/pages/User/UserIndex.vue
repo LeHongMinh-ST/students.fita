@@ -182,7 +182,7 @@
         <q-dialog v-model="popupResetPassword" persistent>
             <q-card style="width: 300px">
                 <q-card-section>
-                    <div class="text-h6">Reset Password</div>
+                    <div class="text-h6">Đặt lại mật khẩu</div>
                 </q-card-section>
                 <q-card-section class="q-pt-none" style="width: 100%">
                 <label for="password" class="text-bold"

@@ -48,7 +48,7 @@
                                 </div>
                                 <q-separator/>
                                 <div class="main-action q-mt-md text-center">
-                                    <q-btn color="secondary" class="q-mr-sm q-mb-sm" outline
+                                    <q-btn color="secondary" class="q-mr-sm q-mb-sm"
                                            @click="redirectRouter('StudentUpdate',{id: student?.id})"
                                     >
                                         <q-icon name="fa-solid fa-pen-to-square" class="q-mr-sm"
@@ -56,10 +56,20 @@
                                         Chỉnh sửa
                                     </q-btn>
 
-                                    <q-btn color="red" outline class="q-mb-sm"  @click="dialogDelete = true">
+
+
+                                    <q-btn color="red"  class="q-mb-sm"  @click="dialogDelete = true">
                                         <q-icon name="fa-solid fa-trash " class="q-mr-sm"
                                                 size="xs"></q-icon>
                                         Xóa
+                                    </q-btn>
+
+                                    <q-btn color="green" class="q-mr-sm q-mb-sm"
+                                           @click="redirectRouter('StudentUpdate',{id: student?.id})"
+                                    >
+                                        <q-icon name="fa-solid fa-lock" class="q-mr-sm"
+                                                size="xs"></q-icon>
+                                        Đặt lại mật khẩu
                                     </q-btn>
                                 </div>
                             </div>

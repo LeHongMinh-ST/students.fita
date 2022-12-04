@@ -2,12 +2,14 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Enums\Student\StudentTempStatus;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Role\StoreRoleRequest;
 use App\Http\Requests\Student\StoretStudentRequest;
 use App\Http\Requests\Student\UpdateStudentRequest;
-use App\Jobs\CrawlDataLearningOutcomeJob;
+use App\Imports\StudentImport;
+use App\Models\StudentTemp;
 use App\Repositories\Student\StudentRepositoryInterface;
+use App\Repositories\Student\StudentTempRepositoryInterface;
 use App\Services\CrawlDataLearningOutcomeService;
 use App\Traits\ResponseTrait;
 use Illuminate\Http\JsonResponse;
@@ -15,14 +17,15 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
+use Maatwebsite\Excel\Facades\Excel;
 
 class StudentController extends Controller
 {
     use ResponseTrait;
 
     public function __construct(
-        private StudentRepositoryInterface $studentRepository
-
+        private StudentRepositoryInterface     $studentRepository,
+        private StudentTempRepositoryInterface $studentTempRepository
     )
     {
     }
@@ -40,6 +43,7 @@ class StudentController extends Controller
             $orCondition = [
                 ['student_code', 'like', '%' . $data['q'] . '%'],
                 ['email', 'like', '%' . $data['q'] . '%'],
+                ['email_edu', 'like', '%' . $data['q'] . '%'],
                 ['phone', 'like', '%' . $data['q'] . '%']
             ];
             $condition[] = ['full_name', 'or', $orCondition];
@@ -152,10 +156,109 @@ class StudentController extends Controller
         }
     }
 
-    public function updateStudent(UpdateStudentRequest $request) {
+    public function createStudentTemp(UpdateStudentRequest $request): JsonResponse
+    {
+        DB::beginTransaction();
+        try {
+            $auth = auth('students')->user();
 
+            $data = $request->all();
+            $student = $this->studentRepository->findById($auth->id);
+
+            if ($request->hasFile('image')) {
+                $path = Storage::disk('public')->putFile('images/students/thumbnail', $request->file('image'));
+                $data['thumbnail'] = $path;
+            }
+
+            $student?->fill(array_merge($data, [
+                'updated_by' => auth()->id(),
+            ]));
+
+            $studentTemp = $this->studentRepository->getFirstBy([
+                'student_id' => $auth->id,
+                'status_approved' => StudentTempStatus::Pending
+            ]);
+
+            if ($studentTemp) {
+                $studentTemp->fill(array_merge($data, [
+                    'updated_by' => auth()->id(),
+                ]));
+            } else {
+                $dataStudent = array_merge($student->toArray(), [
+                    'student_id' => $auth->id,
+                    'status_approved' => StudentTempStatus::Pending
+                ]);
+                $studentTemp = $this->studentRepository->create($dataStudent);
+            }
+
+            if (!empty($data['families'])) {
+                foreach ($data['families'] as $family) {
+                    $studentTemp->families()->updateOrCreate([
+                        'family_id' => $family['id'],
+                    ], array_merge($family));
+                }
+            }
+
+            DB::commit();
+            return $this->responseSuccess();
+        } catch (\Exception $exception) {
+            DB::rollBack();
+            Log::error('Error update student ', [
+                'method' => __METHOD__,
+                'message' => $exception->getMessage()
+            ]);
+            return $this->responseError();
+        }
     }
 
+    public function updateStudentByStudentTemp($id)
+    {
+        try {
+            $studentTemp = $this->studentRepository->getFirstBy(['student_id' => $id,]);
+            $studentTemp = $this->handleUpdateStudentByStudentTemp($studentTemp);
+
+        } catch (\Exception $exception) {
+            DB::rollBack();
+            Log::error('Error update update Student By StudentTemp ', [
+                'method' => __METHOD__,
+                'message' => $exception->getMessage()
+            ]);
+            return $this->responseError();
+        }
+    }
+
+    private function handleUpdateStudentByStudentTemp($studentTemp)
+    {
+
+        switch ($studentTemp->status_approved) {
+            case StudentTempStatus::Pending:
+                $studentTemp->status_approved = StudentTempStatus::ClassMonitorApproved;
+                break;
+            case StudentTempStatus::ClassMonitorApproved:
+                $studentTemp->status_approved = StudentTempStatus::TeacherApproved;
+                break;
+            case StudentTempStatus::TeacherApproved:
+                $studentTemp->status_approved = StudentTempStatus::Approved;
+                $familyTemp = $studentTemp->families;
+                $student = $this->studentRepository->getFirstBy(['id' => $studentTemp->student_id]);
+
+                $data = array_intersect_key($studentTemp->toArray(), array_flip(StudentTemp::ONLY_KEY_UPDATE));
+
+                $student?->fill($data);
+
+                $this->studentRepository->createOrUpdate($data);
+                if (!empty($familyTemp)) {
+                    foreach ($familyTemp as $family) {
+                        $student->families()->updateOrCreate(['id' => $family['family_id']], $family);
+                    }
+                }
+                break;
+            case StudentTempStatus::Approved:
+                break;
+        }
+
+        return $studentTemp;
+    }
 
     /**
      * @param array $data
@@ -189,6 +292,24 @@ class StudentController extends Controller
                 'student' => $student->load(['learningOutcomes'])
             ]);
         } catch (\Exception $exception) {
+            Log::error('Error update learning outcome student', [
+                'method' => __METHOD__,
+                'message' => $exception->getMessage()
+            ]);
+            return $this->responseError();
+        }
+
+    }
+
+    public function importStudentToClass(Request $request, $classId): JsonResponse
+    {
+        DB::beginTransaction();
+        try {
+            Excel::import(new StudentImport((int)$classId), $request->file('excel')->store('files'));
+            DB::commit();
+            return $this->responseSuccess();
+        }catch (\Exception $exception) {
+            DB::rollBack();
             Log::error('Error update learning outcome student', [
                 'method' => __METHOD__,
                 'message' => $exception->getMessage()

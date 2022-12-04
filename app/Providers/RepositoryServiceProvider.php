@@ -39,6 +39,8 @@ use App\Repositories\Social\SocialRepository;
 use App\Repositories\Social\SocialRepositoryInterface;
 use App\Repositories\Student\StudentRepository;
 use App\Repositories\Student\StudentRepositoryInterface;
+use App\Repositories\Student\StudentTempRepository;
+use App\Repositories\Student\StudentTempRepositoryInterface;
 use App\Repositories\Subject\SubjectRepository;
 use App\Repositories\Subject\SubjectRepositoryInterface;
 use App\Repositories\Tag\TagRepository;
@@ -65,6 +67,7 @@ class RepositoryServiceProvider extends ServiceProvider
         $this->app->bind(PermissionRepositoryInterface::class, PermissionRepository::class);
         $this->app->bind(GroupPermissionRepositoryInterface::class, GroupPermissionRepository::class);
         $this->app->bind(StudentRepositoryInterface::class, StudentRepository::class);
+        $this->app->bind(StudentTempRepositoryInterface::class, StudentTempRepository::class);
         $this->app->bind(FamilyRepositoryInterface::class, FamilyRepository::class);
         $this->app->bind(DepartmentRepositoryInterface::class, DepartmentRepository::class);
         $this->app->bind(GeneralClassRepositoryInterface::class, GeneralClassRepository::class);
