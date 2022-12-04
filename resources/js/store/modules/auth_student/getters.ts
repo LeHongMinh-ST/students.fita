@@ -1,16 +1,20 @@
 import {GetterTree} from 'vuex'
-import {isAuthenticated, authUser, accessToken, isAuthenticatedStudent} from '../../../@type'
+import {
+    accessTokenStudent,
+    authUserStudent,
+    isAuthenticatedStudent
+} from '../../../@type'
 import {RootState} from '../../index'
 import {State} from './state'
 
 export type Getters = {
-    getIsAuthenticated(state: State): isAuthenticated,
-    getAuthUser(state: State): authUser,
-    getAccessToken(state: State): accessToken,
+    getIsAuthenticatedStudent(state: State): isAuthenticatedStudent,
+    getAuthUserStudent(state: State): authUserStudent,
+    getAccessTokenStudent(state: State): accessTokenStudent,
 }
 
 export const getters: GetterTree<State, RootState> & Getters = {
-    getIsAuthenticated: (state) => state.isAuthenticated,
-    getAuthUser: (state) => state.authUser,
-    getAccessToken: (state) => state.accessToken
+    getIsAuthenticatedStudent: (state) => state.isAuthenticatedStudent,
+    getAuthUserStudent: (state) => state.authUserStudent,
+    getAccessTokenStudent: (state) => state.accessTokenStudent
 }

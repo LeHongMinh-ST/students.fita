@@ -27,29 +27,27 @@ class AuthStudentController extends Controller
     {
         request()->merge([$this->username() => request()->input('user_name')]);
         $credentials = request([$this->username(), 'password']);
-        if (!$token = auth('student')->attempt($credentials)) {
+        if (!$token = auth('students')->attempt($credentials)) {
             return response()->json(['error' => 'Unauthorized'], 401);
         }
-
         return $this->respondWithToken($token);
     }
 
     public function logout(): JsonResponse
     {
-        auth('student')->logout();
+        auth('students')->logout();
 
         return response()->json(['message' => 'Đăng xuất thành công']);
     }
 
     public function me(): JsonResponse
     {
-        $user = auth('student')->user();
-
+        $user = auth('students')->user();
         if (empty($user)) {
             return response()->json(['error' => 'Unauthorized'], 401);
         };
 
-        return response()->json($user);
+        return response()->json($user->load(['generalClass', 'families', 'learningOutcomes', 'reports']));
     }
 
     /**
@@ -70,7 +68,7 @@ class AuthStudentController extends Controller
 
     private function username(): string
     {
-        return filter_var(request()->input('user_name'), FILTER_VALIDATE_EMAIL) ? 'email' : 'user_name';
+        return filter_var(request()->input('user_name'), FILTER_VALIDATE_EMAIL) ? 'email' : 'student_code';
     }
 
     public function redirectToProvider($provider): JsonResponse

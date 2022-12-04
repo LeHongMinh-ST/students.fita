@@ -1,5 +1,5 @@
-export type isAuthenticated = boolean
+export type isAuthenticatedStudent = boolean
 
-export type authUser = {}
+export type authUserStudent = {}
 
-export type accessToken = string
+export type accessTokenStudent = string

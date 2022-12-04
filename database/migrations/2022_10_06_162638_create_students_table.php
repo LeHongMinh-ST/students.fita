@@ -70,9 +70,9 @@ return new class extends Migration
         $table->string('thumbnail')->nullable();
         $table->string('citizen_identification')->nullable();
         $table->string('nationality')->nullable();
-        $table->integer('ethnic')->nullable();
-        $table->integer('religion')->nullable();
-        $table->integer('academic_level')->nullable();
+        $table->string('ethnic')->nullable();
+        $table->string('religion')->nullable();
+        $table->string('academic_level')->nullable();
         $table->tinyInteger('social_policy_object')->default(StudentSocialPolicyObject::None)->nullable();
         $table->text('note')->nullable();
         $table->tinyInteger('status')->default(StudentStatus::Studying)->nullable();

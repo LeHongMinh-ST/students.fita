@@ -1,27 +1,27 @@
 import { MutationTree } from 'vuex'
 
-import {isAuthenticated, authUser, accessToken, isAuthenticatedStudent} from '../../../@type'
+import {isAuthenticatedStudent, authUserStudent, accessTokenStudent} from '../../../@type'
 
 import { State } from './state'
 
-import {AuthMutationTypes as MutationTypes} from './mutation-types'
+import {AuthStudentMutationTypes as MutationTypes} from './mutation-types'
 
 export type Mutations<S = State> = {
-    [MutationTypes.SET_LOGIN_STATUS](state: S, payload: isAuthenticated): void
-    [MutationTypes.SET_AUTH_USER](state: S, payload: authUser): void
-    [MutationTypes.SET_ACCESS_TOKEN](state: S, payload: accessToken): void
+    [MutationTypes.SET_LOGIN_STATUS_STUDENT](state: S, payload: isAuthenticatedStudent): void
+    [MutationTypes.SET_AUTH_USER_STUDENT](state: S, payload: authUserStudent): void
+    [MutationTypes.SET_ACCESS_TOKEN_STUDENT](state: S, payload: accessTokenStudent): void
 }
 
 export const  mutations: MutationTree<State> & Mutations = {
-    [MutationTypes.SET_LOGIN_STATUS](state: State, isAuthenticated: isAuthenticated) {
-        state.isAuthenticated = isAuthenticated
+    [MutationTypes.SET_LOGIN_STATUS_STUDENT](state: State, isAuthenticatedStudent: isAuthenticatedStudent) {
+        state.isAuthenticatedStudent = isAuthenticatedStudent
     },
 
-    [MutationTypes.SET_AUTH_USER](state: State, authUser: authUser) {
-        state.authUser = authUser
+    [MutationTypes.SET_AUTH_USER_STUDENT](state: State, authUserStudent: authUserStudent) {
+        state.authUserStudent = authUserStudent
     },
 
-    [MutationTypes.SET_ACCESS_TOKEN](state: State, accessToken: accessToken) {
-        state.accessToken = accessToken
+    [MutationTypes.SET_ACCESS_TOKEN_STUDENT](state: State, accessTokenStudent: accessTokenStudent) {
+        state.accessTokenStudent = accessTokenStudent
     }
 }

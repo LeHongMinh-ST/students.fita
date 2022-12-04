@@ -116,12 +116,12 @@ Route::group(['prefix' => 'student'], function () {
         Route::get('social/{provider}', [AuthStudentController::class, 'redirectToProvider']);
         Route::post('social/{provider}/callback', [AuthStudentController::class, 'callbackProvider']);
 
-        Route::group(['middleware' => ['jwt.auth', 'auth.student']], function () {
+        Route::group(['middleware' => [ 'auth.student']], function () {
             Route::get('me', [AuthStudentController::class, 'me']);
         });
     });
 
-    Route::group(['middleware' => []], function () {
+    Route::group(['middleware' => ['jwt.auth', 'auth.student']], function () {
         Route::prefix('profile')->group(function () {
             Route::get('/', [StudentController::class, 'getProfileStudent']);
             Route::put('/update-learning-outcome/{id}', [StudentController::class, 'updateDataLearningOutcome']);

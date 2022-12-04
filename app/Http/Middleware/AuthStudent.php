@@ -20,7 +20,7 @@ class AuthStudent
      */
     public function handle(Request $request, Closure $next)
     {
-        if(auth('student')->check()){
+        if(auth('students')->check()){
             return $next($request);
         }
 

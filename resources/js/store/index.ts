@@ -12,7 +12,7 @@ export type RootState = {
 
 export type Store = AuthStore<Pick<RootState, 'auth'>>
     & HomeStore<Pick<RootState, 'home'>>
-    &AuthStudentStore<Pick<RootState, 'authStudent'>>
+    & AuthStudentStore<Pick<RootState, 'authStudent'>>
 
 export const store = createStore({
     modules: {

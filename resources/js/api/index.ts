@@ -355,5 +355,5 @@ export default {
             data: data,
             url: `/profile`
         })
-    },
+    }
 }

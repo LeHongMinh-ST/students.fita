@@ -46,7 +46,7 @@ const routeAdmin: Array<RouteRecordRaw> = [
                 path: ':id',
                 name: 'StudentDetail',
                 component: () => import('../pages/Student/StudentDetail.vue'),
-                meta: {isAuthenticated: true,permission: 'student-index'},
+                meta: {isAuthenticated: true, permission: 'student-index'},
             },
         ],
         meta: {isAuthenticated: true},
@@ -190,19 +190,19 @@ const routeStudent: Array<RouteRecordRaw> = [
         path: '',
         name: 'HomeStudent',
         component: () => import('../pages/StudentPage/HomeStudent.vue'),
-        meta: {isAuthenticated: false},
+        meta: {isAuthenticatedStudent: false},
     },
     {
         path: 'update-profile',
         name: 'StudentUpdateProfile',
         component: () => import('../pages/StudentPage/StudentUpdateProfile.vue'),
-        meta: {isAuthenticated: false},
+        meta: {isAuthenticatedStudent: false},
     },
     {
         path: 'class',
         name: 'StudentUpdateProdile',
         component: () => import('../pages/StudentPage/StudentUpdateProfile.vue'),
-        meta: {isAuthenticated: false},
+        meta: {isAuthenticatedStudent: false},
     },
 ]
 
@@ -216,6 +216,7 @@ const routes: Array<RouteRecordRaw> = [
     },
     {
         path: '/student',
+        meta: {isAuthenticatedStudent: true},
         component: () => import('../layouts/StudentLayout.vue'),
         children: routeStudent,
     },
@@ -286,14 +287,9 @@ router.beforeEach((to, from, next) => {
         }
         next({name: 'Login'})
     } else if (to.matched.some((route) => route.meta.isAuthenticatedStudent)) {
-        if (store.state.authStudent.isAuthenticated) {
+        if (store.state.authStudent.isAuthenticatedStudent) {
             if (to.name === 'LoginStudent') {
                 next({name: 'HomeStudent'})
-            }
-            const permission = to.meta.permission
-            // @ts-ignore
-            if (permission && !checkPermission(permission)) {
-                next({name: 'Error403'})
             }
             next()
         }

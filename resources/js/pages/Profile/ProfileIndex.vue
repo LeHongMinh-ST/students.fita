@@ -158,7 +158,7 @@
                                             <span class="social-text">Liên kết với tài khoản Google</span>
                                         </span>
                                 </div>
-                                
+
                                 <div v-else class="google social-btn q-btn text-white">
                                         <span>
                                             <q-icon class="social-icon" name="fa-brands fa-google-plus-g" size="md"/>

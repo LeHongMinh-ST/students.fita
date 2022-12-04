@@ -20,7 +20,10 @@ class StudentController extends Controller
 {
     use ResponseTrait;
 
-    public function __construct(private StudentRepositoryInterface $studentRepository)
+    public function __construct(
+        private StudentRepositoryInterface $studentRepository
+
+    )
     {
     }
 
@@ -115,7 +118,6 @@ class StudentController extends Controller
             }
 
             $data['email_edu'] = $data['student_code'] . config('vnua.mail_student');
-
             $student?->fill(array_merge($data, [
                 'updated_by' => auth()->id(),
             ]));
@@ -146,6 +148,10 @@ class StudentController extends Controller
             ]);
             return $this->responseError();
         }
+    }
+
+    public function updateStudent(UpdateStudentRequest $request) {
+
     }
 
 

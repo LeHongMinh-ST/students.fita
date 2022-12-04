@@ -1,15 +1,16 @@
 import { ActionTree } from 'vuex'
 import {RootState} from '../../index'
 import { State } from './state'
-import {AuthActionTypes} from './actions-type'
+import {AuthStudentActionTypes} from './actions-type'
 import router from '../../../router'
 
 export interface Actions {
-    [AuthActionTypes.LOGOUT_ACTION]({ commit }): void
+    // @ts-ignore
+    [AuthStudentActionTypes.LOGOUT_ACTION]({ commit }): void
 }
 
 export const actions: ActionTree<State, RootState> & Actions = {
-    [AuthActionTypes.LOGOUT_ACTION]({ commit }) {
+    [AuthStudentActionTypes.LOGOUT_ACTION_STUDENT]({ commit }) {
         commit('updateLoginStatus', false)
         commit('updateLoginStudentStatus', false)
         commit('updateAuthUser', {})

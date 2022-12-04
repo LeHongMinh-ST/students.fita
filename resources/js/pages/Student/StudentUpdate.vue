@@ -519,7 +519,7 @@
               })
           }
 
-          const redirectRouter = (nameRoute: string, params: any | [] = null): void => {
+          const redirectRouter = (nameRoute: string, params: any | {} = null): void => {
               router.push({name: nameRoute, params: params})
           }
 
@@ -554,7 +554,7 @@
                   api.updateStudent<IStudentResult>(formData, parseInt(studentCode.value)).then(res => {
                       if (res) {
                           eventBus.$emit('notify-success', 'Cập nhật sinh viên thành công')
-                          const id = _.get(res, 'data.data.student.id', '')
+                          const id = studentCode.value
                           redirectRouter('StudentDetail', {id: id})
                       }
                   }).catch(error => {

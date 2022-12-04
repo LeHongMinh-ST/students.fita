@@ -1,13 +1,13 @@
-import {isAuthenticated, authUser, accessToken} from '../../../@type'
+import {isAuthenticatedStudent, authUserStudent, accessTokenStudent} from '../../../@type'
 
 export type State = {
-    isAuthenticated: isAuthenticated,
-    authUser: authUser,
-    accessToken: accessToken,
+    isAuthenticatedStudent: isAuthenticatedStudent,
+    authUserStudent: authUserStudent,
+    accessTokenStudent: accessTokenStudent,
 }
 
 export const state: State = {
-    isAuthenticated: false,
-    authUser: {},
-    accessToken: ''
+    isAuthenticatedStudent: false,
+    authUserStudent: {},
+    accessTokenStudent: ''
 }
