@@ -56,7 +56,7 @@
                                         Chỉnh sửa
                                     </q-btn>
 
-                                    <q-btn color="red" outline class="q-mb-sm">
+                                    <q-btn color="red" outline class="q-mb-sm"  @click="dialogDelete = true">
                                         <q-icon name="fa-solid fa-trash " class="q-mr-sm"
                                                 size="xs"></q-icon>
                                         Xóa
@@ -499,7 +499,19 @@
                 </div>
             </div>
         </div>
+        <q-dialog v-model="dialogDelete" persistent>
+            <q-card>
+                <q-card-section class="row items-center">
+                    <q-avatar icon="fa-solid fa-trash" color="red" text-color="white"/>
+                    <span class="q-ml-sm">Bạn có chắc chắn muốn xóa! Dữ liệu không thể phục hồi!</span>
+                </q-card-section>
 
+                <q-card-actions align="right">
+                    <q-btn flat label="Đóng" color="primary" @click="dialogDelete = false" v-close-popup/>
+                    <q-btn label="Đồng ý" color="red" @click="handleDelete" v-close-popup/>
+                </q-card-actions>
+            </q-card>
+        </q-dialog>
     </div>
 </template>
 
@@ -523,7 +535,7 @@ export default defineComponent({
         const tab = ref<string>('home')
         const $q = useQuasar()
 
-
+        const dialogDelete = ref<boolean>(false)
 
         onMounted(() => {
             userId.value = <string>route.params.id
@@ -554,11 +566,29 @@ export default defineComponent({
                 loading.value = false
             })
         }
+
+        const handleDelete = (): void => {
+            $q.loading.show()
+            api.deleteStudent(student.value.id).then((res) => {
+                if (res) {
+                    eventBus.$emit('notify-success', 'Xóa sinh viên thành công')
+                    redirectRouter('StudentIndex')
+                }
+            }).catch(() => {
+                $q.notify({
+                    icon: 'report_problem',
+                    message: 'Không xóa được sinh viên!',
+                    color: 'negative',
+                    position: 'top-right'
+                })
+            }).finally(() => $q.loading.hide())
+        }
+
         const redirectRouter = (nameRoute: string, params: any | [] = null): void => {
             router.push({name: nameRoute, params: params})
         }
         return {
-            student, tab, handleUpdateLearningOutcome, loading, redirectRouter
+            student, tab, handleUpdateLearningOutcome, loading, redirectRouter,dialogDelete, handleDelete
         }
     }
 })

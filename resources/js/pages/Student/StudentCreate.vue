@@ -378,7 +378,7 @@
                 </q-card-section>
                 <q-separator/>
                 <q-card-section>
-                    <q-btn @click="handleCreateStudent" no-caps color="secondary" class="q-mr-sm">
+                    <q-btn :disable="isRequest" @click="handleCreateStudent" no-caps color="secondary" class="q-mr-sm">
                         <q-icon name="fa-solid fa-save" class="q-mr-sm" size="xs"></q-icon>
                         Lưu
                     </q-btn>
@@ -531,8 +531,8 @@ export default defineComponent({
         const isRequest = ref<boolean>(false)
 
         const handleCreateStudent = () => {
-
             if (!isRequest.value) {
+                $q.loading.show()
                 isRequest.value = true
                 const formData = new FormData()
 
@@ -565,6 +565,7 @@ export default defineComponent({
                     }
                 }).finally(()=> {
                     isRequest.value = false
+                    $q.loading.hide()
                 })
             }
 
@@ -592,7 +593,8 @@ export default defineComponent({
             deleteFamily,
             student,
             convertTime,
-            resetValidateErrors
+            resetValidateErrors,
+            isRequest
         }
     }
 })

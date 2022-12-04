@@ -366,7 +366,7 @@
                   </q-card-section>
                   <q-separator/>
                   <q-card-section>
-                      <q-btn @click="handleUpdateStudent" no-caps color="secondary" class="q-mr-sm">
+                      <q-btn :disable="isRequest" @click="handleUpdateStudent" no-caps color="secondary" class="q-mr-sm">
                           <q-icon name="fa-solid fa-save" class="q-mr-sm" size="xs"></q-icon>
                           Lưu
                       </q-btn>
@@ -507,7 +507,6 @@
                   student.value = _.get(res, 'data.data.student', [])
                   if (student.value.thumbnail) {
                       imageUrl.value = student.value.thumbnail_url
-
                   }
               }).catch(() => {
                   $q.notify({
@@ -542,6 +541,7 @@
           const isRequest = ref<boolean>(false)
           const handleUpdateStudent = () => {
               if (!isRequest.value) {
+                  $q.loading.show()
                   isRequest.value = true
                   const formData = new FormData()
 
@@ -577,6 +577,7 @@
                       }
                   }).finally(()=> {
                       isRequest.value = false
+                      $q.loading.hide()
                   })
               }
 
@@ -604,7 +605,8 @@
               deleteFamily,
               student,
               convertTime,
-              resetValidateErrors
+              resetValidateErrors,
+              isRequest
           }
       }
   })
