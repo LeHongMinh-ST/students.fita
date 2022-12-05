@@ -207,4 +207,10 @@ class UserController extends Controller
             return $this->responseError();
         }
     }
+
+    public function getTemplateImportFile()
+    {
+        $file = public_path() . '/template/student_temple.xlsx';
+        return response()->download($file, 'student_temple.xlsx');
+    }
 }

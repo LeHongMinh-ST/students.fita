@@ -71,6 +71,7 @@ Route::group(['middleware' => ['jwt.auth', 'auth.admin']], function () {
         Route::put('/{id}', [GeneralClassController::class, 'update'])->middleware('permission:class-update');
         Route::put('/{id}/add-student', [GeneralClassController::class, 'addStudentToClass'])->middleware('permission:class-update');
         Route::post('/{id}/import-student', [StudentController::class, 'importStudentToClass'])->middleware(['permission:class-update', 'permission:student-create']);
+        Route::get('/{id}/import-student/get-template-import-file', [StudentController::class, 'getTemplateImportFile'])->middleware(['permission:class-update', 'permission:student-create']);
         Route::delete('/{id}', [GeneralClassController::class, 'destroy'])->middleware('permission:class-delete');
     });
 
