@@ -36,7 +36,7 @@
 
                 </div>
             </q-card-section>
-            <q-separator inset />
+            <q-separator class="q-mt-md" inset />
             <q-card-section>
                 <q-markup-table class="role-table">
                     <thead>
