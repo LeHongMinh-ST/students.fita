@@ -149,13 +149,11 @@ class GeneralClassController extends Controller
     public function addStudentToClass(AddStudentGeneralClassRequest $request, $id): JsonResponse
     {
         try {
-            $studentId = $request->input('student_id', '');
-            $student = $this->studentRepository->findById($studentId);
-            $student?->fill([
+            $studentIds = $request->input('student_ids', '');
+            $this->studentRepository->update(['id', 'in', $studentIds],[
                 'class_id' => $id,
                 'updated_by' => auth()->id(),
             ]);
-            $this->studentRepository->createOrUpdate($student);
             return $this->responseSuccess();
         } catch (\Exception $exception) {
             Log::error('Error add student to class', [
