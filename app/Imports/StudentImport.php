@@ -6,11 +6,15 @@ use App\Enums\Student\StudentRole;
 use App\Enums\Student\StudentSocialPolicyObject;
 use App\Enums\Student\StudentStatus;
 use App\Models\Student;
+use Maatwebsite\Excel\Concerns\Importable;
 use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
+use Maatwebsite\Excel\Concerns\WithValidation;
 
-class StudentImport implements ToModel, WithHeadingRow
+class StudentImport implements ToModel, WithHeadingRow, WithValidation
 {
+    use Importable;
+
     private int $classId;
 
     public function __construct($classId)
@@ -26,8 +30,9 @@ class StudentImport implements ToModel, WithHeadingRow
     public function model(array $row)
     {
         return new Student([
-            'full_name' => @$row['ho_va_ten'],
-            'student_code' => @$row['ma_sinh_vien'],
+            'full_name' => $row['ho_va_ten'],
+            'student_code' => $row['ma_sinh_vien'],
+            'password' => @$row['ngay_sinh'],
             'gender' => @$row['gioi_tinh'],
             'permanent_residence' => @$row['ho_khau_thuong_chu'],
             'major' => @$row['chuyen_nganh'],
@@ -39,7 +44,7 @@ class StudentImport implements ToModel, WithHeadingRow
             'school_year' => @$row['nien_khoa'],
             'email' => @$row['email'],
             'email_edu' => $row['ma_sinh_vien'] . config('vnua.mail_student'),
-            'phone' => @ $row['so_dien_thoai'],
+            'phone' => @$row['so_dien_thoai'],
             'nationality' => @$row['quoc_tich'],
             'citizen_identification' => @$row['can_cuoc_cong_dan'],
             'ethnic' => @$row['dan_toc'],
@@ -51,5 +56,23 @@ class StudentImport implements ToModel, WithHeadingRow
             'role' => StudentRole::Normal,
             'class_id' => $this->classId
         ]);
+    }
+
+    public function rules(): array
+    {
+        return [
+            '*.ho_va_ten' => 'required',
+            '*.ma_sinh_vien' => 'required|unique:students,student_code',
+            '*.ngay_sinh' => 'required',
+        ];
+    }
+
+    public function customValidationAttributes()
+    {
+        return [
+            'ho_va_ten' => 'Họ và tên',
+            'ma_sinh_vien' => 'Mã sinh viên',
+            'ngay_sinh' => 'Ngày sinh',
+        ];
     }
 }

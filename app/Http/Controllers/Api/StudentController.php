@@ -74,7 +74,7 @@ class StudentController extends Controller
     {
         $relationships = ['generalClass', 'families', 'learningOutcomes', 'reports'];
         $columns = ['*'];
-        return $this->responseSuccess(['student' => $this->studentRepository->getFirstBy(['id'=> $id], $columns, $relationships)]);
+        return $this->responseSuccess(['student' => $this->studentRepository->getFirstBy(['id' => $id], $columns, $relationships)]);
     }
 
     public function store(StoretStudentRequest $request): JsonResponse
@@ -305,12 +305,30 @@ class StudentController extends Controller
     {
         DB::beginTransaction();
         try {
+
+            if (!$request->hasFile('excel')) {
+                return $this->responseError('Error', [
+                    'file' => 'Tệp không được để trống'
+                ]);
+            }
+
             Excel::import(new StudentImport((int)$classId), $request->file('excel')->store('files'));
+
             DB::commit();
             return $this->responseSuccess();
-        }catch (\Exception $exception) {
+        } catch (\Maatwebsite\Excel\Validators\ValidationException $exception) {
             DB::rollBack();
-            Log::error('Error update learning outcome student', [
+
+            $errors = $exception->failures();
+
+            Log::error('Error import student excel', [
+                'method' => __METHOD__,
+                'message' => $exception->getMessage()
+            ]);
+            return $this->responseError('Error', $errors, 400);
+        } catch (\Exception $exception) {
+            DB::rollBack();
+            Log::error('Error import student', [
                 'method' => __METHOD__,
                 'message' => $exception->getMessage()
             ]);
