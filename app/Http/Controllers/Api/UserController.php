@@ -44,6 +44,11 @@ class UserController extends Controller
             $condition[] = ['user_name', 'or', $orCondition];
         }
 
+        if (!empty($data['is_teacher']) && $data['is_teacher'] == 1) {
+            $condition[] = ['is_teacher', '=', 1];
+
+        }
+
         $user = $this->userRepository->getListPaginateBy($condition, $relationships, $columns, $paginate);
 
         return $this->responseSuccess(['users' => $user]);
