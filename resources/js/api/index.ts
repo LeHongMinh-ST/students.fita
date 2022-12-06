@@ -1,9 +1,9 @@
-import axios, {AxiosPromise} from 'axios';
-import {IParams} from "../models/IParams";
+import axios, { AxiosPromise } from 'axios';
+import { IParams } from "../models/IParams";
 import IResult from "../models/IResult";
 import router from '../router';
-import {store} from '../store';
-import {AuthMutationTypes} from "../store/modules/auth/mutation-types";
+import { store } from '../store';
+import { AuthMutationTypes } from "../store/modules/auth/mutation-types";
 
 // @ts-ignore
 const baseUrl = import.meta.env.VITE_ADMIN_URL;
@@ -275,6 +275,14 @@ export default {
         return apiAxios({
             method: 'delete',
             url: `/classes/${id}`,
+        })
+    },
+
+    addStudent<T>(data: any, id: any): AxiosPromise<IResult<T>> {
+        return apiAxios({
+            method: 'put',
+            url: `/classes/${id}/add-student`,
+            data: data
         })
     },
 
