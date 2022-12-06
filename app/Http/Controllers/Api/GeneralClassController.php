@@ -148,7 +148,6 @@ class GeneralClassController extends Controller
 
     public function addStudentToClass(AddStudentGeneralClassRequest $request, $id): JsonResponse
     {
-        if($id == "null") $id = null;
         try {
             $studentIds = $request->get('student_ids', []);
             $this->studentRepository->update([['id', 'in', $studentIds]],[

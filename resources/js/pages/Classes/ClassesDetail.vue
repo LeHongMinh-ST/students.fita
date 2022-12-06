@@ -170,7 +170,6 @@
                 </div>
             </div>
         </q-card-section>
-      <q-card-section>Danh sách sinh viên</q-card-section>
       <q-card-section>
         <q-markup-table class="role-table" >
           <thead>
@@ -409,7 +408,8 @@ export default defineComponent({
             if (!isRequest.value) isRequest.value = true
             const listId = Object.values(checkboxArray.value).map(value => parseInt(value))
             try {
-                await api.addStudent({student_ids: listId}, null)
+                await api.addStudent({student_ids: listId}, 0)
+                checkboxArray.value = [];
                 handleGetStudents()
                 generateNotify("Xóa công sinh viên", true)
             } catch (error) {
@@ -504,7 +504,7 @@ export default defineComponent({
         const payload: any = {
             page: page.value.currentPage,
             filter_student_code: keySearch,
-            filter_class_code: 'null'
+            class_id: 0
         };
         getStuentByCondition(payload, optionSelectStudent)
         })

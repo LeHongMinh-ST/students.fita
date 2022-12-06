@@ -53,10 +53,6 @@ class StudentController extends Controller
             $condition[] = ['student_code', 'like', '%' . $data['filter_student_code'] . '%'];
         }
 
-        if (isset($data['filter_class_code']) && $data['filter_class_code'] == 'null') {
-            $condition[] = ['class_id','=', null];
-        }
-
         if (isset($data['student_code'])) {
             $condition[] = ['student_code', '=', $data['student_code']];
         }
