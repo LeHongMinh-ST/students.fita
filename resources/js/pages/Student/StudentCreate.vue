@@ -239,7 +239,7 @@
                     </div>
 
                     <div class="form-group">
-                        <label class="text-bold">Lớp <span class="required">*</span></label>
+                        <label class="text-bold">Lớp </label>
                         <q-select
                             outlined
                             dense

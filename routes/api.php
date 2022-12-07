@@ -129,5 +129,7 @@ Route::group(['prefix' => 'student'], function () {
             Route::put('/update-learning-outcome/{id}', [StudentController::class, 'updateDataLearningOutcome']);
             Route::put('/{id}', [StudentController::class, 'updateProfile']);
         });
+
+
     });
 });

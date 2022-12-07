@@ -225,7 +225,6 @@ abstract class BaseRepository implements BaseRepositoryInterface
     public function update(array $condition, array $data): bool
     {
         $this->applyConditions($condition);
-
         $data = $this->model->update($data);
 
         $this->resetModel();
