@@ -50,7 +50,7 @@
                     </q-btn>
 
                     <div class="table-wrapper-search">
-                        <q-input bottom-slots v-model="search" label="Nhập từ khóa để tìm kiếm" outlined dense>
+                        <q-input bottom-slots v-model="search" id="searchInput" name="searchInput" label="Nhập từ khóa để tìm kiếm" outlined dense>
 
                             <template v-slot:append>
                                 <q-icon v-if="text !== ''" name="close" @click="text = ''" class="cursor-pointer"/>
@@ -132,9 +132,9 @@
                                                               size="xs"></q-icon>Xoá</span>
                                             </q-item>
                                             <q-item clickable v-close-popup
-                                                    @click="openDialogResetPassword()">
-                                                <span><q-icon name="fa-solid fa-trash" class="q-mr-sm"
-                                                              size="xs"></q-icon>Reset mật khẩu</span>
+                                                    @click="openDialogResetPassword(getValueLodash(user, 'id', 0))">
+                                                <span><q-icon name="fa-solid fa-lock" class="q-mr-sm"
+                                                              size="xs"></q-icon>Đặt lại mật khẩu</span>
                                             </q-item>
                                         </q-list>
                                     </q-menu>
@@ -185,14 +185,14 @@
                     <div class="text-h6">Đặt lại mật khẩu</div>
                 </q-card-section>
                 <q-card-section class="q-pt-none" style="width: 100%">
-                <label for="password" class="text-bold"
+                <label class="text-bold"
                   >Mật khẩu mới <span class="required">*</span></label
                 >
                 <q-input
                   outlined
                   dense
                   v-model="password"
-                  id="password"
+                  id="passwordInput"
                   :ref="refPassword"
                   :rules="[(val) =>(val && val.length > 0) || 'Trường mật khẩu không được bỏ trống']"
                   :error-message="getValidationErrors('password')"
@@ -347,11 +347,49 @@ import { validationHelper } from "../../utils/validationHelper";
                 dialogDeleteSelect.value = true
             }
 
-            const openDialogResetPassword = (): void => {
+            const openDialogResetPassword = (id: string): void => {
                 popupResetPassword.value = !popupResetPassword.value;
+                userId.value = id
             }
 
+            const isRequest = ref<boolean>(false)
+
             const handleResetPassword = (): void => {
+              if (!isRequest.value) {
+                isRequest.value = true
+                $q.loading.show()
+                const data = {
+                  password: password.value
+                }
+                api.resetPassword(parseInt(userId.value), data).then(res => {
+                  if (res) {
+                    $q.notify({
+                      icon: 'check',
+                      message: 'Đặt lại mật khẩu thành công',
+                      color: 'positive',
+                      position: 'top-right'
+                    })
+                    popupResetPassword.value = false
+                  }
+                }).catch(error => {
+                  let errors = _.get(error.response, 'data.error', {})
+                  if (Object.keys(errors).length === 0) {
+                    let message = _.get(error.response, 'data.message', '')
+                    $q.notify({
+                      icon: 'report_problem',
+                      message,
+                      color: 'negative',
+                      position: 'top-right'
+                    })
+                  }
+                  if (Object.keys(errors).length > 0) {
+                    setValidationErrors(errors)
+                  }
+                }).finally(() => {
+                  $q.loading.hide()
+                  isRequest.value = false
+                })
+              }
 
             }
 

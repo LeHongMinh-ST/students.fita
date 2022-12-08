@@ -45,6 +45,7 @@ Route::group(['middleware' => ['jwt.auth', 'auth.admin']], function () {
         Route::post('/', [UserController::class, 'store'])->middleware('permission:user-create');
         Route::get('/{id}', [UserController::class, 'show'])->middleware('permission:user-index');
         Route::put('/{id}', [UserController::class, 'update'])->middleware('permission:user-update');
+        Route::put('/{id}/reset-password', [UserController::class, 'resetPassword'])->middleware('permission:user-update');
         Route::delete('/{id}', [UserController::class, 'destroy'])->middleware('permission:user-delete');
     });
 
@@ -76,7 +77,7 @@ Route::group(['middleware' => ['jwt.auth', 'auth.admin']], function () {
     });
 
     Route::prefix('departments')->group(function () {
-        Route::get('/', [DepartmentController::class, 'index'])->middleware('permission:department-index');
+        Route::get('/', [DepartmentController::class, 'index']);
         Route::get('/all', [DepartmentController::class, 'getAll'])->middleware('permission:department-index');
         Route::post('/', [DepartmentController::class, 'store'])->middleware('permission:department-create');
         Route::put('/{id}', [DepartmentController::class, 'update'])->middleware('permission:department-update');

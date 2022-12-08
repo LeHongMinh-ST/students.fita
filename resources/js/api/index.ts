@@ -231,7 +231,13 @@ export default {
             url: `/users/${id}`,
         })
     },
-
+    resetPassword<T>(id: number, data: any): AxiosPromise<IResult<T>> {
+        return apiAxios({
+            method: 'put',
+            data: data,
+            url: `/users/${id}/reset-password`
+        })
+    },
 	getClasses<T>(params: object = {}): AxiosPromise<IResult<T>> {
         return apiAxios({
             method: 'get',
@@ -277,7 +283,13 @@ export default {
             url: `/classes/${id}`,
         })
     },
-
+    importStudentClass<T>(id: number, data:any): AxiosPromise<IResult<T>> {
+        return apiAxios({
+            method: 'post',
+            data:data,
+            url: `/classes/${id}/import-student`,
+        })
+    },
     addStudent<T>(data: any, id: any): AxiosPromise<IResult<T>> {
         return apiAxios({
             method: 'put',

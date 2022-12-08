@@ -309,7 +309,6 @@ class StudentController extends Controller
     {
         DB::beginTransaction();
         try {
-
             if (!$request->hasFile('excel')) {
                 return $this->responseError('Error', [
                     'file' => 'Tệp không được để trống'

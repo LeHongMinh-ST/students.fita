@@ -34,7 +34,7 @@ class StudentImport implements ToModel, WithHeadingRow, WithValidation
             'student_code' => $row['ma_sinh_vien'],
             'password' => @$row['ngay_sinh'],
             'gender' => @$row['gioi_tinh'],
-            'permanent_residence' => @$row['ho_khau_thuong_chu'],
+            'permanent_residence' => @$row['ho_khau_thuong_tru'],
             'major' => @$row['chuyen_nganh'],
             'dob' => @$row['ngay_sinh'],
             'pob' => @$row['noi_sinh'],
