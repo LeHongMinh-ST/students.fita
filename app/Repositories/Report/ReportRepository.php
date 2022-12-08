@@ -13,7 +13,7 @@ class ReportRepository extends BaseRepository implements ReportRepositoryInterfa
         parent::__construct($model);
     }
 
-    public function getReports($data): LengthAwarePaginator
+    public function getReportsPaginate($data): LengthAwarePaginator
     {
         $relationships = ['student', 'createdBy', 'approvedBy'];
         $columns = ['*'];

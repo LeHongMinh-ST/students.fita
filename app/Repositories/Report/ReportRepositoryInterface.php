@@ -7,5 +7,5 @@ use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
 interface ReportRepositoryInterface extends BaseRepositoryInterface
 {
-    public function getReports(array $data): LengthAwarePaginator;
+    public function getReportsPaginate(array $data): LengthAwarePaginator;
 }

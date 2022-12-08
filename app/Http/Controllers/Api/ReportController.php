@@ -26,7 +26,7 @@ class ReportController extends Controller
     {
         $data = $request->all();
 
-        $reports = $this->reportRepository->getReports($data);
+        $reports = $this->reportRepository->getReportsPaginate($data);
 
         return $this->responseSuccess(['reports' => $reports]);
     }
