@@ -61,6 +61,7 @@ Route::group(['middleware' => ['jwt.auth', 'auth.admin']], function () {
         Route::put('/update-learning-outcome/{id}', [StudentController::class, 'updateDataLearningOutcome'])->middleware('permission:student-update');
         Route::get('/{id}', [StudentController::class, 'show'])->middleware('permission:student-index');
         Route::post('/{id}', [StudentController::class, 'update'])->middleware('permission:student-update');
+        Route::put('/{id}/reset-password', [StudentController::class, 'resetPassword'])->middleware('permission:student-update');
         Route::delete('/{id}', [StudentController::class, 'destroy'])->middleware('permission:student-delete');
     });
 

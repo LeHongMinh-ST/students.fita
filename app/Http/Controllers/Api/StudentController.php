@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Enums\Student\StudentTempStatus;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Student\ImportStudentRequest;
+use App\Http\Requests\Student\ResetPasswordRequest;
 use App\Http\Requests\Student\StoretStudentRequest;
 use App\Http\Requests\Student\UpdateStudentRequest;
 use App\Imports\StudentImport;
@@ -304,7 +305,25 @@ class StudentController extends Controller
             ]);
             return $this->responseError();
         }
+    }
 
+    public function resetPassword(ResetPasswordRequest $request, $id): JsonResponse
+    {
+        try {
+            $password = $request->input('password', '');
+
+            $this->studentRepository->updateById($id, [
+                'password' => $password,
+                'updated_by' => auth()->id()
+            ]);
+            return $this->responseSuccess();
+        }catch (\Exception $exception) {
+            Log::error('Error reset password student', [
+                'method' => __METHOD__,
+                'message' => $exception->getMessage()
+            ]);
+            return $this->responseError();
+        }
     }
 
     public function importStudentToClass(ImportStudentRequest $request, $classId): JsonResponse
