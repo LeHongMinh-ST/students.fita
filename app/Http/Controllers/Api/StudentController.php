@@ -49,6 +49,10 @@ class StudentController extends Controller
             $condition[] = ['full_name', 'or', $orCondition];
         }
 
+        if (isset($data['filter_student_code'])) {
+            $condition[] = ['student_code', 'like', '%' . $data['filter_student_code'] . '%'];
+        }
+
         if (isset($data['student_code'])) {
             $condition[] = ['student_code', '=', $data['student_code']];
         }
