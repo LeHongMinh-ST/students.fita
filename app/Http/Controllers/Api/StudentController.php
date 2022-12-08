@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Enums\Student\StudentTempStatus;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Student\ImportStudentRequest;
 use App\Http\Requests\Student\StoretStudentRequest;
 use App\Http\Requests\Student\UpdateStudentRequest;
 use App\Imports\StudentImport;
@@ -18,6 +19,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Maatwebsite\Excel\Facades\Excel;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 class StudentController extends Controller
 {
@@ -305,7 +307,7 @@ class StudentController extends Controller
 
     }
 
-    public function importStudentToClass(Request $request, $classId): JsonResponse
+    public function importStudentToClass(ImportStudentRequest $request, $classId): JsonResponse
     {
         DB::beginTransaction();
         try {
@@ -328,7 +330,7 @@ class StudentController extends Controller
                 'method' => __METHOD__,
                 'message' => $exception->getMessage()
             ]);
-            return $this->responseError('Error', $errors, 400);
+            return $this->responseError('Error', ['import_error' => $errors], 400);
         } catch (\Exception $exception) {
             DB::rollBack();
             Log::error('Error import student', [
@@ -338,5 +340,11 @@ class StudentController extends Controller
             return $this->responseError();
         }
 
+    }
+
+    public function getTemplateImportFile(): BinaryFileResponse
+    {
+        $file = public_path() . '/template/import_student_template.xlsx';
+        return response()->download($file, 'import_student_template.xlsx');
     }
 }

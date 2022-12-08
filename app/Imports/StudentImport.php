@@ -70,9 +70,9 @@ class StudentImport implements ToModel, WithHeadingRow, WithValidation
     public function customValidationAttributes()
     {
         return [
-            'ho_va_ten' => 'Họ và tên',
-            'ma_sinh_vien' => 'Mã sinh viên',
-            'ngay_sinh' => 'Ngày sinh',
+            'ho_va_ten' => 'họ và tên',
+            'ma_sinh_vien' => 'mã sinh viên',
+            'ngay_sinh' => 'ngày sinh',
         ];
     }
 }

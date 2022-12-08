@@ -26,24 +26,7 @@ class ReportController extends Controller
     {
         $data = $request->all();
 
-        $relationships = ['generalClass', 'families', 'learningOutcomes', 'reports'];
-        $columns = ['*'];
-        $paginate = $data['limit'] ?? config('constants.limit_of_paginate', 10);
-        $condition = [];
-
-        if (isset($data['q'])) {
-            $condition[] = ['title', 'like', '%' . $data['q'] . '%'];
-        }
-
-        if (isset($data['status'])) {
-            $condition[] = ['status', '=', $data['status']];
-        }
-
-        if (isset($data['subject'])) {
-            $condition[] = ['subject', '=', $data['subject']];
-        }
-
-        $reports = $this->reportRepository->getListPaginateBy($condition, $relationships, $columns, $paginate);
+        $reports = $this->reportRepository->getReports($data);
 
         return $this->responseSuccess(['reports' => $reports]);
     }

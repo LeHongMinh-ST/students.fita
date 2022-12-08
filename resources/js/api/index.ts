@@ -375,5 +375,12 @@ export default {
             data: data,
             url: `/profile`
         })
-    }
+    },
+    downloadExcelTemplate() {
+        return apiAxios({
+            method: 'get',
+            url: '/classes/download/get-template-import-file',
+            responseType: 'blob',
+        })
+    },
 }

@@ -92,9 +92,12 @@
     <q-dialog v-model="dialogImportDialog" @hide="closeDialog">
       <q-card style="width: 500px;">
         <q-card-section>
-          <div class="text-h6">Import Excel</div>
+          <div class="text-h6">Nhập tệp Excel</div>
         </q-card-section>
         <q-card-section style="width: 100%">
+          <div class="q-mb-sm">
+            Tải: <span @click="downloadExcelTemplate" class="cursor-pointer text-link" style="color: #1976D2">tệp mẫu</span>
+          </div>
           <upload @change-file="uploadFileExcel"/>
         </q-card-section>
         <q-card-actions align="right" class="row">
@@ -556,11 +559,28 @@ export default defineComponent({
             closeDialogImport()
           }
         }).catch(error => {
-          let errors = _.get(error.response, 'data.error', [])
+          let errorsImport = _.get(error.response, 'data.error.import_error', [])
 
-          errors.forEach(item => {
-            generateNotify(`Lỗi dòng ${item.row} - ${item.errors[0]}`, false)
-          })
+          if (errorsImport.length > 0) {
+            errorsImport.forEach(item => {
+              generateNotify(`Lỗi dòng ${item.row} - ${item.errors[0]}`, false)
+            })
+          }
+
+          let errors = _.get(error.response, 'data.error', {})
+          if (Object.keys(errors).length === 0) {
+            let message = _.get(error.response, 'data.message', '')
+            $q.notify({
+              icon: 'report_problem',
+              message,
+              color: 'negative',
+              position: 'top-right'
+            })
+          }
+          if (Object.keys(errors).length > 0) {
+            setValidationErrors(errors)
+          }
+
 
         }).finally(() => {
           isRequest.value = false
@@ -569,6 +589,17 @@ export default defineComponent({
         })
       }
 
+    }
+
+    const downloadExcelTemplate = (): void => {
+      api.downloadExcelTemplate().then((response) => {
+        const url = window.URL.createObjectURL(new Blob([response.data]));
+        const link = document.createElement('a');
+        link.href = url;
+        link.setAttribute('download', 'File data mẫu.xlsx');
+        document.body.appendChild(link);
+        link.click()
+      })
     }
 
     const uploadFileExcel = (value) => {
@@ -657,7 +688,8 @@ export default defineComponent({
       dialogImportDialog,
       openImportExcelDialog,
       uploadFileExcel,
-      handleUploadExcel
+      handleUploadExcel,
+      downloadExcelTemplate
     }
   }
 })
