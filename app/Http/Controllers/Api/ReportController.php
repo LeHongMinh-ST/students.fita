@@ -34,6 +34,9 @@ class ReportController extends Controller
     public function show($id): JsonResponse
     {
         $report = $this->reportRepository->getFirstBy(['id' => $id]);
+
+
+
         return $this->responseSuccess(['report' => $report]);
     }
 
@@ -59,14 +62,34 @@ class ReportController extends Controller
     {
         try {
             $data = $request->all();
-            $department = $this->reportRepository->findById($id);
+            $report= $this->reportRepository->findById($id);
 
-            if ($department->status != ReportStatus::Pending) {
+            if (auth('students')->check()) {
+                $student = auth('students')->user();
+                if ($student->id == $report->created_by) {
+                    return $this->responseError('Bạn không có quyền', [], 403);
+                }
+            }
+
+            if (auth('api')->check()) {
+                $auth= auth('api')->user();
+
+                if (@$auth->teacher_id && !@$auth->is_super_admin) {
+
+                    $classIds = $auth?->generalClass?->pluck('id')?->toArray();
+
+                    if (!in_array($report->class_id, $classIds)) {
+                        return $this->responseError('Bạn không có quyền', [], 403);
+                    }
+                }
+            }
+
+            if ($report->status != ReportStatus::Pending) {
                 return $this->responseError('Không thể chỉnh sửa phản ánh', [], 400);
             }
 
-            $department?->fill($data);
-            $this->reportRepository->createOrUpdate($department);
+            $report?->fill($data);
+            $this->reportRepository->createOrUpdate($report);
 
             return $this->responseSuccess();
         } catch (\Exception $exception) {
@@ -82,9 +105,27 @@ class ReportController extends Controller
     {
         try {
 
-            $department = $this->reportRepository->findById($id);
+            $report = $this->reportRepository->findById($id);
+            if (auth('students')->check()) {
+                $student = auth('students')->user();
+                if ($student->id == $report->created_by) {
+                    return $this->responseError('Bạn không có quyền', [], 403);
+                }
+            }
 
-            if ($department->status == ReportStatus::Approved) {
+            if (auth('api')->check()) {
+                $auth= auth('api')->user();
+
+                if (@$auth->teacher_id && !@$auth->is_super_admin) {
+
+                    $classIds = $auth?->generalClass?->pluck('id')?->toArray();
+
+                    if (!in_array($report->class_id, $classIds)) {
+                        return $this->responseError('Bạn không có quyền', [], 403);
+                    }
+                }
+            }
+            if ($report->status == ReportStatus::Approved) {
                 return $this->responseError('Không thể xóa phản ánh', [], 400);
             }
 
