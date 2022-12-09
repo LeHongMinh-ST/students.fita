@@ -36,43 +36,8 @@ class StudentController extends Controller
     public function index(Request $request): JsonResponse
     {
         $data = $request->all();
-        $relationships = ['generalClass', 'families', 'learningOutcomes', 'reports'];
-        $columns = ['*'];
-        $paginate = $data['limit'] ?? config('constants.limit_of_paginate', 10);
-        $condition = [];
 
-        if (isset($data['q'])) {
-            $condition[] = ['full_name', 'like', '%' . $data['q'] . '%'];
-            $orCondition = [
-                ['student_code', 'like', '%' . $data['q'] . '%'],
-                ['email', 'like', '%' . $data['q'] . '%'],
-                ['email_edu', 'like', '%' . $data['q'] . '%'],
-                ['phone', 'like', '%' . $data['q'] . '%']
-            ];
-            $condition[] = ['full_name', 'or', $orCondition];
-        }
-
-        if (isset($data['filter_student_code'])) {
-            $condition[] = ['student_code', 'like', '%' . $data['filter_student_code'] . '%'];
-        }
-
-        if (isset($data['student_code'])) {
-            $condition[] = ['student_code', '=', $data['student_code']];
-        }
-
-        if (isset($data['class_id'])) {
-            $condition[] = ['class_id', '=', $data['class_id']];
-        }
-
-        if (isset($data['status'])) {
-            $condition[] = ['status', '=', $data['status']];
-        }
-
-        if (isset($data['role'])) {
-            $condition[] = ['role', '=', $data['role']];
-        }
-
-        $user = $this->studentRepository->getListPaginateBy($condition, $relationships, $columns, $paginate);
+        $user = $this->studentRepository->getStudents($data);
 
         return $this->responseSuccess(['students' => $user]);
     }

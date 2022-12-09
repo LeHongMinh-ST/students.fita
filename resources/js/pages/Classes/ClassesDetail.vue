@@ -621,8 +621,7 @@ export default defineComponent({
       update(() => {
         const keySearch = val.toLowerCase()
         const payload: any = {
-          page: page.value.currentPage,
-          filter_student_code: keySearch,
+          q: keySearch,
           class_id: 0
         };
         getStudentByCondition(payload, optionSelectStudent)
