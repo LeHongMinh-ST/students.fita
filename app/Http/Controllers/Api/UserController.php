@@ -51,9 +51,13 @@ class UserController extends Controller
         $sort = $data['sort'] ?? 'DESC';
         $condition[] = ['created_at', 'ORDER_BY', $sort];
 
-        $user = $this->userRepository->getListPaginateBy($condition, $relationships, $columns, $paginate);
+        $users = $this->userRepository->allBy($condition, $relationships, $columns);
 
-        return $this->responseSuccess(['users' => $user]);
+        if (isset($data['page'])) {
+            $users = $this->userRepository->getListPaginateBy($condition, $relationships, $columns, $paginate);
+        }
+
+        return $this->responseSuccess(['users' => $users]);
     }
 
     public function show($id): JsonResponse

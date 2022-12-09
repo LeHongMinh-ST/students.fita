@@ -331,4 +331,13 @@ class StudentController extends Controller
         $file = public_path() . '/template/import_student_template.xlsx';
         return response()->download($file, 'import_student_template.xlsx');
     }
+
+    public function getClass(): JsonResponse
+    {
+        $auth = auth('students')->user();
+
+        return $this->responseSuccess([
+           'class' => $auth->generalClass
+        ]);
+    }
 }

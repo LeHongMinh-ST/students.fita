@@ -43,7 +43,12 @@ class DepartmentController extends Controller
         $sort = $data['sort'] ?? 'DESC';
         $condition[] = ['created_at', 'ORDER_BY', $sort];
 
-        $department = $this->departmentRepository->getListPaginateBy($condition, $relationships, $columns, $paginate);
+        $department = $this->departmentRepository->allBy($condition, $relationships, $columns);
+
+        if (isset($data['page'])) {
+            $department = $this->departmentRepository->getListPaginateBy($condition, $relationships, $columns, $paginate);
+
+        }
 
         return $this->responseSuccess(['department' => $department]);
     }

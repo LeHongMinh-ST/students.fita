@@ -40,7 +40,11 @@ class RoleController extends Controller
         $sort = $data['sort'] ?? 'DESC';
         $condition[] = ['created_at', 'ORDER_BY', $sort];
 
-        $roles = $this->roleRepository->getListPaginateBy($condition, $relationships, $columns, $paginate);
+        $roles = $this->roleRepository->allBy($condition, $relationships, $columns);
+
+        if (isset($data['page'])) {
+            $roles = $this->roleRepository->getListPaginateBy($condition, $relationships, $columns, $paginate);
+        }
 
         return $this->responseSuccess([
             'roles' => $roles

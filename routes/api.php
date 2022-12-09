@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\AuthStudentController;
+use App\Http\Controllers\Api\DashboardController;
 use App\Http\Controllers\Api\DepartmentController;
 use App\Http\Controllers\Api\GeneralClassController;
 use App\Http\Controllers\Api\PermissionController;
@@ -39,6 +40,10 @@ Route::group(['prefix' => 'auth'], function () {
 });
 
 Route::group(['middleware' => ['jwt.auth', 'auth.admin']], function () {
+    Route::prefix('dashboard')->group(function () {
+        Route::get('/', [DashboardController::class, 'index'])->middleware('permission:dashboard-index');
+    });
+
     Route::prefix('users')->group(function () {
         Route::get('/', [UserController::class, 'index'])->middleware('permission:user-index');
         Route::delete('/delete-selected', [UserController::class, 'deleteSelected'])->middleware('permission:user-delete');
@@ -132,6 +137,6 @@ Route::group(['prefix' => 'student'], function () {
             Route::put('/{id}', [StudentController::class, 'updateProfile']);
         });
 
-
+        Route::get('/class', [StudentController::class, 'getClass']);
     });
 });
