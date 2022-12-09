@@ -50,6 +50,9 @@ class GeneralClassController extends Controller
             $condition[] = ['teacher_id' => $user->teacher_id];
         }
 
+        $sort = $data['sort'] ?? 'DESC';
+        $condition[] = ['created_at', 'ORDER_BY', $sort];
+
         $class = $this->generalClassRepository->getListPaginateBy($condition, $relationships, $columns, $paginate);
 
         return $this->responseSuccess(['class' => $class]);

@@ -40,6 +40,9 @@ class DepartmentController extends Controller
             $condition[] = ['department_code' => $data['department_code']];
         }
 
+        $sort = $data['sort'] ?? 'DESC';
+        $condition[] = ['created_at', 'ORDER_BY', $sort];
+
         $department = $this->departmentRepository->getListPaginateBy($condition, $relationships, $columns, $paginate);
 
         return $this->responseSuccess(['department' => $department]);

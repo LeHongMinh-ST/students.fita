@@ -46,8 +46,10 @@ class UserController extends Controller
 
         if (!empty($data['is_teacher']) && $data['is_teacher'] == 1) {
             $condition[] = ['is_teacher', '=', 1];
-
         }
+
+        $sort = $data['sort'] ?? 'DESC';
+        $condition[] = ['created_at', 'ORDER_BY', $sort];
 
         $user = $this->userRepository->getListPaginateBy($condition, $relationships, $columns, $paginate);
 

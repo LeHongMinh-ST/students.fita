@@ -47,6 +47,10 @@ class StudentRepository extends BaseRepository implements StudentRepositoryInter
         if (isset($data['role'])) {
             $query->where('role', $data['role']);
         }
+
+        $sort = @$data['sort'] ?? 'DESC';
+        $query->orderBy('created_at',$sort );
+
         if (isset($data['page'])) {
             return $query->with($relationships)->paginate($paginate);
         }

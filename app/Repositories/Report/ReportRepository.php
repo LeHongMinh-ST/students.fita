@@ -13,7 +13,7 @@ class ReportRepository extends BaseRepository implements ReportRepositoryInterfa
         parent::__construct($model);
     }
 
-    public function getReportsPaginate($data): LengthAwarePaginator
+    public function getReportsPaginate($data)
     {
         $relationships = ['student', 'createdBy', 'approvedBy'];
         $columns = ['*'];
@@ -38,6 +38,13 @@ class ReportRepository extends BaseRepository implements ReportRepositoryInterfa
             $query->where('teacher_id', $user->id);
         }
 
-        return $query->with($relationships)->paginate($paginate);
+        $sort = @$data['sort'] ?? 'DESC';
+        $query->orderBy('created_at',$sort );
+
+        if (isset($data['page'])) {
+            return $query->with($relationships)->paginate($paginate);
+        }
+
+        return $query->with($relationships)->get();
     }
 }
