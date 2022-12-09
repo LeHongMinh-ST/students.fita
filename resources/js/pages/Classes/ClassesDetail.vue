@@ -392,7 +392,7 @@ export default defineComponent({
     const getStudentByCondition = async (payload = {}, variable: any) => {
       try {
         const res = await api.getAllStudent<IPaginate<IStudentResult[]>>(payload);
-        variable.value = _.get(res, 'data.data.students.data', '')
+        variable.value = _.get(res, 'data.data.students', '')
       } catch (error) {
         generateNotify("Không tải được dữ liệu lớp học !")
       }
