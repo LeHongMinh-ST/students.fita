@@ -183,15 +183,17 @@ class StudentController extends Controller
         }
     }
 
-    public function updateStudentByStudentTemp($id)
+    public function updateStudentByStudentTemp($id): JsonResponse
     {
+        DB::beginTransaction();
         try {
             $studentTemp = $this->studentRepository->getFirstBy(['student_id' => $id,]);
-            $studentTemp = $this->handleUpdateStudentByStudentTemp($studentTemp);
-
+            $this->handleUpdateStudentByStudentTemp($studentTemp);
+            DB::commit();
+            return $this->responseSuccess();
         } catch (\Exception $exception) {
             DB::rollBack();
-            Log::error('Error update update Student By StudentTemp ', [
+            Log::error('Error update update student By StudentTemp ', [
                 'method' => __METHOD__,
                 'message' => $exception->getMessage()
             ]);
