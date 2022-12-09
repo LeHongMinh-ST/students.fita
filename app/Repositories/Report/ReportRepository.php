@@ -32,10 +32,20 @@ class ReportRepository extends BaseRepository implements ReportRepositoryInterfa
             $query->where('subject', $data['subject']);
         }
 
-        $user = auth()->user();
+        if (auth('api')->check()) {
+            $user = auth('api')->user();
 
-        if (@$user->teacher_id && !@$user->is_super_admin) {
-            $query->where('teacher_id', $user->id);
+            if (@$user->teacher_id && !@$user->is_super_admin) {
+
+                $classId = $user?->generalClass?->pluck('id')?->toArray();
+                $query->whereIn('class_id', $classId);
+            }
+        }
+
+
+        if (auth('students')->check()) {
+            $student = auth('students')->user();
+            $query->where('created_by', $student->id);
         }
 
         $sort = @$data['sort'] ?? 'DESC';

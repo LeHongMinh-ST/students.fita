@@ -96,6 +96,11 @@ class User extends Authenticatable implements JWTSubject
         return $this->belongsTo(Department::class);
     }
 
+    public function generalClass(): hasMany
+    {
+        return $this->hasMany(GeneralClass::class, 'teacher_id');
+    }
+
     public function createBy(): BelongsTo
     {
         return $this->belongsTo(self::class, 'created_by');

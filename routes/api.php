@@ -138,5 +138,16 @@ Route::group(['prefix' => 'student'], function () {
         });
 
         Route::get('/class', [StudentController::class, 'getClass']);
+
+        Route::group(['middleware' => ['student.class-monitor']], function () {
+            Route::prefix('report')->group(function () {
+                Route::get('/', [ReportController::class, 'index']);
+                Route::post('/', [ReportController::class, 'store']);
+                Route::get('/{id}', [ReportController::class, 'show']);
+                Route::put('/{id}', [ReportController::class, 'update']);
+                Route::delete('/{id}', [ReportController::class, 'destroy']);
+            });
+        });
+
     });
 });
