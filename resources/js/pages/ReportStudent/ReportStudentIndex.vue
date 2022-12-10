@@ -117,7 +117,7 @@
                                     {{ getValueLodash(item, "status_text", "") ?? "Chưa cập nhật"}}
                                 </td>
                                 <td class="text-left">
-                                    {{ getValueLodash(item, "created_by.full_name", "") ?? "Chưa cập nhật"}}
+                                    {{ getValueLodash(item, "created_by.full_name", "Chưa cập nhật") ?? "Chưa cập nhật"}}
                                 </td>
                                 
                                 <td class="text-center">

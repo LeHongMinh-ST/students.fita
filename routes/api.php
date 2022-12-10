@@ -150,6 +150,7 @@ Route::group(['prefix' => 'student'], function () {
 
             Route::prefix('requests')->group(function () {
                 Route::get('/', [StudentController::class, 'getRequestUpdateStudent']);
+                Route::post('/', [StudentController::class, 'createStudentTemp']);
                 Route::put('/{id}', [StudentController::class, 'updateStudentByStudentTemp']);
             });
         });

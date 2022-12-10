@@ -21,7 +21,7 @@
                         <q-input
                             outlined
                             dense
-                            v-model="report.title"
+                            v-model="title"
                             :error-message="getValidationErrors('title')"
                             :error="hasValidationErrors('title')"
                             @update:model-value="() => resetValidateErrors('title')"
@@ -34,7 +34,7 @@
                             dense
                             fill-input
                             :options="subjectList"
-                            label="Chọn sinh viên"
+                            label="Chọn chủ đề"
                             v-model="report.subjects"
                             emit-value
                             map-options
@@ -54,17 +54,17 @@
                             option-label="full_name"
                             option-value="id"
                             label="Chọn sinh viên"
-                            v-model="report.student_id"
+                            v-model="student_id"
                             emit-value
                             map-options
-                            :error-message="getValidationErrors('report.student_id')"
-                            :error="hasValidationErrors('report.student_id')"
-                            @update:model-value="() => resetValidateErrors('report.student_id')"
+                            :error-message="getValidationErrors('student_id')"
+                            :error="hasValidationErrors('student_id')"
+                            @update:model-value="() => resetValidateErrors('student_id')"
                         />
                     </div>
                     <div class="form-group">
                             <label class="text-bold">Nội dung</label>
-                            <q-input type="textarea" outlined dense id="description" v-model="report.content"></q-input>
+                            <q-input type="textarea" outlined dense id="description" v-model="content"></q-input>
                     </div>
                 </div>
               </div>
@@ -78,7 +78,7 @@
                 </q-card-section>
                 <q-separator/>
                 <q-card-section>
-                    <q-btn @click="handleCreateReport" no-caps color="secondary" class="q-mr-sm">
+                    <q-btn :disable="isRequest" @click="handleCreateReport" no-caps color="secondary" class="q-mr-sm">
                         <q-icon name="fa-solid fa-save" class="q-mr-sm" size="xs"></q-icon>
                         Lưu
                     </q-btn>
@@ -136,19 +136,19 @@ export default defineComponent({
         const {setValidationErrors, getValidationErrors, hasValidationErrors, resetValidateErrors} = validationHelper()
 
 
-        
-  
-        const report = ref<IReportResult>({
-            student_id:0,
-            title: "",
+        const student_id = ref<number | null>(null)
+        const title = ref<string | null>("")
+        const content = ref<string | null>("")
+
+        const report :any = {
+            student_id:student_id,
+            title: title,
             subjects: 1,
-            content: "",
-            status: TrainingTypeEnum.FormalUniversity,
+            content: content,
+            status: 1,
             status_approve: 1,
-            social_policy_object: StudentSocialPolicyObjectEnum.None,
             class_id:0,
-            
-        })
+        }
 
         
         onMounted(() => {
@@ -174,6 +174,8 @@ export default defineComponent({
         const handleCreateReport = () => {
             
             const data = _.cloneDeep(payload);  
+            debugger;
+            console.log(data);
             if (!isRequest.value) {
                 $q.loading.show()
                 isRequest.value = true
@@ -197,7 +199,10 @@ export default defineComponent({
                 if (Object.keys(errors).length > 0) {
                   setValidationErrors(errors)
                 }
-              }).finally(() => $q.loading.hide())
+              }).finally(() =>{
+                isRequest.value = false
+                $q.loading.hide()
+              }) 
             }
         }
 
@@ -212,7 +217,11 @@ export default defineComponent({
             convertTime,
             getStudentClasses,
             resetValidateErrors,
-            students
+            students,
+            isRequest,
+            student_id,
+            title,
+            content
         }
     }
 })

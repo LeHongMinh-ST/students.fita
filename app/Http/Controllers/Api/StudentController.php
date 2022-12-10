@@ -342,9 +342,10 @@ class StudentController extends Controller
 
         $auth = auth('students')->user();
         $class = $auth->generalClass;
-        $class->load(['teacher']);
-        $students = $class->students()->paginate($paginate);
+        $class->load(['teacher', 'department']);
 
+        if(@$data['q']) $students = $class->students()->where('full_name','like',"%{$data['q']}%")->paginate($paginate);
+        else $students = $class->students()->paginate($paginate);
 
         return $this->responseSuccess([
             'class' => $class,

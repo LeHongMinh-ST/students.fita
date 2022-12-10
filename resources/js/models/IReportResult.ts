@@ -1,6 +1,6 @@
 export interface IReportResult {
     id: number,
-    student_id: string,
+    student_id: number,
     title?: string,
     subjects: number,
     content?: string,

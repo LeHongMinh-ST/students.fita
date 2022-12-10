@@ -1,7 +1,7 @@
-import {createRouter, createWebHistory, RouteRecordRaw} from 'vue-router'
-import {store} from "../store"
 import _ from "lodash";
+import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router';
 import IPermissionResult from "../models/IPermissionResult";
+import { store } from "../store";
 
 const routeAdmin: Array<RouteRecordRaw> = [
     {
@@ -200,8 +200,8 @@ const routeStudent: Array<RouteRecordRaw> = [
     },
     {
         path: 'class',
-        name: 'StudentUpdateProfile',
-        component: () => import('../pages/StudentPage/StudentUpdateProfile.vue'),
+        name: 'StudentClass',
+        component: () => import('../pages/StudentPage/StudentClass.vue'),
         meta: {isAuthenticatedStudent: false},
     },
     {
@@ -209,37 +209,7 @@ const routeStudent: Array<RouteRecordRaw> = [
         name: 'StudentUpdateProfile',
         component: () => import('../pages/StudentPage/StudentUpdateProfile.vue'),
         meta: {isAuthenticatedStudent: false},
-    },
-    {
-        path: 'reports',
-        meta: {isAuthenticatedStudent: true},
-        children: [
-            {
-                path: '',
-                name: 'ReportStudent',
-                component: () => import('../pages/ReportStudent/ReportStudentIndex.vue'),
-                meta: {isAuthenticatedStudent: true, permission: 'report-index'}
-            },
-            {
-                path: 'create',
-                name: 'ReportStudentCreate',
-                component: () => import('../pages/ReportStudent/ReportStudentCreate.vue'),
-                meta: {isAuthenticatedStudent: true, permission: 'report-create'},
-            },
-            {
-                path: 'update/:id',
-                name: 'ReportStudentUpdate',
-                component: () => import('../pages/ReportStudent/ReportStudentUpdate.vue'),
-                meta: {isAuthenticatedStudent: true, permission: 'report-update'},
-            },
-            {
-                path: ':id',
-                name: 'ReportStudentDetail',
-                component: () => import('../pages/ReportStudent/ReportStudentDetail.vue'),
-                meta: {isAuthenticatedStudent: true, permission: 'report-index'},
-            },
-        ]
-    },
+    }
 ]
 
 
