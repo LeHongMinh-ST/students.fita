@@ -49,7 +49,7 @@
                                 <q-separator/>
                                 <div class="main-action q-mt-md text-center">
                                     <q-btn color="secondary" class="q-mr-sm q-mb-sm"
-                                           @click="redirectRouter('StudentUpdate',{id: auth?.id})"
+                                           @click="redirectRouter('StudentUpdateProfile')"
                                     >
                                         <q-icon name="fa-solid fa-pen-to-square" class="q-mr-sm"
                                                 size="xs"></q-icon>
