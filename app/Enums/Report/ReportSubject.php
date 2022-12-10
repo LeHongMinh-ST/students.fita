@@ -11,7 +11,9 @@ use BenSampo\Enum\Enum;
  */
 final class ReportSubject extends Enum
 {
-    const OptionOne = 0;
-    const OptionTwo = 1;
-    const OptionThree = 2;
+    const Study = 1;
+    const Diligence = 2;
+    const SchoolUnionActivities = 3;
+    const Reward = 4;
+    const Other = 5;
 }

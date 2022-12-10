@@ -200,7 +200,7 @@
     import {
         useStore
     } from "vuex";
-    import api from "../../api";
+    import api from "../../apiStudent";
     import {
         IPage,
         StudentFilter
@@ -306,7 +306,7 @@
 
                 payload.page = page?.value?.currentPage;
 
-                api.getAllReport<IPaginate<[]>>(payload).then(res => {
+                api.getAllReportStudent<IPaginate<[]>>(payload).then(res => {
                 reports.value = _.get(res, 'data.data.reports.data')
 
                 console.log("aaaaaaaaaaa "+reports);
