@@ -338,7 +338,7 @@ class StudentController extends Controller
     public function getClass(): JsonResponse
     {
         $auth = auth('students')->user();
-        $class = $auth->generalClass()->with('students')->get();
+        $class = $auth->generalClass()->with(['students','teacher'])->get();
         return $this->responseSuccess([
            'class' => $class
         ]);
@@ -352,7 +352,7 @@ class StudentController extends Controller
             $student = auth('students')->user();
 
             if ($student->role == StudentRole::ClassMonitor) {
-                $query->where()
+                $query->where('');
             }
 
         }
