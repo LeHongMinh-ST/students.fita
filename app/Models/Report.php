@@ -48,7 +48,7 @@ class Report extends Model
 
     public function getSubjectTextAttribute():string
     {
-        return ReportSubject::getDescription($this->subject);
+        return ReportSubject::getDescription($this->subjects);
 
     }
 
