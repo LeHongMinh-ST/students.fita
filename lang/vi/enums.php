@@ -1,6 +1,8 @@
 <?php
 
 use App\Enums\LearningOutcome\LearningOutcomeTypeAverage;
+use App\Enums\Report\ReportStatus;
+use App\Enums\Report\ReportSubject;
 use App\Enums\Student\StudentGender;
 use App\Enums\Student\StudentRole;
 use App\Enums\Student\StudentSocialPolicyObject;
@@ -49,5 +51,17 @@ return [
         StudentTempStatus::ClassMonitorApproved => 'Cán bộ lớp duyệt',
         StudentTempStatus::TeacherApproved => 'Giáo viên chủ nhiệm đã duyệt',
         StudentTempStatus::Approved => 'Đã phê duyệt',
+    ],
+    ReportStatus::class => [
+        ReportStatus::Pending => 'Chờ phê duyệt',
+        ReportStatus::Seen => 'Đã xem',
+        ReportStatus::Approved => 'Đã xử lý',
+    ],
+    ReportSubject::class => [
+        ReportSubject::Study => 'Học tập',
+        ReportSubject::Diligence => 'Chuyên cần',
+        ReportSubject::SchoolUnionActivities => 'Hoạt động đoàn trường',
+        ReportSubject::Reward => 'Khen thưởng',
+        ReportSubject::Other => 'Khác',
     ]
 ];

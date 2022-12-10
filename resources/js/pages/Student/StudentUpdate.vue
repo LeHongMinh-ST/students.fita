@@ -461,7 +461,7 @@
   import eventBus from "../../utils/eventBus";
 
   export default defineComponent({
-      name: "StudentCreate",
+      name: "StudentUpdate",
       setup() {
           const store = useStore()
           const $q = useQuasar()
