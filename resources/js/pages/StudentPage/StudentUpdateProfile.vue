@@ -154,7 +154,7 @@
                                             <template v-slot:append>
                                                 <q-icon name="event" class="cursor-pointer">
                                                     <q-popup-proxy cover transition-show="scale" transition-hide="scale">
-                                                        <q-date mask="DD/MM/YYYY" :locale=" " v-model="student.dob">
+                                                        <q-date mask="DD/MM/YYYY" :locale="myLocale" v-model="student.dob">
                                                             <div class="row items-center justify-end">
                                                                 <q-btn v-close-popup label="Đóng" color="primary" flat/>
                                                             </div>
