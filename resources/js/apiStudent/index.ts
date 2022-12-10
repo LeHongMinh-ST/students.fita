@@ -1,9 +1,8 @@
-import axios, {AxiosPromise} from 'axios';
-import {IParams} from "../models/IParams";
+import axios, { AxiosPromise } from 'axios';
 import IResult from "../models/IResult";
 import router from '../router';
-import {store} from '../store';
-import {AuthStudentMutationTypes} from "../store/modules/auth_student/mutation-types";
+import { store } from '../store';
+import { AuthStudentMutationTypes } from "../store/modules/auth_student/mutation-types";
 
 // @ts-ignore
 const baseUrl = import.meta.env.VITE_ADMIN_URL;
@@ -71,6 +70,13 @@ export default {
         return apiAxios({
             method: 'put',
             url: `/student/profile/update-learning-outcome/${id}`
+        })
+    },
+    getClassUserCurrent<T>(params: object = {}): AxiosPromise<IResult<T>> {
+        return apiAxios({
+            method: 'get',
+            url: '/student/class',
+            params: params
         })
     },
 }
