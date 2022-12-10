@@ -91,8 +91,8 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <template v-if="items && items.length > 0">
-                            <tr v-for="(item, index) in items" :key="index">
+                        <template v-if="reports && reports.length > 0">
+                            <tr v-for="(item, index) in reports" :key="index">
                                 <td class="text-center">
                                     <q-checkbox v-model="checkboxArray" :val="getValueLodash(item, 'id', 0)"/>
                                 </td>
@@ -101,12 +101,12 @@
                                 </td>
                                 <td class="text-left">
                                     <span class="text-bold cursor-pointer text-link" @click="redirectRouter('ReportStudentDetail', {id: getValueLodash(item, 'id', 0)})">
-                                        {{ getValueLodash(item, "code", "") ?? "Chưa cập nhật"}}
+                                        {{ getValueLodash(item, "title", "") ?? "Chưa cập nhật"}}
                                     </span>
                                 </td>
                                 <td class="text-left">
                                     <span class="text-bold cursor-pointer text-link" @click="redirectRouter('ReportStudentDetail', {id: getValueLodash(item, 'id', 0)})">
-                                        {{ getValueLodash(item, "name", "") ?? "Chưa cập nhật"}}
+                                        {{ getValueLodash(item, "student.full_name", "") ?? "Chưa cập nhật"}}
                                     </span>
                                 </td>
                                 <td class="text-left">
@@ -307,16 +307,16 @@
                 payload.page = page?.value?.currentPage;
 
                 api.getAllReport<IPaginate<[]>>(payload).then(res => {
-                reports.value = _.get(res, 'data.data.class.data')
+                reports.value = _.get(res, 'data.data.reports.data')
 
                 console.log("aaaaaaaaaaa "+reports);
-                page.value.currentPage = _.get(res, 'data.data.class.current_page', 1)
-                page.value.total = _.get(res, 'data.data.class.last_page', 0)
-                page.value.perPage = _.get(res, 'data.data.class.per_page', 0)        
+                page.value.currentPage = _.get(res, 'data.data.reports.current_page', 1)
+                page.value.total = _.get(res, 'data.data.reports.last_page', 0)
+                page.value.perPage = _.get(res, 'data.data.reports.per_page', 0)        
                 }).catch(() => {
                 $q.notify({
                     icon: 'report_problem',
-                    message: 'Không tải được danh sách nhóm vai trò!',
+                    message: 'Không tải danh sách phản ánh!',
                     color: 'negative',
                     position: 'top-right'
                 })

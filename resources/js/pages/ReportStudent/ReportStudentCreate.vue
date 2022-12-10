@@ -164,11 +164,7 @@ export default defineComponent({
         const redirectRouter = (nameRoute: string): void => {
             router.push({name: nameRoute})
         }
-
         
-
-        
-
         const isValidate = (): boolean => {
             let isCheck = true
 
