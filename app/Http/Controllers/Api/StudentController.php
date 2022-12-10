@@ -341,7 +341,7 @@ class StudentController extends Controller
     public function getClass(Request $request): JsonResponse
     {
         $auth = auth('students')->user();
-        $class = $auth->generalClass()->with(['students','teacher'])->get();
+        $class = $auth->generalClass;
         $students = $class->students;
         $page = $request->get('page', 1)? : (Paginator::resolveCurrentPage() ? : 1);
         $students = $students instanceof Collection ? $students : Collection::make($students);
