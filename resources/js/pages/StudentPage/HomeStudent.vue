@@ -44,7 +44,6 @@
                                         <q-icon size="sm" class="fa-solid fa-location-dot q-mr-sm"></q-icon>
                                         {{ auth?.countryside ?? "Chưa cập nhật" }}
                                     </div>
-
                                 </div>
                                 <q-separator />
                                 <div class="main-action q-mt-md text-center">

@@ -360,6 +360,14 @@ export default {
             url: `/students/${id}/reset-password`
         })
     },
+
+    // Api dashboard - TruongTN
+    getDashboard<T>(): AxiosPromise<IResult<T>> {
+        return apiAxios({
+            method: 'get',
+            url: '/dashboard'
+        })
+    },
     /*end */
 
     updateLearningOutcome<T>(id: number): AxiosPromise<IResult<T>> {
