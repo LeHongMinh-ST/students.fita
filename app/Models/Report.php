@@ -17,6 +17,7 @@ class Report extends Model
         'title',
         'subjects',
         'content',
+        'class_id',
         'status',
         'status_approve',
         'created_by',

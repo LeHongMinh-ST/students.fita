@@ -497,7 +497,6 @@ export default defineComponent({
         const handleUpload = () => {
             if (image.value) {
                 imageUrl.value = URL.createObjectURL(image.value);
-                console.log(image.value)
             }
         }
 

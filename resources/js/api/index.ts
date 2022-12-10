@@ -231,7 +231,13 @@ export default {
             url: `/users/${id}`,
         })
     },
-
+    resetPassword<T>(id: number, data: any): AxiosPromise<IResult<T>> {
+        return apiAxios({
+            method: 'put',
+            data: data,
+            url: `/users/${id}/reset-password`
+        })
+    },
 	getClasses<T>(params: object = {}): AxiosPromise<IResult<T>> {
         return apiAxios({
             method: 'get',
@@ -275,6 +281,20 @@ export default {
         return apiAxios({
             method: 'delete',
             url: `/classes/${id}`,
+        })
+    },
+    importStudentClass<T>(id: number, data:any): AxiosPromise<IResult<T>> {
+        return apiAxios({
+            method: 'post',
+            data:data,
+            url: `/classes/${id}/import-student`,
+        })
+    },
+    addStudent<T>(data: any, id: any): AxiosPromise<IResult<T>> {
+        return apiAxios({
+            method: 'put',
+            url: `/classes/${id}/add-student`,
+            data: data
         })
     },
 
@@ -327,13 +347,19 @@ export default {
         })
     },
 
-    deleteStudent<T>(id: string): AxiosPromise<IResult<T>> {
+    deleteStudent<T>(id: number): AxiosPromise<IResult<T>> {
         return apiAxios({
             method: 'delete',
             url: `/students/${id}`,
         })
     },
-
+    resetStudentPassword<T>(id: number, data: any): AxiosPromise<IResult<T>> {
+        return apiAxios({
+            method: 'put',
+            data: data,
+            url: `/students/${id}/reset-password`
+        })
+    },
     /*end */
 
     updateLearningOutcome<T>(id: number): AxiosPromise<IResult<T>> {
@@ -355,5 +381,12 @@ export default {
             data: data,
             url: `/profile`
         })
-    }
+    },
+    downloadExcelTemplate() {
+        return apiAxios({
+            method: 'get',
+            url: '/classes/download/get-template-import-file',
+            responseType: 'blob',
+        })
+    },
 }

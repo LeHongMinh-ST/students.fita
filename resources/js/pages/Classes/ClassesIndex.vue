@@ -44,10 +44,10 @@
               </q-menu>
             </q-btn>
           </q-slide-transition>
-          <q-btn class="q-mr-sm" no-caps color="primary" @click="toggleFilter">
-            <q-icon name="fa-solid fa-filter" class="q-mr-sm" size="xs"></q-icon>
-            Lọc dữ liệu
-          </q-btn>
+<!--          <q-btn class="q-mr-sm" no-caps color="primary" @click="toggleFilter">-->
+<!--            <q-icon name="fa-solid fa-filter" class="q-mr-sm" size="xs"></q-icon>-->
+<!--            Lọc dữ liệu-->
+<!--          </q-btn>-->
 
           <div class="table-wrapper-search">
             <q-input bottom-slots v-model="search" label="Nhập từ khóa để tìm kiếm" outlined dense>
@@ -117,8 +117,8 @@
                     <q-list style="min-width: 100px">
                       <q-item clickable v-close-popup
                               @click="redirectRouter('ClassesDetail', {id: getValueLodash(classItem, 'id', 0)})">
-                        <q-item-section>  
-                          
+                        <q-item-section>
+
                                                     <span><q-icon name="fa-solid fa-eye" class="q-mr-sm"
                                                                   size="xs"></q-icon>Xem chi tiết</span>
                         </q-item-section>
@@ -135,7 +135,7 @@
                                                 <span><q-icon name="fa-solid fa-trash" class="q-mr-sm"
                                                               size="xs"></q-icon>Xoá</span>
                       </q-item>
-                      
+
                     </q-list>
                   </q-menu>
                 </div>
@@ -218,7 +218,7 @@ export default defineComponent({
     const dialogDeleteSelect = ref<boolean>(false)
     const roleId = ref<string>('')
     const classes = ref<Array<any>>([])
-    
+
     const classIds = ref<Array<string>>([])
 
     const checkboxArray = ref<Array<string>>([])
@@ -267,7 +267,7 @@ export default defineComponent({
         console.log("aaaaaaaaaaa "+classes);
         page.value.currentPage = _.get(res, 'data.data.class.current_page', 1)
         page.value.total = _.get(res, 'data.data.class.last_page', 0)
-        page.value.perPage = _.get(res, 'data.data.class.per_page', 0)        
+        page.value.perPage = _.get(res, 'data.data.class.per_page', 0)
       }).catch(() => {
         $q.notify({
           icon: 'report_problem',

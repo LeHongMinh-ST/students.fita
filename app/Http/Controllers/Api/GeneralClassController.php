@@ -46,9 +46,12 @@ class GeneralClassController extends Controller
         }
         $user = auth()->user();
 
-        if (@$user->teacher_id) {
+        if (@$user->teacher_id && !@$user->is_super_admin) {
             $condition[] = ['teacher_id' => $user->teacher_id];
         }
+
+        $sort = $data['sort'] ?? 'DESC';
+        $condition[] = ['created_at', 'ORDER_BY', $sort];
 
         $class = $this->generalClassRepository->getListPaginateBy($condition, $relationships, $columns, $paginate);
 

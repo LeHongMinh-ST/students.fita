@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Requests\User;
+namespace App\Http\Requests\Student;
 
-use App\Http\Requests\BaseRequest;
+use Illuminate\Foundation\Http\FormRequest;
 
-class ResetPasswordRequest extends BaseRequest
+class ImportStudentRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,14 +24,14 @@ class ResetPasswordRequest extends BaseRequest
     public function rules()
     {
         return [
-            'password' => 'required|min:6',
+            'excel' => 'required|mimes:xlsx,xls'
         ];
     }
 
-    public function attributes(): array
+    public function attributes()
     {
         return [
-            'password' => 'mật khẩu',
+            'excel' => 'tệp excel'
         ];
     }
 }

@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Api;
 
 use App\Enums\Student\StudentTempStatus;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Student\ImportStudentRequest;
+use App\Http\Requests\Student\ResetPasswordRequest;
 use App\Http\Requests\Student\StoretStudentRequest;
 use App\Http\Requests\Student\UpdateStudentRequest;
 use App\Imports\StudentImport;
@@ -18,6 +20,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Maatwebsite\Excel\Facades\Excel;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 class StudentController extends Controller
 {
@@ -33,39 +36,8 @@ class StudentController extends Controller
     public function index(Request $request): JsonResponse
     {
         $data = $request->all();
-        $relationships = ['generalClass', 'families', 'learningOutcomes', 'reports'];
-        $columns = ['*'];
-        $paginate = $data['limit'] ?? config('constants.limit_of_paginate', 10);
-        $condition = [];
 
-        if (isset($data['q'])) {
-            $condition[] = ['full_name', 'like', '%' . $data['q'] . '%'];
-            $orCondition = [
-                ['student_code', 'like', '%' . $data['q'] . '%'],
-                ['email', 'like', '%' . $data['q'] . '%'],
-                ['email_edu', 'like', '%' . $data['q'] . '%'],
-                ['phone', 'like', '%' . $data['q'] . '%']
-            ];
-            $condition[] = ['full_name', 'or', $orCondition];
-        }
-
-        if (isset($data['student_code'])) {
-            $condition[] = ['student_code', '=', $data['student_code']];
-        }
-
-        if (isset($data['class_id'])) {
-            $condition[] = ['class_id', '=', $data['class_id']];
-        }
-
-        if (isset($data['status'])) {
-            $condition[] = ['status', '=', $data['status']];
-        }
-
-        if (isset($data['role'])) {
-            $condition[] = ['role', '=', $data['role']];
-        }
-
-        $user = $this->studentRepository->getListPaginateBy($condition, $relationships, $columns, $paginate);
+        $user = $this->studentRepository->getStudents($data);
 
         return $this->responseSuccess(['students' => $user]);
     }
@@ -211,15 +183,17 @@ class StudentController extends Controller
         }
     }
 
-    public function updateStudentByStudentTemp($id)
+    public function updateStudentByStudentTemp($id): JsonResponse
     {
+        DB::beginTransaction();
         try {
             $studentTemp = $this->studentRepository->getFirstBy(['student_id' => $id,]);
-            $studentTemp = $this->handleUpdateStudentByStudentTemp($studentTemp);
-
+            $this->handleUpdateStudentByStudentTemp($studentTemp);
+            DB::commit();
+            return $this->responseSuccess();
         } catch (\Exception $exception) {
             DB::rollBack();
-            Log::error('Error update update Student By StudentTemp ', [
+            Log::error('Error update update student By StudentTemp ', [
                 'method' => __METHOD__,
                 'message' => $exception->getMessage()
             ]);
@@ -298,14 +272,31 @@ class StudentController extends Controller
             ]);
             return $this->responseError();
         }
-
     }
 
-    public function importStudentToClass(Request $request, $classId): JsonResponse
+    public function resetPassword(ResetPasswordRequest $request, $id): JsonResponse
+    {
+        try {
+            $password = $request->input('password', '');
+
+            $this->studentRepository->updateById($id, [
+                'password' => $password,
+                'updated_by' => auth()->id()
+            ]);
+            return $this->responseSuccess();
+        }catch (\Exception $exception) {
+            Log::error('Error reset password student', [
+                'method' => __METHOD__,
+                'message' => $exception->getMessage()
+            ]);
+            return $this->responseError();
+        }
+    }
+
+    public function importStudentToClass(ImportStudentRequest $request, $classId): JsonResponse
     {
         DB::beginTransaction();
         try {
-
             if (!$request->hasFile('excel')) {
                 return $this->responseError('Error', [
                     'file' => 'Tệp không được để trống'
@@ -325,7 +316,7 @@ class StudentController extends Controller
                 'method' => __METHOD__,
                 'message' => $exception->getMessage()
             ]);
-            return $this->responseError('Error', $errors, 400);
+            return $this->responseError('Error', ['import_error' => $errors], 400);
         } catch (\Exception $exception) {
             DB::rollBack();
             Log::error('Error import student', [
@@ -335,5 +326,20 @@ class StudentController extends Controller
             return $this->responseError();
         }
 
+    }
+
+    public function getTemplateImportFile(): BinaryFileResponse
+    {
+        $file = public_path() . '/template/import_student_template.xlsx';
+        return response()->download($file, 'import_student_template.xlsx');
+    }
+
+    public function getClass(): JsonResponse
+    {
+        $auth = auth('students')->user();
+
+        return $this->responseSuccess([
+           'class' => $auth->generalClass
+        ]);
     }
 }

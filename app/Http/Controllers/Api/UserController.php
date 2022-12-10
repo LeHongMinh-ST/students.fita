@@ -46,12 +46,18 @@ class UserController extends Controller
 
         if (!empty($data['is_teacher']) && $data['is_teacher'] == 1) {
             $condition[] = ['is_teacher', '=', 1];
-
         }
 
-        $user = $this->userRepository->getListPaginateBy($condition, $relationships, $columns, $paginate);
+        $sort = $data['sort'] ?? 'DESC';
+        $condition[] = ['created_at', 'ORDER_BY', $sort];
 
-        return $this->responseSuccess(['users' => $user]);
+        $users = $this->userRepository->allBy($condition, $relationships, $columns);
+
+        if (isset($data['page'])) {
+            $users = $this->userRepository->getListPaginateBy($condition, $relationships, $columns, $paginate);
+        }
+
+        return $this->responseSuccess(['users' => $users]);
     }
 
     public function show($id): JsonResponse
@@ -115,6 +121,12 @@ class UserController extends Controller
     public function destroy($id): JsonResponse
     {
         try {
+
+            $auth = auth('api')->user();
+            if ($id == $auth->id) {
+                return $this->responseError('Không thể xóa người dùng này!');
+            }
+
             $this->userRepository->deleteById($id);
             return $this->responseSuccess();
         } catch (\Exception $exception) {
@@ -129,8 +141,14 @@ class UserController extends Controller
     public function deleteSelected(DeleteUserRequest $request): JsonResponse
     {
         try {
-            $roleId = $request->input('user_id', []);
-            $condition[] = ['id', 'in', $roleId];
+            $userIds = $request->input('user_id', []);
+
+            $auth = auth('api')->user();
+            if (in_array($auth->id, $userIds)) {
+                return $this->responseError('Lỗi không thể xóa thành công!');
+            }
+
+            $condition[] = ['id', 'in', $userIds];
             $this->userRepository->deleteBy($condition);
             return $this->responseSuccess();
         } catch (\Exception $exception) {

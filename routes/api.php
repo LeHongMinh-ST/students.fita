@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\AuthStudentController;
+use App\Http\Controllers\Api\DashboardController;
 use App\Http\Controllers\Api\DepartmentController;
 use App\Http\Controllers\Api\GeneralClassController;
 use App\Http\Controllers\Api\PermissionController;
@@ -39,12 +40,17 @@ Route::group(['prefix' => 'auth'], function () {
 });
 
 Route::group(['middleware' => ['jwt.auth', 'auth.admin']], function () {
+    Route::prefix('dashboard')->group(function () {
+        Route::get('/', [DashboardController::class, 'index'])->middleware('permission:dashboard-index');
+    });
+
     Route::prefix('users')->group(function () {
         Route::get('/', [UserController::class, 'index'])->middleware('permission:user-index');
         Route::delete('/delete-selected', [UserController::class, 'deleteSelected'])->middleware('permission:user-delete');
         Route::post('/', [UserController::class, 'store'])->middleware('permission:user-create');
         Route::get('/{id}', [UserController::class, 'show'])->middleware('permission:user-index');
         Route::put('/{id}', [UserController::class, 'update'])->middleware('permission:user-update');
+        Route::put('/{id}/reset-password', [UserController::class, 'resetPassword'])->middleware('permission:user-update');
         Route::delete('/{id}', [UserController::class, 'destroy'])->middleware('permission:user-delete');
     });
 
@@ -60,6 +66,7 @@ Route::group(['middleware' => ['jwt.auth', 'auth.admin']], function () {
         Route::put('/update-learning-outcome/{id}', [StudentController::class, 'updateDataLearningOutcome'])->middleware('permission:student-update');
         Route::get('/{id}', [StudentController::class, 'show'])->middleware('permission:student-index');
         Route::post('/{id}', [StudentController::class, 'update'])->middleware('permission:student-update');
+        Route::put('/{id}/reset-password', [StudentController::class, 'resetPassword'])->middleware('permission:student-update');
         Route::delete('/{id}', [StudentController::class, 'destroy'])->middleware('permission:student-delete');
     });
 
@@ -67,16 +74,16 @@ Route::group(['middleware' => ['jwt.auth', 'auth.admin']], function () {
         Route::get('/', [GeneralClassController::class, 'index'])->middleware('permission:class-index');
         Route::get('/all', [GeneralClassController::class, 'getALl'])->middleware('permission:class-index');
         Route::post('/', [GeneralClassController::class, 'store'])->middleware('permission:class-create');
+        Route::get('/download/get-template-import-file', [StudentController::class, 'getTemplateImportFile']);
         Route::get('/{id}', [GeneralClassController::class, 'show'])->middleware('permission:class-index');
         Route::put('/{id}', [GeneralClassController::class, 'update'])->middleware('permission:class-update');
         Route::put('/{id}/add-student', [GeneralClassController::class, 'addStudentToClass'])->middleware('permission:class-update');
         Route::post('/{id}/import-student', [StudentController::class, 'importStudentToClass'])->middleware(['permission:class-update', 'permission:student-create']);
-        Route::get('/{id}/import-student/get-template-import-file', [StudentController::class, 'getTemplateImportFile'])->middleware(['permission:class-update', 'permission:student-create']);
         Route::delete('/{id}', [GeneralClassController::class, 'destroy'])->middleware('permission:class-delete');
     });
 
     Route::prefix('departments')->group(function () {
-        Route::get('/', [DepartmentController::class, 'index'])->middleware('permission:department-index');
+        Route::get('/', [DepartmentController::class, 'index']);
         Route::get('/all', [DepartmentController::class, 'getAll'])->middleware('permission:department-index');
         Route::post('/', [DepartmentController::class, 'store'])->middleware('permission:department-create');
         Route::put('/{id}', [DepartmentController::class, 'update'])->middleware('permission:department-update');
@@ -130,6 +137,17 @@ Route::group(['prefix' => 'student'], function () {
             Route::put('/{id}', [StudentController::class, 'updateProfile']);
         });
 
+        Route::get('/class', [StudentController::class, 'getClass']);
+
+        Route::group(['middleware' => ['student.class-monitor']], function () {
+            Route::prefix('report')->group(function () {
+                Route::get('/', [ReportController::class, 'index']);
+                Route::post('/', [ReportController::class, 'store']);
+                Route::get('/{id}', [ReportController::class, 'show']);
+                Route::put('/{id}', [ReportController::class, 'update']);
+                Route::delete('/{id}', [ReportController::class, 'destroy']);
+            });
+        });
 
     });
 });
