@@ -337,7 +337,8 @@ class StudentController extends Controller
 
     public function getClass(Request $request): JsonResponse
     {
-        $paginate = $data['limit'] ?? config('constants.limit_of_paginate', 10);
+        $data = $request->all();
+        $paginate = @$data['limit'] ?? config('constants.limit_of_paginate', 10);
 
         $auth = auth('students')->user();
         $class = $auth->generalClass;
