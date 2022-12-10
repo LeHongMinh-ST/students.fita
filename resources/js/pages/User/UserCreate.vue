@@ -81,9 +81,7 @@
                         </div>
                         <div class="form-group row gap-2 q-gutter-md">
                             <div :class="idUser ? 'hidden col' : ' col' ">
-                                <label for="password" class="text-bold"
-                                >Mật khẩu<span class="required">*</span></label
-                                >
+                                <label class="text-bold">Mật khẩu<span class="required">*</span></label>
                                 <q-input
                                     outlined
                                     dense
@@ -105,48 +103,36 @@
                                 </q-input>
                             </div>
                             <div class="col" style="max-height: 63px">
-                                <label for="role_id" class="text-bold"
-                                >Nhóm quyền <span class="required">*</span></label
-                                >
-                                <div>
-                                    <q-select
-                                        emit-value
-                                        map-options
-                                        option-label="name"
-                                        option-value="id"
-                                        :ref="refInput.role_id"
-                                        borderless
-                                        dense
-                                        outlined
-                                        v-model="role_id"
-                                        :options="roles"
-                                        :rules="rule.role_id"
-                                    />
-                                </div>
+                                <label class="text-bold">Nhóm quyền</label>
+                                <q-select
+                                    emit-value
+                                    map-options
+                                    option-label="name"
+                                    option-value="id"
+                                    borderless
+                                    dense
+                                    outlined
+                                    v-model="role_id"
+                                    :options="roles"
+                                />
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="name" class="text-bold">Chức danh </label>
+                            <label  class="text-bold">Chức danh </label>
                             <div class="row border-group">
                                 <div class="col q-px-sm">
                                     <div>
-                                        <label for="name" class="text-bold">Quản trị viên </label>
-                                        <q-toggle v-model="is_super_admin"/>
-                                    </div>
-                                </div>
-                                <div class="col q-px-sm">
-                                    <div>
-                                        <label for="name" class="text-bold">Giảng viên </label>
                                         <q-toggle v-model="is_teacher"/>
+                                        <label class="text-bold">{{ is_teacher ? 'Giảng viên' : 'Cán bộ - Ban chủ nhiệm' }} </label>
                                     </div>
                                 </div>
                             </div>
                         </div>
+
+
                         <div v-if="is_teacher" class="form-group row q-gutter-md q-mt-sm">
                             <div class="col" style="max-height: 63px">
-                                <label for="name" class="text-bold"
-                                >Bộ môn <span class="required">*</span></label
-                                >
+                                <label class="text-bold">Bộ môn <span class="required">*</span></label>
                                 <div>
                                     <q-select
                                         emit-value
@@ -193,7 +179,7 @@
                                     @click="handleSave"
                                     no-caps
                                     color="secondary"
-                                    class="q-mr-sm"
+                                    class="q-mr-sm q-mb-sm"
                                 >
                                     <q-icon
                                         name="fa-solid fa-save"
@@ -202,11 +188,37 @@
                                     ></q-icon>
                                     Lưu
                                 </q-btn>
+                                <q-btn v-if="idUser && is_super_admin && auth.id !== parseInt(idUser)"
+                                       @click="handleUpdateSuperAdmin"
+                                       no-caps
+                                       color="deep-orange"
+                                       class="q-mr-sm q-mb-sm"
+                                >
+                                    <q-icon
+                                        name="fa-solid fa-user-lock"
+                                        class="q-mr-sm"
+                                        size="xs"
+                                    ></q-icon>
+                                    Loại bỏ quyền Super Admin
+                                </q-btn>
+                                <q-btn v-if="idUser && !is_super_admin && auth.id !== parseInt(idUser)"
+                                       @click="handleUpdateSuperAdmin"
+                                       no-caps
+                                       color="primary"
+                                       class="q-mr-sm q-mb-sm"
+                                >
+                                    <q-icon
+                                        name="fa-solid fa-user-shield"
+                                        class="q-mr-sm"
+                                        size="xs"
+                                    ></q-icon>
+                                    Quyền Super Admin
+                                </q-btn>
                                 <q-btn
                                     @click="redirectRouter('User')"
                                     no-caps
                                     color="warning"
-                                    class="q-mr-sm"
+                                    class="q-mr-sm q-mb-sm"
                                 >
                                     <q-icon
                                         name="fa-solid fa-rotate-left"
@@ -255,6 +267,8 @@ export default defineComponent({
             resetValidateErrors,
         } = validationHelper();
         const route = useRoute()
+
+        const auth = store.getters['auth/getAuthUser']
 
         const user: any = {
             password: ref<string>(""),
@@ -343,8 +357,9 @@ export default defineComponent({
                 if (!isRequest.value) {
                     isRequest.value = true
                     $q.loading.show()
-                    const data = JSON.parse(JSON.stringify(payload));
+                    const data = _.cloneDeep(payload);
                     data.teacher_code = data.is_teacher ? data.teacher_code : null;
+
                     if (idUser.value) {
                         api.updateUser(data, idUser.value).then(res => {
                             if (res) {
@@ -365,7 +380,10 @@ export default defineComponent({
                             if (Object.keys(errors).length > 0) {
                                 setValidationErrors(errors)
                             }
-                        }).finally(() => $q.loading.hide())
+                        }).finally(() => {
+                            $q.loading.hide()
+                            isRequest.value = false
+                        })
                     } else {
                         api.createUser<IRoleResult>(data).then(res => {
                             if (res) {
@@ -490,6 +508,39 @@ export default defineComponent({
             }
         }
 
+        const handleUpdateSuperAdmin = () => {
+            if (idUser.value) {
+                if (!isRequest.value) {
+                    isRequest.value = true
+                    $q.loading.show()
+                    const data = _.cloneDeep(payload);
+                    data.teacher_code = data.is_teacher ? data.teacher_code : null;
+                    data.is_super_admin = !data.is_super_admin
+                    api.updateUser(data, idUser.value).then(() => {
+                        handleGetUser(idUser.value)
+                    }).catch(error => {
+                        let errors = _.get(error.response, 'data.error', {})
+                        if (Object.keys(errors).length === 0) {
+                            let message = _.get(error.response, 'data.message', '')
+                            $q.notify({
+                                icon: 'report_problem',
+                                message,
+                                color: 'negative',
+                                position: 'top-right'
+                            })
+                        }
+                        if (Object.keys(errors).length > 0) {
+                            setValidationErrors(errors)
+                        }
+                    }).finally(() => {
+                        $q.loading.hide()
+                        isRequest.value = false
+                    })
+                }
+
+            }
+        }
+
         const redirectRouter = (nameRoute: string): void => {
             router.push({name: nameRoute});
         };
@@ -520,6 +571,7 @@ export default defineComponent({
             roles,
             departments,
             idUser,
+            auth, handleUpdateSuperAdmin
         };
     },
 });

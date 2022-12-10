@@ -118,23 +118,13 @@
                     {{ index + +1 + +page.perPage * (page.currentPage - 1) }}
                   </td>
                   <td class="text-left">
-                    <span
-                      class="cursor-pointer "
-                    >
                       {{
-                        getValueLodash(student, "student_code", "") ??
-                        "Chưa cập nhật"
+                          getValueLodash(student, "student_code", "") ??
+                          "Chưa cập nhật"
                       }}
-                    </span>
                   </td>
                   <td class="text-left">
-                    <span
-                      class="cursor-pointer "
-                    >
-                      {{
-                        getValueLodash(student, "full_name", "") ?? "Chưa cập nhật"
-                      }}
-                    </span>
+                      {{ getValueLodash(student, "full_name", "") ?? "Chưa cập nhật" }}
                   </td>
                   <td class="text-left">
                     {{ getValueLodash(student, "gender_text", "") ?? "Chưa cập nhật"}}
@@ -177,81 +167,81 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, ref, watch } from "vue";
+import {defineComponent, onMounted, ref, watch} from "vue";
 import api from "../../apiStudent";
-import { useQuasar } from "quasar";
+import {useQuasar} from "quasar";
 import _ from "lodash";
-import { useRouter } from "vue-router";
-import { IStudentResult } from "resources/js/models/IStudentResult";
-import { formatDate } from "../../utils/helpers";
-import { IPage } from "resources/js/models/IPage";
+import {useRouter} from "vue-router";
+import {IStudentResult} from "resources/js/models/IStudentResult";
+import {formatDate} from "../../utils/helpers";
+import {IPage} from "resources/js/models/IPage";
 import IPaginate from "resources/js/models/IPaginate";
 import {HomeMutationTypes} from "../../store/modules/home/mutation-types";
-import { useStore } from "vuex";
+import {useStore} from "vuex";
 import Upload from "../../components/Upload.vue";
 
 export default defineComponent({
-  name: "ClassesDetailStudent",
-  components: { Upload },
-  setup() {
-    const store = useStore();
-    const $q = useQuasar();
-    const class_code = ref<string>();
-    const class_name = ref<string>();
-    const teacher_name = ref<string>();
-    const department_name = ref<string>();
-    const students = ref<IStudentResult[]>([]);
-    const search = ref<string>("");
-    const router = useRouter();
+    name: "ClassesDetailStudent",
+    components: {Upload},
+    setup() {
+        const store = useStore();
+        const $q = useQuasar();
+        const class_code = ref<string>();
+        const class_name = ref<string>();
+        const teacher_name = ref<string>();
+        const department_name = ref<string>();
+        const students = ref<IStudentResult[]>([]);
+        const search = ref<string>("");
+        const router = useRouter();
 
-    const page = ref<IPage>({
-      currentPage: 1,
-      total: 0,
-      perPage: 10,
-    });
+        const page = ref<IPage>({
+            currentPage: 1,
+            total: 0,
+            perPage: 10,
+        });
 
-    const redirectRouter = (nameRoute: string): void => {
-      router.push({ name: nameRoute });
-    };
+        const redirectRouter = (nameRoute: string): void => {
+            router.push({name: nameRoute});
+        };
 
-    const getValueLodash = (res: object, data: string, d: any = null) => {
-      return _.get(res, data, d);
-    };
+        const getValueLodash = (res: object, data: string, d: any = null) => {
+            return _.get(res, data, d);
+        };
 
-    watch(
-      () => search.value,
-      () => handleGetStudents()
-    );
-
-    const handleGetStudents = async () => {
-      $q.loading.show();
-      const payload: any = {
-        page: page.value.currentPage,
-      };
-      if (search.value) {
-        payload.q = search.value;
-      }
-      try {
-        const res = await api.getClassUserCurrent<IPaginate<IStudentResult[]>>(
-          payload
+        watch(
+            () => search.value,
+            () => handleGetStudents()
         );
-        console.log('res', res)
-        students.value = _.get(res, "data.data.students.data", []);
-        teacher_name.value = _.get(res, "data.data.class.teacher.full_name")
-        class_code.value = _.get(res, "data.data.class.class_code")
-        class_name.value = _.get(res, "data.data.class.name")
-        department_name.value = _.get(res, "data.data.class.department.name")
-          page.value.currentPage = _.get(
-            res,
-            "data.data.data.students.current_page",
-            1
-          );
-        page.value.total = _.get(res, "data.data.data.students.last_page", 0);
-        page.value.perPage = _.get(res, "data.data.data.students.per_page", 0);
-      } catch (error) {
-        generateNotify("Không tải được dữ liệu sinh viên!");
-      }
-      $q.loading.hide();
+
+        const handleGetStudents = async () => {
+            $q.loading.show();
+            const payload: any = {
+                page: page.value.currentPage,
+            };
+            if (search.value) {
+                payload.q = search.value;
+            }
+            try {
+                const res = await api.getClassUserCurrent<IPaginate<IStudentResult[]>>(
+                    payload
+                );
+                console.log('res', res)
+                students.value = _.get(res, "data.data.students.data", []);
+                teacher_name.value = _.get(res, "data.data.class.teacher.full_name")
+                class_code.value = _.get(res, "data.data.class.class_code")
+                class_name.value = _.get(res, "data.data.class.name")
+                department_name.value = _.get(res, "data.data.class.department.name")
+                page.value.currentPage = _.get(
+                    res,
+                    "data.data.data.students.current_page",
+                    1
+                );
+                page.value.total = _.get(res, "data.data.data.students.last_page", 0);
+                page.value.perPage = _.get(res, "data.data.data.students.per_page", 0);
+            } catch (error) {
+                generateNotify("Không tải được dữ liệu sinh viên!");
+            }
+            $q.loading.hide();
     };
 
     const generateNotify = (message: string, isSuccess = false) => {
