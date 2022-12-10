@@ -67,8 +67,13 @@ export default {
             url: '/student/auth/me'
         })
     },
-
-    getReportStudent<T>(id: string): AxiosPromise<IResult<T>> {
+    updateLearningOutcome<T>(id: number): AxiosPromise<IResult<T>> {
+        return apiAxios({
+            method: 'put',
+            url: `/student/profile/update-learning-outcome/${id}`
+        })
+    },
+	getReportStudent<T>(id: string): AxiosPromise<IResult<T>> {
         return apiAxios({
             method: 'get',
             url: `/student/report/${id}`
@@ -80,6 +85,14 @@ export default {
             method: 'get',
             url: '/student/report',
             params: params
+        })
+    },
+
+    createStudentReport<T>(data: any): AxiosPromise<IResult<T>> {
+        return apiAxios({
+            method: 'post',
+            url: '/student/report',
+            data: data
         })
     },
 }

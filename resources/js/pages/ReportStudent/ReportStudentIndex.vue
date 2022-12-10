@@ -84,9 +84,7 @@
                             <th class="text-left">Chủ đề</th>
                             <th class="text-left">Nội dung</th>
                             <th class="text-left">Trạng thái báo cáo</th>
-                            <th class="text-left">Trạng thái xét duyệt</th>
                             <th class="text-left">Người tạo</th>
-                            <th class="text-left">Người phê duyệt</th>
                             <th class="text-center">Hành động</th>
                         </tr>
                     </thead>
@@ -116,17 +114,12 @@
                                     {{ getValueLodash(item, "content", "") ?? "Chưa cập nhật"}}
                                 </td>
                                 <td class="text-left">
-                                    {{ getValueLodash(item, "status", "") ?? "Chưa cập nhật"}}
+                                    {{ getValueLodash(item, "status_text", "") ?? "Chưa cập nhật"}}
                                 </td>
                                 <td class="text-left">
-                                    {{ getValueLodash(item, "status_approve", "") ?? "Chưa cập nhật"}}
+                                    {{ getValueLodash(item, "created_by.full_name", "") ?? "Chưa cập nhật"}}
                                 </td>
-                                <td class="text-left">
-                                    {{ getValueLodash(item, "createBy", "") ?? "Chưa cập nhật"}}
-                                </td>
-                                <td class="text-left">
-                                    {{ getValueLodash(item, "approvedBy", "") ?? "Chưa cập nhật"}}
-                                </td>
+                                
                                 <td class="text-center">
                                     <div class="inline cursor-pointer">
                                         <q-icon name="menu" size="sm"></q-icon>

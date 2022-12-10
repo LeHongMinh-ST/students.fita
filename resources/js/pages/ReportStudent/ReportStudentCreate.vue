@@ -1,5 +1,5 @@
 <template>
-  <div class="student-wrapper">
+  <div class="report-wrapper">
     <q-breadcrumbs>
       <q-breadcrumbs-el label="Bảng điều khiển" icon="home" :to="{name: 'Home'}"/>
       <q-breadcrumbs-el label="Báo cáo sinh viên" :to="{name: 'ReportStudentIndex'}"/>
@@ -21,44 +21,50 @@
                         <q-input
                             outlined
                             dense
-                            v-model="student.student_code"
-                            :error-message="getValidationErrors('student_code')"
-                            :error="hasValidationErrors('student_code')"
-                            @update:model-value="() => resetValidateErrors('student_code')"
+                            v-model="report.title"
+                            :error-message="getValidationErrors('title')"
+                            :error="hasValidationErrors('title')"
+                            @update:model-value="() => resetValidateErrors('title')"
                         />
                     </div>
                     <div class="form-group">
                         <label class="text-bold">Chủ đề <span class="required">*</span></label>
-                        <q-input
+                        <q-select
                             outlined
                             dense
-                            v-model="student.full_name"
-                            :error-message="getValidationErrors('full_name')"
-                            :error="hasValidationErrors('full_name')"
-                            @update:model-value="() => resetValidateErrors('full_name')"
+                            fill-input
+                            :options="subjectList"
+                            label="Chọn sinh viên"
+                            v-model="report.subjects"
+                            emit-value
+                            map-options
+                            :error-message="getValidationErrors('report.subjects')"
+                            :error="hasValidationErrors('report.subjects')"
+                            @update:model-value="() => resetValidateErrors('report.subjects')"
                         />
                     </div>
+                    
                     <div class="form-group">
                         <label class="text-bold">Sinh viên <span class="required">*</span></label>
                         <q-select
                             outlined
                             dense
                             fill-input
-                            :options="classes"
-                            option-label="name"
+                            :options="students"
+                            option-label="full_name"
                             option-value="id"
                             label="Chọn sinh viên"
-                            v-model="student.class_id"
+                            v-model="report.student_id"
                             emit-value
                             map-options
-                            :error-message="getValidationErrors('class_id')"
-                            :error="hasValidationErrors('class_id')"
-                            @update:model-value="() => resetValidateErrors('class_id')"
+                            :error-message="getValidationErrors('report.student_id')"
+                            :error="hasValidationErrors('report.student_id')"
+                            @update:model-value="() => resetValidateErrors('report.student_id')"
                         />
                     </div>
                     <div class="form-group">
                             <label class="text-bold">Nội dung</label>
-                            <q-input type="textarea" outlined dense id="description" v-model="student.note"></q-input>
+                            <q-input type="textarea" outlined dense id="description" v-model="report.content"></q-input>
                     </div>
                 </div>
               </div>
@@ -89,7 +95,7 @@
 </template>
 
 <script lang="ts">
-import {defineComponent, onMounted, ref} from "vue";
+import {defineComponent, onMounted, reactive, ref} from "vue";
 import {useStore} from "vuex";
 import {HomeMutationTypes} from "../../store/modules/home/mutation-types";
 import {useRouter} from "vue-router";
@@ -104,14 +110,16 @@ import {
     STUDENT_ROLE_LIST,
     STUDENT_SOCIAL_POLICY_OBJECT_LIST,
     STUDENT_STATUS_LIST,
+    SUBJECTS,
     TRAINING_TYPE_LIST
 } from "../../utils/constants";
-import {IStudentResult} from "../../models/IStudentResult";
+import {IReportResult} from "../../models/IReportResult";
 import useClass from "../../uses/useClass";
 import _ from "lodash";
-import api from "../../api"
+import api from "../../apiStudent"
 import {TrainingTypeEnum} from "../../enums/trainingType.enum";
 import {StudentSocialPolicyObjectEnum} from "../../enums/studentSocialPolicyObject.enum";
+import useStudent from "../../uses/useStudent";
 
 
 export default defineComponent({
@@ -120,51 +128,42 @@ export default defineComponent({
         const store = useStore()
         const $q = useQuasar()
         const router = useRouter()
-        const myLocale = MY_LOCALE
-        const genderList = GENDER_LIST
-        const studentStatusList = STUDENT_STATUS_LIST
-        const studentRoleList = STUDENT_ROLE_LIST
-        const trainingTypeList = TRAINING_TYPE_LIST
-        const studentSocialPolicyObjectList = STUDENT_SOCIAL_POLICY_OBJECT_LIST
+
+        const subjectList = SUBJECTS
+        
+        const {students, getStudentClasses} = useStudent()
 
         const {setValidationErrors, getValidationErrors, hasValidationErrors, resetValidateErrors} = validationHelper()
 
 
-        const {classes, getAllClasses} = useClass()
-
-        const student = ref<IStudentResult>({
-            full_name: "",
-            student_code: "",
-            dob: "",
-            training_type: TrainingTypeEnum.FormalUniversity,
-            social_policy_object: StudentSocialPolicyObjectEnum.None
+        
+  
+        const report = ref<IReportResult>({
+            student_id:0,
+            title: "",
+            subjects: 1,
+            content: "",
+            status: TrainingTypeEnum.FormalUniversity,
+            status_approve: 1,
+            social_policy_object: StudentSocialPolicyObjectEnum.None,
+            class_id:0,
+            
         })
 
-        const name = ref<string>('')
-
-        const gender = ref<number | null>(null)
-        const dob = ref<string>(moment().format('DD/MM/YYYY'))
-
-        const image = ref<any | null>(null);
-        const imageUrl = ref<string>('/images/User-Default.jpg');
-
-        const handleUpload = () => {
-            if (image.value) {
-                imageUrl.value = URL.createObjectURL(image.value);
-                console.log(image.value)
-            }
-        }
-
-
+        
         onMounted(() => {
             store.commit(`home/${HomeMutationTypes.SET_TITLE}`, 'Quản lý sinh viên')
-            getAllClasses()
+            getStudentClasses()
         })
 
         const redirectRouter = (nameRoute: string): void => {
             router.push({name: nameRoute})
         }
+
         
+        const payload = reactive({...report})
+        const isRequest = ref<boolean>(false)
+
         const isValidate = (): boolean => {
             let isCheck = true
 
@@ -173,38 +172,54 @@ export default defineComponent({
         }
 
         const handleCreateReport = () => {
-            eventBus.$emit('notify-success', 'Thêm mới báo cáo thành công')
-            redirectRouter('ReportStudent')
+            
+            const data = _.cloneDeep(payload);  
+            if (!isRequest.value) {
+                $q.loading.show()
+                isRequest.value = true
+                
+                api.createStudentReport(data).then(res => {
+                if (res) {
+                  eventBus.$emit('notify-success', 'Thêm mới báo cáo thành công')
+                  redirectRouter('ReportStudent')
+                }
+                }).catch(error => {
+                  let errors = _.get(error.response, 'data.error', {})
+                  if (Object.keys(errors).length === 0) {
+                    let message = _.get(error.response, 'data.message', '')
+                    $q.notify({
+                      icon: 'report_problem',
+                      message,
+                      color: 'negative',
+                      position: 'top-right'
+                    })
+                  }
+                if (Object.keys(errors).length > 0) {
+                  setValidationErrors(errors)
+                }
+              }).finally(() => $q.loading.hide())
+            }
         }
 
         return {
             name,
-            gender,
             redirectRouter,
             getValidationErrors,
             hasValidationErrors,
             handleCreateReport,
-            genderList,
-            dob,
-            image,
-            imageUrl,
-            handleUpload,
-            myLocale,
-            studentStatusList,
-            studentRoleList,
-            studentSocialPolicyObjectList,
-            classes,
-            trainingTypeList,
-            student,
+            subjectList,
+            report,
             convertTime,
-            resetValidateErrors
+            getStudentClasses,
+            resetValidateErrors,
+            students
         }
     }
 })
 </script>
 
 <style scoped lang="scss">
-.student-wrapper {
+.report-wrapper {
   .main {
     margin-top: 20px;
 
@@ -223,7 +238,7 @@ export default defineComponent({
         border: 1px solid #8f8f8f;
         margin-bottom: 40px;
 
-        .avatar-student {
+        .avatar-report {
             border-radius: 5px;
             object-fit: cover;
         }

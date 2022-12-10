@@ -1,9 +1,7 @@
 <template>
     <div class="student-wrapper">
         <q-breadcrumbs>
-            <q-breadcrumbs-el label="Bảng điều khiển" icon="home" :to="{name: 'Home'}"/>
-            <q-breadcrumbs-el :to="{name: 'StudentIndex'}" label="Sinh viên"/>
-            <q-breadcrumbs-el label="Thông tin sinh viên"/>
+            <q-breadcrumbs-el label="Hồ sơ sinh viên" icon="home" :to="{name: 'HomeStudent'}"/>
         </q-breadcrumbs>
         <div class="main">
             <div class="row">
@@ -232,7 +230,8 @@
 
                             <q-tab-panel name="learning_outcome">
                                 <div class="learning_outcome-header text-right">
-                                    <q-btn no-caps @click="handleUpdateLearningOutcome" color="secondary" class="q-mr-sm">
+                                    <q-btn no-caps @click="handleUpdateLearningOutcome" color="secondary"
+                                           class="q-mr-sm">
                                         <q-icon name="fa-solid fa-refresh" class="q-mr-sm" size="xs"></q-icon>
                                         Cập nhật dữ liệu
                                     </q-btn>
@@ -240,7 +239,8 @@
                                 <q-scroll-area v-if="auth?.learning_outcomes.length > 0" style="height: 100vh">
                                     <div class="learning_outcome-content q-pl-sm q-pr-sm">
                                         <div class="item row"
-                                             v-for="(learningOutcome) in auth?.learning_outcomes ?? []" :key="learningOutcome.id">
+                                             v-for="(learningOutcome) in auth?.learning_outcomes ?? []"
+                                             :key="learningOutcome.id">
                                             <div class="col">
                                                 <div class="item-header q-mb-md">
                                                     <strong>Học kỳ {{ learningOutcome.semester }} - Năm học
@@ -264,7 +264,8 @@
                                                         </tr>
                                                         </thead>
                                                         <tbody>
-                                                        <tr v-for="(item) in learningOutcome.detail ?? []" :key="item.id">
+                                                        <tr v-for="(item) in learningOutcome.detail ?? []"
+                                                            :key="item.id">
                                                             <td class="text-center">{{ item.order }}</td>
                                                             <td class="text-left">{{ item.subject_code }}</td>
                                                             <td class="text-left">{{ item.subject_name }}</td>
@@ -523,11 +524,13 @@
 import {defineComponent, onMounted, ref} from "vue";
 import {HomeMutationTypes} from "../../store/modules/home/mutation-types";
 import {useStore} from "vuex"
-import { useRouter } from "vue-router";
-import { useQuasar } from "quasar";
-import api from "../../api";
-import { IStudentResult } from "../../models/IStudentResult";
+import {useRouter} from "vue-router";
+import {useQuasar} from "quasar";
+import apiStudent from "../../apiStudent";
+import {IStudentResult} from "../../models/IStudentResult";
 import _ from "lodash";
+import IUserResult from "../../models/IUserResult";
+import {AuthStudentMutationTypes} from "../../store/modules/auth_student/mutation-types";
 
 export default defineComponent({
     name: "HomeStudent",
@@ -537,11 +540,12 @@ export default defineComponent({
         const router = useRouter()
         const tab = ref<string>('home')
         const $q = useQuasar()
+        let auth = store.getters["authStudent/getAuthUserStudent"]
 
-            const handleUpdateLearningOutcome = () => {
+        const handleUpdateLearningOutcome = () => {
             loading.value = true
-            api.updateLearningOutcome<IStudentResult>(auth.value.id).then(res => {
-                auth.value = _.get(res, 'data.data.student', {})
+            apiStudent.updateLearningOutcome<IStudentResult>(auth.id).then(res => {
+                getAuthUser()
             }).catch(() => {
                 $q.notify({
                     icon: 'report_problem',
@@ -554,7 +558,14 @@ export default defineComponent({
             })
         }
 
-        const auth = store.getters["authStudent/getAuthUserStudent"]
+        const getAuthUser = async (): Promise<any> => {
+            await apiStudent.getAuthUserStudent<IUserResult>().then((res) => {
+                auth = _.get(res, 'data', {})
+                store.commit(`authStudent/${AuthStudentMutationTypes.SET_AUTH_USER_STUDENT}`, auth)
+            })
+            return auth
+        }
+
 
         const redirectRouter = (nameRoute: string, params: any | [] = null): void => {
             router.push({name: nameRoute, params: params})
