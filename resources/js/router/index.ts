@@ -200,7 +200,13 @@ const routeStudent: Array<RouteRecordRaw> = [
     },
     {
         path: 'class',
-        name: 'StudentUpdateProdile',
+        name: 'StudentUpdateProfile',
+        component: () => import('../pages/StudentPage/StudentUpdateProfile.vue'),
+        meta: {isAuthenticatedStudent: false},
+    },
+    {
+        path: 'update',
+        name: 'StudentUpdateProfile',
         component: () => import('../pages/StudentPage/StudentUpdateProfile.vue'),
         meta: {isAuthenticatedStudent: false},
     },

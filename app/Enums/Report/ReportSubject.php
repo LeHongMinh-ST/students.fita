@@ -2,6 +2,7 @@
 
 namespace App\Enums\Report;
 
+use BenSampo\Enum\Contracts\LocalizedEnum;
 use BenSampo\Enum\Enum;
 
 /**
@@ -9,7 +10,7 @@ use BenSampo\Enum\Enum;
  * @method static static OptionTwo()
  * @method static static OptionThree()
  */
-final class ReportSubject extends Enum
+final class ReportSubject extends Enum implements LocalizedEnum
 {
     const Study = 1;
     const Diligence = 2;
