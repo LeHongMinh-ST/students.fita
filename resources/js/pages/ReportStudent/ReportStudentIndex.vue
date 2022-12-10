@@ -226,6 +226,7 @@
             const studentCode = ref < string > ("");
             const items = ref < Array < any >> ([]);
             const itemIDs = ref < Array < number >> ([]);
+            const reports = ref<Array<any>>([])
             const {
                 setValidationErrors,
                 getValidationErrors,
@@ -238,7 +239,7 @@
                 total: 0,
                 perPage: 10,
             });
-
+            const loadingClasses = ref<boolean>(false)
             const currentPage = ref < number > (1);
             const loading = ref < boolean > (false);
             const isFilter = ref < boolean > (false);
@@ -292,7 +293,35 @@
                 "1": "Nữ"
             }
 
-            
+            const getListReport = (): void => {
+
+                loadingClasses.value = true
+                const payload = {
+                    page: 1,
+                }
+
+                if (search.value) {
+                    payload.q = search.value
+                }
+
+                payload.page = page?.value?.currentPage;
+
+                api.getAllReport<IPaginate<[]>>(payload).then(res => {
+                reports.value = _.get(res, 'data.data.class.data')
+
+                console.log("aaaaaaaaaaa "+reports);
+                page.value.currentPage = _.get(res, 'data.data.class.current_page', 1)
+                page.value.total = _.get(res, 'data.data.class.last_page', 0)
+                page.value.perPage = _.get(res, 'data.data.class.per_page', 0)        
+                }).catch(() => {
+                $q.notify({
+                    icon: 'report_problem',
+                    message: 'Không tải được danh sách nhóm vai trò!',
+                    color: 'negative',
+                    position: 'top-right'
+                })
+                }).finally(() => loadingClasses.value = false)
+            }
 
 
             onMounted(() => {
@@ -300,36 +329,11 @@
                 eventBus.$on("notify-success", (message: string) => {
                     generateNotify(message, true)
                 });
-                initData();
+                
+                getListReport();
             });
 
-            const initData = (): void => {
-                items.value = [{
-                        "id": 1,
-                        "code": "637949",
-                        "name": "Đàm Anh Thái",
-                        "title": "BC1",
-                        "subjects": "BC1",
-                        "content": "Nội dung báo cáo 1",
-                        "status": "Hoạt động",
-                        "status_approve": "Chưa duyệt",
-                        "createBy": "Lê Hồng Minh",
-                        "approvedBy": "Ngô Công Thắng"
-                    },
-                    {
-                        "id": 2,
-                        "code": "637960",
-                        "name": "Tô Nam Trường",
-                        "title": "BC2",
-                        "subjects": "BC2",
-                        "content": "Nội dung báo cáo 2",
-                        "status": "Hoạt động",
-                        "status_approve": "Duyệt",
-                        "createBy": "Đàm Đức Chiến",
-                        "approvedBy": "Trần Trung Hiếu"
-                    },
-                ];
-            }
+            
 
             return {
                 studentCode,
@@ -350,7 +354,8 @@
                 checkboxArray,
                 search,
                 openDialogDelete,
-                dialogDelete
+                dialogDelete,
+                reports
             };
         },
     });

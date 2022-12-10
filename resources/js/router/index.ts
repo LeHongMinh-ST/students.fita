@@ -204,6 +204,36 @@ const routeStudent: Array<RouteRecordRaw> = [
         component: () => import('../pages/StudentPage/StudentUpdateProfile.vue'),
         meta: {isAuthenticatedStudent: false},
     },
+    {
+        path: 'reports',
+        meta: {isAuthenticated: true},
+        children: [
+            {
+                path: '',
+                name: 'ReportStudent',
+                component: () => import('../pages/ReportStudent/ReportStudentIndex.vue'),
+                meta: {isAuthenticated: true, permission: 'report-index'}
+            },
+            {
+                path: 'create',
+                name: 'ReportStudentCreate',
+                component: () => import('../pages/ReportStudent/ReportStudentCreate.vue'),
+                meta: {isAuthenticated: true, permission: 'report-create'},
+            },
+            {
+                path: 'update/:id',
+                name: 'ReportStudentUpdate',
+                component: () => import('../pages/ReportStudent/ReportStudentUpdate.vue'),
+                meta: {isAuthenticated: true, permission: 'report-update'},
+            },
+            {
+                path: ':id',
+                name: 'ReportStudentDetail',
+                component: () => import('../pages/ReportStudent/ReportStudentDetail.vue'),
+                meta: {isAuthenticated: true, permission: 'report-index'},
+            },
+        ]
+    },
 ]
 
 
