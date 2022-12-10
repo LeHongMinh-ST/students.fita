@@ -355,10 +355,11 @@ class StudentController extends Controller
         ]);
     }
 
-    public function getRequestUpdateStudent(): JsonResponse
+    public function getRequestUpdateStudent(Request $request): JsonResponse
     {
+        $data = $request->all();
+        $paginate = $data['limit'] ?? config('constants.limit_of_paginate', 10);
         $model = $this->studentTempRepository->getModel();
-
         $query = $model->query();
         if (auth('students')->check()) {
             $student = auth('students')->user();
@@ -375,9 +376,8 @@ class StudentController extends Controller
             $query->whereIn('class_id', $classIds);
         }
 
-
         return $this->responseSuccess([
-            'requests' => $query->get()
+            'requests' => $query->paginate($paginate)
         ]);
     }
 }
