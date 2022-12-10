@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Enums\Student\StudentRole;
 use App\Enums\Student\StudentTempStatus;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Student\ImportStudentRequest;
@@ -337,9 +338,23 @@ class StudentController extends Controller
     public function getClass(): JsonResponse
     {
         $auth = auth('students')->user();
-
+        $class = $auth->generalClass()->with('students')->get();
         return $this->responseSuccess([
-           'class' => $auth->generalClass
+           'class' => $class
         ]);
+    }
+
+    public function getRequestUpdateStudent()
+    {
+        $model = $this->studentTempRepository->getModel();
+        $query = $model->query();
+        if (auth('students')->check()) {
+            $student = auth('students')->user();
+
+            if ($student->role == StudentRole::ClassMonitor) {
+                $query->where()
+            }
+
+        }
     }
 }
