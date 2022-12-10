@@ -65,7 +65,7 @@
                                     </q-btn>
 
                                     <q-btn color="green" class="q-mr-sm q-mb-sm"
-                                           @click="redirectRouter('StudentUpdate',{id: student?.id})"
+                                           @click="openDialogResetPassword"
                                     >
                                         <q-icon name="fa-solid fa-lock" class="q-mr-sm"
                                                 size="xs"></q-icon>
@@ -522,6 +522,53 @@
                 </q-card-actions>
             </q-card>
         </q-dialog>
+        <q-dialog v-model="popupResetPassword" persistent>
+            <q-card style="width: 300px">
+                <q-card-section>
+                    <div class="text-h6">Đặt lại mật khẩu</div>
+                </q-card-section>
+                <q-card-section class="q-pt-none" style="width: 100%">
+                    <label class="text-bold"
+                    >Mật khẩu mới <span class="required">*</span></label
+                    >
+                    <q-input
+                        outlined
+                        dense
+                        v-model="password"
+                        id="passwordInput"
+                        :ref="refPassword"
+                        :rules="[(val) =>(val && val.length > 0) || 'Trường mật khẩu không được bỏ trống']"
+                        :error-message="getValidationErrors('password')"
+                        :error="hasValidationErrors('password')"
+                        :type="isPwd ? 'password' : 'text'"
+                    >
+                        <template v-slot:append>
+                            <q-icon
+                                :name="isPwd ? 'visibility_off' : 'visibility'"
+                                class="cursor-pointer"
+                                @click="isPwd = !isPwd"
+                            />
+                        </template>
+                    </q-input>
+
+                </q-card-section>
+                <q-card-actions align="right" class="row">
+                    <q-btn
+                        flat
+                        label="Đóng"
+                        color="primary"
+                        @click="popupResetPassword = false"
+                        v-close-popup
+                    />
+                    <q-btn
+                        label="Đồng ý"
+                        color="blue"
+                        @click="handleResetPassword"
+                    />
+                </q-card-actions>
+            </q-card>
+        </q-dialog>
+
     </div>
 </template>
 
@@ -534,6 +581,8 @@ import {IStudentResult} from "../../models/IStudentResult";
 import {useQuasar} from "quasar";
 import {useRouter} from "vue-router/dist/vue-router";
 import eventBus from "../../utils/eventBus";
+import {validationHelper} from "../../utils/validationHelper";
+import _ from "lodash";
 
 export default defineComponent({
     name: "StudentDetail",
@@ -544,6 +593,13 @@ export default defineComponent({
         const userId = ref<string>('')
         const tab = ref<string>('home')
         const $q = useQuasar()
+
+        const {
+            setValidationErrors,
+            getValidationErrors,
+            hasValidationErrors,
+            resetValidateErrors,
+        } = validationHelper();
 
         const dialogDelete = ref<boolean>(false)
 
@@ -577,9 +633,56 @@ export default defineComponent({
             })
         }
 
+        const popupResetPassword = ref<boolean>(false)
+        const isPwd = ref<boolean>(true)
+        const password = ref<string>("")
+        const refPassword = ref<any>(null)
+
+        const openDialogResetPassword = (): void => {
+            password.value = ""
+            popupResetPassword.value = true;
+        }
+
+        const isRequest = ref<boolean>(false)
+        const handleResetPassword = (): void => {
+            if (!isRequest.value) {
+                isRequest.value = true
+                $q.loading.show()
+                const data = {password: password.value}
+                api.resetStudentPassword(parseInt(userId.value), data).then(res => {
+                    $q.notify({
+                        icon: 'check',
+                        message: 'Đặt lại mật khẩu thành công',
+                        color: 'positive',
+                        position: 'top-right'
+                    })
+                    popupResetPassword.value = false
+                }).catch(error => {
+                    let errors = _.get(error.response, 'data.error', {})
+                    if (Object.keys(errors).length === 0) {
+                        let message = _.get(error.response, 'data.message', '')
+                        $q.notify({
+                            icon: 'report_problem',
+                            message,
+                            color: 'negative',
+                            position: 'top-right'
+                        })
+                    }
+                    if (Object.keys(errors).length > 0) {
+                        setValidationErrors(errors)
+                    }
+                }).finally(() => {
+                    $q.loading.hide()
+                    isRequest.value = false
+                })
+            }
+
+
+        }
+
         const handleDelete = (): void => {
             $q.loading.show()
-            api.deleteStudent(student.value.id).then((res) => {
+            api.deleteStudent(parseInt(student.value.id)).then((res) => {
                 if (res) {
                     eventBus.$emit('notify-success', 'Xóa sinh viên thành công')
                     redirectRouter('StudentIndex')
@@ -598,7 +701,20 @@ export default defineComponent({
             router.push({name: nameRoute, params: params})
         }
         return {
-            student, tab, handleUpdateLearningOutcome, loading, redirectRouter,dialogDelete, handleDelete
+            student,
+            tab,
+            handleUpdateLearningOutcome,
+            loading,
+            redirectRouter,
+            dialogDelete,
+            handleDelete,
+            popupResetPassword,
+            password,
+            refPassword, openDialogResetPassword,
+            isPwd,
+            getValidationErrors,
+            hasValidationErrors,
+            handleResetPassword
         }
     }
 })

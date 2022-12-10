@@ -75,14 +75,14 @@
               </q-menu>
             </q-btn>
           </q-slide-transition>
-          <q-btn class="q-mr-sm" no-caps color="primary" @click="toggleFilter">
-            <q-icon
-              name="fa-solid fa-filter"
-              class="q-mr-sm"
-              size="xs"
-            ></q-icon>
-            Lọc dữ liệu
-          </q-btn>
+<!--          <q-btn class="q-mr-sm" no-caps color="primary" @click="toggleFilter">-->
+<!--            <q-icon-->
+<!--              name="fa-solid fa-filter"-->
+<!--              class="q-mr-sm"-->
+<!--              size="xs"-->
+<!--            ></q-icon>-->
+<!--            Lọc dữ liệu-->
+<!--          </q-btn>-->
 
           <div class="table-wrapper-search">
             <q-input

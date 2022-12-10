@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\AuthStudentController;
+use App\Http\Controllers\Api\DashboardController;
 use App\Http\Controllers\Api\DepartmentController;
 use App\Http\Controllers\Api\GeneralClassController;
 use App\Http\Controllers\Api\PermissionController;
@@ -39,6 +40,10 @@ Route::group(['prefix' => 'auth'], function () {
 });
 
 Route::group(['middleware' => ['jwt.auth', 'auth.admin']], function () {
+    Route::prefix('dashboard')->group(function () {
+        Route::get('/', [DashboardController::class, 'index'])->middleware('permission:dashboard-index');
+    });
+
     Route::prefix('users')->group(function () {
         Route::get('/', [UserController::class, 'index'])->middleware('permission:user-index');
         Route::delete('/delete-selected', [UserController::class, 'deleteSelected'])->middleware('permission:user-delete');
@@ -61,6 +66,7 @@ Route::group(['middleware' => ['jwt.auth', 'auth.admin']], function () {
         Route::put('/update-learning-outcome/{id}', [StudentController::class, 'updateDataLearningOutcome'])->middleware('permission:student-update');
         Route::get('/{id}', [StudentController::class, 'show'])->middleware('permission:student-index');
         Route::post('/{id}', [StudentController::class, 'update'])->middleware('permission:student-update');
+        Route::put('/{id}/reset-password', [StudentController::class, 'resetPassword'])->middleware('permission:student-update');
         Route::delete('/{id}', [StudentController::class, 'destroy'])->middleware('permission:student-delete');
     });
 
@@ -131,6 +137,17 @@ Route::group(['prefix' => 'student'], function () {
             Route::put('/{id}', [StudentController::class, 'updateProfile']);
         });
 
+        Route::get('/class', [StudentController::class, 'getClass']);
+
+        Route::group(['middleware' => ['student.class-monitor']], function () {
+            Route::prefix('report')->group(function () {
+                Route::get('/', [ReportController::class, 'index']);
+                Route::post('/', [ReportController::class, 'store']);
+                Route::get('/{id}', [ReportController::class, 'show']);
+                Route::put('/{id}', [ReportController::class, 'update']);
+                Route::delete('/{id}', [ReportController::class, 'destroy']);
+            });
+        });
 
     });
 });

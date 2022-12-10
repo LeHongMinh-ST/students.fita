@@ -5,10 +5,8 @@
           <div class="text-h6">Thêm mới bộ môn</div>
         </q-card-section>
         <q-card-section class="row items-center" style="width: 100%">
-                <label for="code" class="text-bold"
-                >Mã bộ môn <span class="required">*</span></label
-              >
-              <q-input
+            <label class="text-bold">Mã bộ môn <span class="required">*</span></label>
+            <q-input
                 class="full-width"
                 outlined
                 dense
@@ -18,11 +16,9 @@
                 :rules="autoGenerateRule(`mã bộ môn`)"
                 :error-message="getValidationErrors('code')"
                 :error="hasValidationErrors('code')"
-              ></q-input>
-                 <label for="name" class="text-bold"
-                >Tên bộ môn <span class="required">*</span></label
-              >
-              <q-input
+            ></q-input>
+            <label class="text-bold">Tên bộ môn <span class="required">*</span></label>
+            <q-input
                 class="full-width"
                 outlined
                 dense
@@ -32,7 +28,7 @@
                 :rules="autoGenerateRule(`tên bộ môn`)"
                 :error-message="getValidationErrors('name')"
                 :error="hasValidationErrors('name')"
-              />
+            />
         </q-card-section>
         <q-card-actions align="right" class="row">
           <q-btn
@@ -52,10 +48,10 @@
     </q-dialog>
 </template>
 <script>
-import { validationHelper } from "../../utils/validationHelper";
-import { getCurrentInstance, ref } from 'vue'
+import {validationHelper} from "../../utils/validationHelper";
+import {ref} from 'vue'
 import api from "../../api";
-import { useQuasar } from "quasar";
+import {useQuasar} from "quasar";
 
 export default ({
     name: "CreateOrUpdateDepartment",

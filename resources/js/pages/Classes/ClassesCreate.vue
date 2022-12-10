@@ -18,16 +18,16 @@
             </div>
             <div class="form-group">
               <label class="text-bold">Tên <span class="required">*</span></label>
-              <q-input outlined dense v-model="name" id="name" ref="nameRef" :rules="nameRules"
+              <q-input outlined dense v-model="name" id="name" ref="nameRef"
                        :error-message="getValidationErrors('name')" :error="hasValidationErrors('name')"/>
             </div>
             <div class="form-group">
-              <label for="department" class="text-bold">Bộ môn</label>
+              <label class="text-bold">Bộ môn</label>
               <div class="q-gutter-md">
                 <q-select
                     emit-value
                     map-options
-                    :ref="refInput.department_id"
+
                     borderless
                     dense
                     outlined
@@ -35,7 +35,7 @@
                     option-value="id"
                     option-label="name"
                     :options="departments"
-                    :rules="rule.department_id"
+                    :error-message="getValidationErrors('department_id')" :error="hasValidationErrors('department_id')"
                 />
               </div>
             </div>
@@ -45,7 +45,6 @@
                 <q-select
                     emit-value
                     map-options
-                    :ref="refInput.teacher_id"
                     borderless
                     dense
                     outlined
@@ -53,7 +52,8 @@
                     option-value="id"
                     option-label="full_name"
                     :options="users"
-                    :rules="rule.teacher_id"
+                    :error-message="getValidationErrors('teacher_id')" :error="hasValidationErrors('teacher_id')"
+
                 />
               </div>
             </div>

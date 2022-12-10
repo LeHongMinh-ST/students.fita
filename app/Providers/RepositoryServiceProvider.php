@@ -27,6 +27,8 @@ use App\Repositories\Permission\PermissionRepository;
 use App\Repositories\Permission\PermissionRepositoryInterface;
 use App\Repositories\Post\PostRepository;
 use App\Repositories\Post\PostRepositoryInterface;
+use App\Repositories\Report\ReportRepository;
+use App\Repositories\Report\ReportRepositoryInterface;
 use App\Repositories\Reward\RewardRepository;
 use App\Repositories\Reward\RewardRepositoryInterface;
 use App\Repositories\Role\RoleRepository;
@@ -72,6 +74,7 @@ class RepositoryServiceProvider extends ServiceProvider
         $this->app->bind(DepartmentRepositoryInterface::class, DepartmentRepository::class);
         $this->app->bind(GeneralClassRepositoryInterface::class, GeneralClassRepository::class);
         $this->app->bind(LearningOutcomeRepositoryInterface::class, LearningOutcomeRepository::class);
+        $this->app->bind(ReportRepositoryInterface::class, ReportRepository::class);
     }
 
     /**
