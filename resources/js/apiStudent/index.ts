@@ -67,4 +67,10 @@ export default {
             url: '/student/auth/me'
         })
     },
+    updateLearningOutcome<T>(id: number): AxiosPromise<IResult<T>> {
+        return apiAxios({
+            method: 'put',
+            url: `/student/profile/update-learning-outcome/${id}`
+        })
+    },
 }

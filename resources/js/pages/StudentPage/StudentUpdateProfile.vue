@@ -1,9 +1,8 @@
 <template>
     <div class="student-wrapper">
         <q-breadcrumbs>
-            <q-breadcrumbs-el label="Bảng điều khiển" icon="home" :to="{name: 'Home'}"/>
-            <q-breadcrumbs-el label="Sinh viên" :to="{name: 'StudentIndex'}"/>
-            <q-breadcrumbs-el label="Tạo mới"/>
+            <q-breadcrumbs-el label="Hồ sơ sinh viên" icon="home" :to="{name: 'HomeStudent'}"/>
+            <q-breadcrumbs-el label="Cập nhật"/>
         </q-breadcrumbs>
         <div class="main">
             <div class="row">
@@ -506,28 +505,13 @@ export default defineComponent({
         onMounted(() => {
             store.commit(`home/${HomeMutationTypes.SET_TITLE}`, 'Quản lý sinh viên')
             getAllClasses()
-
-            studentCode.value = route.params.id
-            if (studentCode.value) {
-                getStudent(parseInt(studentCode.value));
+            student.value = store.getters["authStudent/getAuthUserStudent"]
+            if (student.value.thumbnail) {
+                imageUrl.value = student.value.thumbnail_url
             }
+
         })
 
-        const getStudent = (id: number) => {
-            api.getStudentById<IStudentResult>(id).then(res => {
-                student.value = _.get(res, 'data.data.student', [])
-                if (student.value.thumbnail) {
-                    imageUrl.value = student.value.thumbnail_url
-                }
-            }).catch(() => {
-                $q.notify({
-                    icon: 'report_problem',
-                    message: 'Không lấy được thông tin sinh viên',
-                    color: 'negative',
-                    position: 'top-right'
-                })
-            })
-        }
 
         const redirectRouter = (nameRoute: string, params: any | {} = null): void => {
             router.push({name: nameRoute, params: params})
