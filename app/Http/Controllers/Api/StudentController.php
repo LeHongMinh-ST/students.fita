@@ -17,9 +17,6 @@ use App\Services\CrawlDataLearningOutcomeService;
 use App\Traits\ResponseTrait;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Pagination\LengthAwarePaginator;
-use Illuminate\Pagination\Paginator;
-use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
@@ -340,18 +337,18 @@ class StudentController extends Controller
 
     public function getClass(Request $request): JsonResponse
     {
-        $auth = auth('students')->user();
-        $class = $auth->generalClass()->with(['students','teacher'])->get();
-        $students = $class->students;
-        $page = $request->get('page', 1)? : (Paginator::resolveCurrentPage() ? : 1);
-        $students = $students instanceof Collection ? $students : Collection::make($students);
-        $page = $students->count() < $page ? 1 : $page;
+        $data = $request->all();
+        $paginate = @$data['limit'] ?? config('constants.limit_of_paginate', 10);
 
-        $students = new LengthAwarePaginator($students->forPage($page, 1), $students->count(), 1, $page);
-        $class->students = $students;
+        $auth = auth('students')->user();
+        $class = $auth->generalClass;
+        $class->load(['teacher']);
+        $students = $class->students()->paginate($paginate);
+
 
         return $this->responseSuccess([
-           'class' => $class
+            'class' => $class,
+            'students' => $students
         ]);
     }
 
