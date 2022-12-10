@@ -154,7 +154,7 @@
                                             <template v-slot:append>
                                                 <q-icon name="event" class="cursor-pointer">
                                                     <q-popup-proxy cover transition-show="scale" transition-hide="scale">
-                                                        <q-date mask="DD/MM/YYYY" :locale="myLocale" v-model="student.dob">
+                                                        <q-date mask="DD/MM/YYYY" :locale=" " v-model="student.dob">
                                                             <div class="row items-center justify-end">
                                                                 <q-btn v-close-popup label="Đóng" color="primary" flat/>
                                                             </div>
@@ -380,52 +380,11 @@
                                 <q-icon name="fa-solid fa-save" class="q-mr-sm" size="xs"></q-icon>
                                 Lưu
                             </q-btn>
-                            <q-btn @click="redirectRouter('StudentDetail', {id: student?.id})" no-caps color="warning"
+                            <q-btn @click="redirectRouter('HomeStudent')" no-caps color="warning"
                                    class="q-mr-sm">
                                 <q-icon name="fa-solid fa-rotate-left" class="q-mr-sm" size="xs"></q-icon>
                                 Quay lại
                             </q-btn>
-                        </q-card-section>
-                    </q-card>
-                    <q-card>
-                        <q-card-section>
-                            <div class="widget-title text-bold">Thiết lập sinh viên</div>
-                        </q-card-section>
-                        <q-separator/>
-                        <q-card-section>
-                            <div class="main-form">
-                                <div class="form-group">
-                                    <label class="text-bold">Tình trạng sinh viên <span class="required">*</span></label>
-                                    <q-select
-                                        outlined
-                                        dense
-                                        :options="studentStatusList"
-                                        v-model="student.status"
-                                        label="Chọn trạng thái"
-                                        emit-value
-                                        map-options
-                                        :error-message="getValidationErrors('status')"
-                                        :error="hasValidationErrors('status')"
-                                        @update:model-value="() => resetValidateErrors('status')"
-                                    />
-                                </div>
-
-                                <div class="form-group">
-                                    <label class="text-bold">Vai trò <span class="required">*</span></label>
-                                    <q-select
-                                        outlined
-                                        dense
-                                        v-model="student.role"
-                                        :options="studentRoleList"
-                                        label="Chọn vai trò"
-                                        emit-value
-                                        map-options
-                                        :error-message="getValidationErrors('role')"
-                                        :error="hasValidationErrors('role')"
-                                        @update:model-value="() => resetValidateErrors('role')"
-                                    />
-                                </div>
-                            </div>
                         </q-card-section>
                     </q-card>
                 </div>
