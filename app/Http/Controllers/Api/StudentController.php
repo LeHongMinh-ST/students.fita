@@ -188,7 +188,7 @@ class StudentController extends Controller
     {
         DB::beginTransaction();
         try {
-            $studentTemp = $this->studentRepository->getFirstBy(['student_id' => $id,]);
+            $studentTemp = $this->studentRepository->getFirstBy(['id' => $id]);
             $this->handleUpdateStudentByStudentTemp($studentTemp);
             DB::commit();
             return $this->responseSuccess();
@@ -344,17 +344,29 @@ class StudentController extends Controller
         ]);
     }
 
-    public function getRequestUpdateStudent()
+    public function getRequestUpdateStudent(): JsonResponse
     {
         $model = $this->studentTempRepository->getModel();
+
         $query = $model->query();
         if (auth('students')->check()) {
             $student = auth('students')->user();
-
             if ($student->role == StudentRole::ClassMonitor) {
-                $query->where('');
+                $query->where('class_id', $student->class_id);
+            } else {
+                $query->where('student_id', $student->id);
             }
-
         }
+
+        if (auth('api')->check()) {
+            $auth = auth('api')->user();
+            $classIds = $auth->generalClass->pluck('id')->toArray();
+            $query->whereIn('class_id', $classIds);
+        }
+
+
+        return $this->responseSuccess([
+            'requests' => $query->get()
+        ]);
     }
 }
