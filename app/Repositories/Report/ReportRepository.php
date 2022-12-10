@@ -36,7 +36,6 @@ class ReportRepository extends BaseRepository implements ReportRepositoryInterfa
             $user = auth('api')->user();
 
             if (@$user->teacher_id && !@$user->is_super_admin) {
-
                 $classId = $user?->generalClass?->pluck('id')?->toArray();
                 $query->whereIn('class_id', $classId);
             }
