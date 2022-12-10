@@ -43,12 +43,12 @@ class Report extends Model
 
     public function getStatusTextAttribute(): string
     {
-        return ReportStatus::getDescription($this->status);
+        return $this->status ? ReportStatus::getDescription($this->status) : '';
     }
 
     public function getSubjectTextAttribute():string
     {
-        return ReportSubject::getDescription($this->subjects);
+        return $this->subjects ? ReportSubject::getDescription($this->subjects) : '';
 
     }
 
