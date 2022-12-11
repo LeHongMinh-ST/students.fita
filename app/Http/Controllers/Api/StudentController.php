@@ -197,7 +197,8 @@ class StudentController extends Controller
                 return $this->responseError('Bạn không có quyền truy cập',[], 403);
             }
 
-            $this->handleUpdateStudentByStudentTemp($studentTemp);
+            $studentTemp = $this->handleUpdateStudentByStudentTemp($studentTemp);
+            $this->studentTempRepository->createOrUpdate($studentTemp);
             DB::commit();
             return $this->responseSuccess();
         } catch (\Exception $exception) {
