@@ -102,4 +102,11 @@ export default {
             data: data
         })
     },
+
+    updateStudentReport<T>(id: number): AxiosPromise<IResult<T>> {
+        return apiAxios({
+            method: 'put',
+            url: `/student/report/${id}`
+        })
+    },
 }

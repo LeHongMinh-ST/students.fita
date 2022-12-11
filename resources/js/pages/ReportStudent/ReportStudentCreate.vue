@@ -149,7 +149,21 @@ export default defineComponent({
             status_approve: 1,
             class_id:0,
         }
-
+        
+        const rule = {
+            student_id: [
+              (val: any) => val || "Vui lòng chọn sinh viên!",
+            ],
+            title: [
+              (val: any) => val || "Vui lòng nhập tiêu đề !",
+            ],
+            subjects: [
+              (val: any) => val || "Vui lòng nhập!",
+            ],
+            content: [
+              (val: any) => val || "Vui lòng nhập!",
+            ],
+        };
         
         onMounted(() => {
             store.commit(`home/${HomeMutationTypes.SET_TITLE}`, 'Quản lý sinh viên')
@@ -221,7 +235,8 @@ export default defineComponent({
             isRequest,
             student_id,
             title,
-            content
+            content,
+            rule
         }
     }
 })
