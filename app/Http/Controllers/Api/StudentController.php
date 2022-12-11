@@ -9,6 +9,7 @@ use App\Http\Requests\Student\ImportStudentRequest;
 use App\Http\Requests\Student\ResetPasswordRequest;
 use App\Http\Requests\Student\StoretStudentRequest;
 use App\Http\Requests\Student\UpdateStudentRequest;
+use App\Http\Requests\Student\UpdateStudentTempRequest;
 use App\Imports\StudentImport;
 use App\Models\StudentTemp;
 use App\Repositories\Student\StudentRepositoryInterface;
@@ -129,7 +130,7 @@ class StudentController extends Controller
         }
     }
 
-    public function createStudentTemp(UpdateStudentRequest $request): JsonResponse
+    public function createStudentTemp(UpdateStudentTempRequest $request): JsonResponse
     {
         DB::beginTransaction();
         try {
@@ -189,6 +190,13 @@ class StudentController extends Controller
         DB::beginTransaction();
         try {
             $studentTemp = $this->studentRepository->getFirstBy(['id' => $id]);
+
+            $student = auth('students')->user();
+
+            if ($studentTemp->student_id != @$student->id) {
+                return $this->responseError('Bạn không có quyền truy cập',[], 403);
+            }
+
             $this->handleUpdateStudentByStudentTemp($studentTemp);
             DB::commit();
             return $this->responseSuccess();
@@ -359,6 +367,7 @@ class StudentController extends Controller
         $paginate = $data['limit'] ?? config('constants.limit_of_paginate', 10);
         $model = $this->studentTempRepository->getModel();
         $query = $model->query();
+
         if (auth('students')->check()) {
             $student = auth('students')->user();
             if ($student->role == StudentRole::ClassMonitor) {

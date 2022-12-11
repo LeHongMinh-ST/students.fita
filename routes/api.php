@@ -138,6 +138,11 @@ Route::group(['prefix' => 'student'], function () {
         });
 
         Route::get('/class', [StudentController::class, 'getClass']);
+        Route::prefix('requests')->group(function () {
+            Route::get('/', [StudentController::class, 'getRequestUpdateStudent']);
+            Route::post('/', [StudentController::class, 'createStudentTemp']);
+            Route::put('/{id}', [StudentController::class, 'updateStudentByStudentTemp']);
+        });
 
         Route::group(['middleware' => ['student.class-monitor']], function () {
             Route::prefix('report')->group(function () {
@@ -148,11 +153,7 @@ Route::group(['prefix' => 'student'], function () {
                 Route::delete('/{id}', [ReportController::class, 'destroy']);
             });
 
-            Route::prefix('requests')->group(function () {
-                Route::get('/', [StudentController::class, 'getRequestUpdateStudent']);
-                Route::post('/', [StudentController::class, 'createStudentTemp']);
-                Route::put('/{id}', [StudentController::class, 'updateStudentByStudentTemp']);
-            });
+
         });
 
     });
