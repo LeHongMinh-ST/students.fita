@@ -1,7 +1,7 @@
-import {createRouter, createWebHistory, RouteRecordRaw} from 'vue-router'
-import {store} from "../store"
 import _ from "lodash";
+import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router';
 import IPermissionResult from "../models/IPermissionResult";
+import { store } from "../store";
 
 const routeAdmin: Array<RouteRecordRaw> = [
     {
@@ -200,10 +200,16 @@ const routeStudent: Array<RouteRecordRaw> = [
     },
     {
         path: 'class',
-        name: 'StudentUpdateProdile',
-        component: () => import('../pages/StudentPage/StudentUpdateProfile.vue'),
+        name: 'StudentClass',
+        component: () => import('../pages/StudentPage/StudentClass.vue'),
         meta: {isAuthenticatedStudent: false},
     },
+    {
+        path: 'update',
+        name: 'StudentUpdateProfile',
+        component: () => import('../pages/StudentPage/StudentUpdateProfile.vue'),
+        meta: {isAuthenticatedStudent: false},
+    }
 ]
 
 

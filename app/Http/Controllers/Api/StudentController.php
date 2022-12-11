@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Enums\Student\StudentRole;
 use App\Enums\Student\StudentTempStatus;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Student\ImportStudentRequest;
@@ -187,7 +188,7 @@ class StudentController extends Controller
     {
         DB::beginTransaction();
         try {
-            $studentTemp = $this->studentRepository->getFirstBy(['student_id' => $id,]);
+            $studentTemp = $this->studentRepository->getFirstBy(['id' => $id]);
             $this->handleUpdateStudentByStudentTemp($studentTemp);
             DB::commit();
             return $this->responseSuccess();
@@ -334,12 +335,47 @@ class StudentController extends Controller
         return response()->download($file, 'import_student_template.xlsx');
     }
 
-    public function getClass(): JsonResponse
+    public function getClass(Request $request): JsonResponse
     {
+        $data = $request->all();
+        $paginate = @$data['limit'] ?? config('constants.limit_of_paginate', 10);
+
         $auth = auth('students')->user();
+        $class = $auth->generalClass;
+        $class->load(['teacher', 'department']);
+
+        if(@$data['q']) $students = $class->students()->where('full_name','like',"%{$data['q']}%")->paginate($paginate);
+        else $students = $class->students()->paginate($paginate);
 
         return $this->responseSuccess([
-           'class' => $auth->generalClass
+            'class' => $class,
+            'students' => $students
+        ]);
+    }
+
+    public function getRequestUpdateStudent(Request $request): JsonResponse
+    {
+        $data = $request->all();
+        $paginate = $data['limit'] ?? config('constants.limit_of_paginate', 10);
+        $model = $this->studentTempRepository->getModel();
+        $query = $model->query();
+        if (auth('students')->check()) {
+            $student = auth('students')->user();
+            if ($student->role == StudentRole::ClassMonitor) {
+                $query->where('class_id', $student->class_id);
+            } else {
+                $query->where('student_id', $student->id);
+            }
+        }
+
+        if (auth('api')->check()) {
+            $auth = auth('api')->user();
+            $classIds = $auth->generalClass->pluck('id')->toArray();
+            $query->whereIn('class_id', $classIds);
+        }
+
+        return $this->responseSuccess([
+            'requests' => $query->paginate($paginate)
         ]);
     }
 }

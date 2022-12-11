@@ -163,7 +163,7 @@ export default defineComponent({
             checkClassMonitor,
             links1: [
                 {icon: 'fa-solid fa-address-card', text: 'Hồ sơ sinh viên', routeName: 'HomeStudent'},
-                {icon: 'fa-solid fa-users', text: 'Thông tin lớp học', routeName: 'ClassStudent'},
+                {icon: 'fa-solid fa-users', text: 'Thông tin lớp học', routeName: 'StudentClass'},
             ],
             links2: [
                 {icon: 'fa-solid fa-circle-info', text: 'Duyệt thông tin', routeName: 'RequestIndex'},

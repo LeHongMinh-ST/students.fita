@@ -50,7 +50,8 @@
                     </q-btn>
 
                     <div class="table-wrapper-search">
-                        <q-input bottom-slots v-model="search" id="searchInput" name="searchInput" label="Nhập từ khóa để tìm kiếm" outlined dense>
+                        <q-input bottom-slots v-model="search" id="searchInput" name="searchInput"
+                                 label="Nhập từ khóa để tìm kiếm" outlined dense>
 
                             <template v-slot:append>
                                 <q-icon v-if="text !== ''" name="close" @click="text = ''" class="cursor-pointer"/>
@@ -93,7 +94,7 @@
                     <template v-if="users.length > 0">
                         <tr v-for="(user, index) in users" :key="index">
                             <td class="text-center">
-                                  <q-checkbox v-model="checkboxArray" :val="String(getValueLodash(user, 'id', ''))"/>
+                                <q-checkbox v-model="checkboxArray" :val="String(getValueLodash(user, 'id', ''))"/>
                             </td>
                             <td class="text-center">{{ index + +1 + +page.perPage * (page.currentPage - 1) }}</td>
                             <td class="text-left">
@@ -106,13 +107,16 @@
                             <td class="text-left">{{ getValueLodash(user, 'email', '') }}</td>
                             <td class="text-left">{{ getValueLodash(user, 'phone', '') }}</td>
                             <td class="text-left">
-                                <q-badge v-if="getValueLodash(user, 'is_teacher', 0) != 0" align="middle" color='green'>Giảng viên</q-badge>
-                                <q-badge v-else align="middle" color='blue'>Quản trị</q-badge>
-
+                                <q-badge v-if="getValueLodash(user, 'is_teacher', 0) != 0" align="middle" color='green'>
+                                    Giảng viên
+                                </q-badge>
+                                <q-badge v-else align="middle" color='blue'>Quản trị - Ban chủ nhiệm</q-badge>
                             </td>
                             <td class="text-left">
-                                <q-badge v-if="user?.is_super_admin" align="middle" color='red'>Supper Admin</q-badge>
-                                <q-badge v-else-if="user?.role?.name" align="middle" color='green'>{{ getValueLodash(user, 'role.name', '') ?? ''}}</q-badge>
+                                <q-badge v-if="user?.is_super_admin" align="middle" color='red'>Super Admin</q-badge>
+                                <q-badge v-else-if="user?.role?.name" align="middle" color='green'>
+                                    {{ getValueLodash(user, 'role.name', '') ?? '' }}
+                                </q-badge>
                             </td>
                             <td class="text-center">
                                 <div class="inline cursor-pointer">
@@ -126,12 +130,12 @@
                                                                   size="xs"></q-icon>Chỉnh sửa</span>
                                                 </q-item-section>
                                             </q-item>
-                                            <q-item clickable v-close-popup
+                                            <q-item v-if="auth.id !== getValueLodash(user, 'id', 0)" clickable v-close-popup
                                                     @click="openDialogDelete(getValueLodash(user, 'id', 0))">
                                                 <span><q-icon name="fa-solid fa-trash" class="q-mr-sm"
                                                               size="xs"></q-icon>Xoá</span>
                                             </q-item>
-                                            <q-item clickable v-close-popup
+                                            <q-item v-if="auth.id !== getValueLodash(user, 'id', 0)" clickable v-close-popup
                                                     @click="openDialogResetPassword(getValueLodash(user, 'id', 0))">
                                                 <span><q-icon name="fa-solid fa-lock" class="q-mr-sm"
                                                               size="xs"></q-icon>Đặt lại mật khẩu</span>
@@ -185,44 +189,44 @@
                     <div class="text-h6">Đặt lại mật khẩu</div>
                 </q-card-section>
                 <q-card-section class="q-pt-none" style="width: 100%">
-                <label class="text-bold"
-                  >Mật khẩu mới <span class="required">*</span></label
-                >
-                <q-input
-                  outlined
-                  dense
-                  v-model="password"
-                  id="passwordInput"
-                  :ref="refPassword"
-                  :rules="[(val) =>(val && val.length > 0) || 'Trường mật khẩu không được bỏ trống']"
-                  :error-message="getValidationErrors('password')"
-                  :error="hasValidationErrors('password')"
-                  :type="isPwd ? 'password' : 'text'"
-                >
-                  <template v-slot:append>
-                    <q-icon
-                      :name="isPwd ? 'visibility_off' : 'visibility'"
-                      class="cursor-pointer"
-                      @click="isPwd = !isPwd"
-                    />
-                  </template>
-                </q-input>
+                    <label class="text-bold"
+                    >Mật khẩu mới <span class="required">*</span></label
+                    >
+                    <q-input
+                        outlined
+                        dense
+                        v-model="password"
+                        id="passwordInput"
+                        :ref="refPassword"
+                        :rules="[(val) =>(val && val.length > 0) || 'Trường mật khẩu không được bỏ trống']"
+                        :error-message="getValidationErrors('password')"
+                        :error="hasValidationErrors('password')"
+                        :type="isPwd ? 'password' : 'text'"
+                    >
+                        <template v-slot:append>
+                            <q-icon
+                                :name="isPwd ? 'visibility_off' : 'visibility'"
+                                class="cursor-pointer"
+                                @click="isPwd = !isPwd"
+                            />
+                        </template>
+                    </q-input>
 
-        </q-card-section>
-        <q-card-actions align="right" class="row">
-          <q-btn
-            flat
-            label="Đóng"
-            color="primary"
-            @click="closeDialog"
-            v-close-popup
-          />
-          <q-btn
-            label="Đồng ý"
-            color="blue"
-            @click="handleResetPassword"
-          />
-        </q-card-actions>
+                </q-card-section>
+                <q-card-actions align="right" class="row">
+                    <q-btn
+                        flat
+                        label="Đóng"
+                        color="primary"
+                        @click="closeDialog"
+                        v-close-popup
+                    />
+                    <q-btn
+                        label="Đồng ý"
+                        color="blue"
+                        @click="handleResetPassword"
+                    />
+                </q-card-actions>
             </q-card>
         </q-dialog>
         <q-dialog v-model="dialogDeleteSelect" persistent>
@@ -275,315 +279,318 @@ export default defineComponent({
         const refPassword = ref<any>(null)
         const checkboxArray = ref<Array<string>>([])
         const checkboxAll = ref<boolean | string>(false)
+
+        const auth = store.getters['auth/getAuthUser']
+
         const page = ref<IPage>({
-                currentPage: 1,
-                total: 0,
-                perPage: 10
-            })
+            currentPage: 1,
+            total: 0,
+            perPage: 10
+        })
 
-            const {
-                setValidationErrors,
-                getValidationErrors,
-                hasValidationErrors,
-                resetValidateErrors,
-            } = validationHelper();
-            const isPwd = ref(true);
+        const {
+            setValidationErrors,
+            getValidationErrors,
+            hasValidationErrors,
+            resetValidateErrors,
+        } = validationHelper();
+        const isPwd = ref(true);
 
 
-            const currentPage = ref<number>(1)
+        const currentPage = ref<number>(1)
 
-            const loadingRoles = ref<boolean>(false)
-            const isFilter = ref<boolean>(false)
-            const toggleFilter = (): void => {
-                isFilter.value = !isFilter.value
-            }
-            const closeFilter = (): void => {
-                isFilter.value = false
-            }
+        const loadingRoles = ref<boolean>(false)
+        const isFilter = ref<boolean>(false)
+        const toggleFilter = (): void => {
+            isFilter.value = !isFilter.value
+        }
+        const closeFilter = (): void => {
+            isFilter.value = false
+        }
 
-            const redirectRouter = (nameRoute: string, params: any | [] = null): void => {
-                router.push({name: nameRoute, params: params})
-            }
+        const redirectRouter = (nameRoute: string, params: any | [] = null): void => {
+            router.push({name: nameRoute, params: params})
+        }
 
-            const handleFormatDate = (value: string): string => {
-                return formatDate(value)
-            }
+        const handleFormatDate = (value: string): string => {
+            return formatDate(value)
+        }
 
-            const getListUser = (): void => {
+        const getListUser = (): void => {
 
-                loadingRoles.value = true
-                const payload: IPayload = {
-                    page: 1,
-                }
-
-                if (search.value) {
-                    payload.q = search.value
-                }
-
-                payload.page = page.value.currentPage
-
-                api.getUsers<IPaginate<IUserResult[]>>(payload).then(res => {
-                    users.value = _.get(res, 'data.data.users.data')
-                    userIds.value = users.value.map(user => user.id.toString());
-                    page.value.currentPage = _.get(res, 'data.data.users.current_page', 1)
-                    page.value.total = _.get(res, 'data.data.users.last_page', 0)
-                    page.value.perPage = _.get(res, 'data.data.users.per_page', 0)
-                }).catch(() => {
-                    $q.notify({
-                        icon: 'report_problem',
-                        message: 'Không tải được danh sách người dùng!',
-                        color: 'negative',
-                        position: 'top-right'
-                    })
-                }).finally(() => loadingRoles.value = false)
+            loadingRoles.value = true
+            const payload: IPayload = {
+                page: 1,
             }
 
-            const openDialogDelete = (id: string): void => {
-                dialogDelete.value = true
-                userId.value = id
-            }
-            const openDialogDeleteSelect = (id: string): void => {
-                dialogDeleteSelect.value = true
+            if (search.value) {
+                payload.q = search.value
             }
 
-            const openDialogResetPassword = (id: string): void => {
-                popupResetPassword.value = !popupResetPassword.value;
-                userId.value = id
-            }
+            payload.page = page.value.currentPage
 
-            const isRequest = ref<boolean>(false)
+            api.getUsers<IPaginate<IUserResult[]>>(payload).then(res => {
+                users.value = _.get(res, 'data.data.users.data')
+                userIds.value = users.value.map(user => user.id.toString());
+                page.value.currentPage = _.get(res, 'data.data.users.current_page', 1)
+                page.value.total = _.get(res, 'data.data.users.last_page', 0)
+                page.value.perPage = _.get(res, 'data.data.users.per_page', 0)
+            }).catch(() => {
+                $q.notify({
+                    icon: 'report_problem',
+                    message: 'Không tải được danh sách người dùng!',
+                    color: 'negative',
+                    position: 'top-right'
+                })
+            }).finally(() => loadingRoles.value = false)
+        }
 
-            const handleResetPassword = (): void => {
-              if (!isRequest.value) {
+        const openDialogDelete = (id: string): void => {
+            dialogDelete.value = true
+            userId.value = id
+        }
+        const openDialogDeleteSelect = (id: string): void => {
+            dialogDeleteSelect.value = true
+        }
+
+        const openDialogResetPassword = (id: string): void => {
+            popupResetPassword.value = !popupResetPassword.value;
+            userId.value = id
+        }
+
+        const isRequest = ref<boolean>(false)
+
+        const handleResetPassword = (): void => {
+            if (!isRequest.value) {
                 isRequest.value = true
                 $q.loading.show()
                 const data = {
-                  password: password.value
+                    password: password.value
                 }
                 api.resetPassword(parseInt(userId.value), data).then(res => {
-                  if (res) {
-                    $q.notify({
-                      icon: 'check',
-                      message: 'Đặt lại mật khẩu thành công',
-                      color: 'positive',
-                      position: 'top-right'
-                    })
-                    popupResetPassword.value = false
-                  }
+                    if (res) {
+                        $q.notify({
+                            icon: 'check',
+                            message: 'Đặt lại mật khẩu thành công',
+                            color: 'positive',
+                            position: 'top-right'
+                        })
+                        popupResetPassword.value = false
+                    }
                 }).catch(error => {
-                  let errors = _.get(error.response, 'data.error', {})
-                  if (Object.keys(errors).length === 0) {
-                    let message = _.get(error.response, 'data.message', '')
-                    $q.notify({
-                      icon: 'report_problem',
-                      message,
-                      color: 'negative',
-                      position: 'top-right'
-                    })
-                  }
-                  if (Object.keys(errors).length > 0) {
-                    setValidationErrors(errors)
-                  }
+                    let errors = _.get(error.response, 'data.error', {})
+                    if (Object.keys(errors).length === 0) {
+                        let message = _.get(error.response, 'data.message', '')
+                        $q.notify({
+                            icon: 'report_problem',
+                            message,
+                            color: 'negative',
+                            position: 'top-right'
+                        })
+                    }
+                    if (Object.keys(errors).length > 0) {
+                        setValidationErrors(errors)
+                    }
                 }).finally(() => {
-                  $q.loading.hide()
-                  isRequest.value = false
+                    $q.loading.hide()
+                    isRequest.value = false
                 })
-              }
-
             }
 
-            const closeDialog = (): void => {
-                dialogDelete.value = false
-                dialogDeleteSelect.value = false
-                userId.value = ''
-            }
-
-            const handleDelete = (): void => {
-                $q.loading.show()
-                api.deleteUser(userId.value).then(() => {
-                    getListUser()
-                    closeDialog()
-                    $q.notify({
-                        icon: 'check',
-                        message: 'Xóa thành công nhóm vai trò',
-                        color: 'positive',
-                        position: 'top-right'
-                    })
-                }).catch(() => {
-                    $q.notify({
-                        icon: 'report_problem',
-                        message: 'Không xóa được nhóm vai trò!',
-                        color: 'negative',
-                        position: 'top-right'
-                    })
-                }).finally(() => $q.loading.hide())
-            }
-
-            const getValueLodash = (res: object, data: string, d: any = null) => {
-                return _.get(res, data, d)
-            }
-
-            const handleGetRoleIds = (): void => {
-                api.getAllRoleId<number[]>().then(res => roleIds.value = _.get(res, 'data.data.roles', []))
-            }
-
-            const handleDeleteSelect = () => {
-                $q.loading.show()
-                const data = {
-                    user_id: checkboxArray.value
-                }
-                api.deleteUserSelected(data).then(() => {
-                    getListUser()
-                    closeDialog()
-                    checkboxArray.value = []
-                    $q.notify({
-                        icon: 'check',
-                        message: 'Xóa thành công nhóm vai trò',
-                        color: 'positive',
-                        position: 'top-right'
-                    })
-                }).catch(() => {
-                    $q.notify({
-                        icon: 'report_problem',
-                        message: 'Không xóa được nhóm vai trò!',
-                        color: 'negative',
-                        position: 'top-right'
-                    })
-                }).finally(() => $q.loading.hide())
-            }
-
-            watch(() => page.value.currentPage, () => getListUser())
-            watch(() => search.value, () => getListUser())
-            watch(() => checkboxAll.value, (value) => {
-                if (value === true) {
-                    checkboxArray.value = userIds.value;
-                }
-
-                if (value === false) {
-                    checkboxArray.value = []
-                }
-
-            })
-
-            watch(() => checkboxArray.value, (value) => {
-                if (value.length < userIds.value.length) {
-                    checkboxAll.value = 'maybe'
-                }
-
-                if (value.length == 0) {
-                    checkboxAll.value = false
-                }
-            })
-
-            onMounted((): void => {
-                store.commit(`home/${HomeMutationTypes.SET_TITLE}`, 'Quản lý người dùng')
-                eventBus.$on('notify-success', (message: string) => {
-                    $q.notify({
-                        icon: 'check',
-                        message: message,
-                        color: 'positive',
-                        position: 'top-right'
-                    })
-                })
-                getListUser()
-                handleGetRoleIds()
-            })
-
-            return {
-                search,
-                isFilter,
-                toggleFilter,
-                closeFilter,
-                handleFormatDate,
-                redirectRouter,
-                getValueLodash,
-                handleDelete,
-                handleDeleteSelect,
-                currentPage,
-                users,
-                loadingRoles,
-                getListUser,
-                page,
-                dialogDelete,
-                openDialogDelete,
-                openDialogDeleteSelect,
-                dialogDeleteSelect,
-                closeDialog,
-                checkboxArray,
-                checkboxAll,
-                openDialogResetPassword,
-                popupResetPassword,
-                handleResetPassword,
-                password,
-                refPassword,
-                setValidationErrors,
-                getValidationErrors,
-                hasValidationErrors,
-                resetValidateErrors,
-                isPwd
-            }
         }
-    })
+
+        const closeDialog = (): void => {
+            dialogDelete.value = false
+            dialogDeleteSelect.value = false
+            userId.value = ''
+        }
+
+        const handleDelete = (): void => {
+            $q.loading.show()
+            api.deleteUser(userId.value).then(() => {
+                getListUser()
+                closeDialog()
+                $q.notify({
+                    icon: 'check',
+                    message: 'Xóa thành công nhóm vai trò',
+                    color: 'positive',
+                    position: 'top-right'
+                })
+            }).catch(() => {
+                $q.notify({
+                    icon: 'report_problem',
+                    message: 'Không xóa được nhóm vai trò!',
+                    color: 'negative',
+                    position: 'top-right'
+                })
+            }).finally(() => $q.loading.hide())
+        }
+
+        const getValueLodash = (res: object, data: string, d: any = null) => {
+            return _.get(res, data, d)
+        }
+
+        const handleGetRoleIds = (): void => {
+            api.getAllRoleId<number[]>().then(res => roleIds.value = _.get(res, 'data.data.roles', []))
+        }
+
+        const handleDeleteSelect = () => {
+            $q.loading.show()
+            const data = {
+                user_id: checkboxArray.value
+            }
+            api.deleteUserSelected(data).then(() => {
+                getListUser()
+                closeDialog()
+                checkboxArray.value = []
+                $q.notify({
+                    icon: 'check',
+                    message: 'Xóa thành công nhóm vai trò',
+                    color: 'positive',
+                    position: 'top-right'
+                })
+            }).catch(() => {
+                $q.notify({
+                    icon: 'report_problem',
+                    message: 'Không xóa được nhóm vai trò!',
+                    color: 'negative',
+                    position: 'top-right'
+                })
+            }).finally(() => $q.loading.hide())
+        }
+
+        watch(() => page.value.currentPage, () => getListUser())
+        watch(() => search.value, () => getListUser())
+        watch(() => checkboxAll.value, (value) => {
+            if (value === true) {
+                checkboxArray.value = userIds.value;
+            }
+
+            if (value === false) {
+                checkboxArray.value = []
+            }
+
+        })
+
+        watch(() => checkboxArray.value, (value) => {
+            if (value.length < userIds.value.length) {
+                checkboxAll.value = 'maybe'
+            }
+
+            if (value.length == 0) {
+                checkboxAll.value = false
+            }
+        })
+
+        onMounted((): void => {
+            store.commit(`home/${HomeMutationTypes.SET_TITLE}`, 'Quản lý người dùng')
+            eventBus.$on('notify-success', (message: string) => {
+                $q.notify({
+                    icon: 'check',
+                    message: message,
+                    color: 'positive',
+                    position: 'top-right'
+                })
+            })
+            getListUser()
+            handleGetRoleIds()
+        })
+
+        return {
+            search,
+            isFilter,
+            toggleFilter,
+            closeFilter,
+            handleFormatDate,
+            redirectRouter,
+            getValueLodash,
+            handleDelete,
+            handleDeleteSelect,
+            currentPage,
+            users,
+            loadingRoles,
+            getListUser,
+            page,
+            dialogDelete,
+            openDialogDelete,
+            openDialogDeleteSelect,
+            dialogDeleteSelect,
+            closeDialog,
+            checkboxArray,
+            checkboxAll,
+            openDialogResetPassword,
+            popupResetPassword,
+            handleResetPassword,
+            password,
+            refPassword,
+            setValidationErrors,
+            getValidationErrors,
+            hasValidationErrors,
+            resetValidateErrors,
+            isPwd, auth
+        }
+    }
+})
 </script>
 
 <style scoped lang="scss">
-    .role-wrapper {
-        .filter-wrapper {
-            margin-top: 20px;
-            margin-bottom: 20px;
+.role-wrapper {
+    .filter-wrapper {
+        margin-top: 20px;
+        margin-bottom: 20px;
 
-            .filter-wrapper-content {
-                padding: 10px 20px;
+        .filter-wrapper-content {
+            padding: 10px 20px;
 
-                .filter-header {
-                    display: flex;
-                    justify-content: space-between;
-                    align-items: center;
+            .filter-header {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+            }
+        }
+    }
+
+    .table-wrapper {
+        margin-top: 20px;
+
+        .table-wrapper-title {
+            padding: 0px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+
+            .table-wrapper-filter {
+                width: 75%;
+                display: flex;
+                justify-content: flex-start;
+                align-items: center;
+
+                .q-btn {
+                    height: 35px;
+                }
+
+                .table-wrapper-search {
+                    margin-top: 20px;
+                    width: 20vw;
                 }
             }
         }
 
-        .table-wrapper {
-            margin-top: 20px;
-
-            .table-wrapper-title {
-                padding: 0px 20px;
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-
-                .table-wrapper-filter {
-                    width: 75%;
-                    display: flex;
-                    justify-content: flex-start;
-                    align-items: center;
-
-                    .q-btn {
-                        height: 35px;
-                    }
-
-                    .table-wrapper-search {
-                        margin-top: 20px;
-                        width: 20vw;
-                    }
+        .role-table {
+            tr {
+                th {
+                    text-transform: uppercase;
+                    font-weight: bold;
+                    color: #949597;
                 }
-            }
 
-            .role-table {
-                tr {
-                    th {
-                        text-transform: uppercase;
-                        font-weight: bold;
-                        color: #949597;
-                    }
-
-                    td {
-                        .text-link {
-                            color: #337ab7;
-                        }
+                td {
+                    .text-link {
+                        color: #337ab7;
                     }
                 }
             }
         }
     }
+}
 </style>

@@ -45,7 +45,7 @@ class ReportController extends Controller
         try {
             $data = $request->all();
             $department = $this->reportRepository->create(array_merge($data, [
-                'created_by' => auth()->id()
+                'created_by' => auth('students')->id()
             ]));
             return $this->responseSuccess(['department' => $department]);
 
@@ -73,7 +73,6 @@ class ReportController extends Controller
 
             if (auth('api')->check()) {
                 $auth= auth('api')->user();
-
                 if (@$auth->teacher_id && !@$auth->is_super_admin) {
 
                     $classIds = $auth?->generalClass?->pluck('id')?->toArray();

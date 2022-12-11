@@ -2,9 +2,10 @@
 
 namespace App\Enums\Report;
 
+use BenSampo\Enum\Contracts\LocalizedEnum;
 use BenSampo\Enum\Enum;
 
-final class ReportStatus extends Enum
+final class ReportStatus extends Enum implements LocalizedEnum
 {
     const Pending = 1;
     const Seen = 2;
