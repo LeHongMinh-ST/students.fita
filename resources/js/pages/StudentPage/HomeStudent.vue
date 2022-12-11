@@ -10,19 +10,19 @@
                         <q-card-section>
                             <div class="text-bold">Thông tin sinh viên</div>
                         </q-card-section>
-                        <q-separator/>
+                        <q-separator />
                         <q-card-section>
                             <div class="q-pa-md">
                                 <div class="avatar">
                                     <q-img class="avatar-student"
-                                           :src="`${auth.thumbnail_url}` ?? '/images/User-Default.jpg'"/>
+                                        :src="`${auth.thumbnail_url}` ?? '/images/User-Default.jpg'" />
                                 </div>
 
                                 <div class="student-name text-center">
                                     <div class="text-bold"> {{ auth.full_name }}</div>
                                     <div>{{ auth.student_code }}</div>
                                 </div>
-                                <q-separator/>
+                                <q-separator />
                                 <div class="info-student q-pl-md  q-pb-md">
 
                                     <div class="item q-mt-md">
@@ -42,9 +42,8 @@
                                         <q-icon size="sm" class="fa-solid fa-location-dot q-mr-sm"></q-icon>
                                         {{ auth?.countryside ?? "Chưa cập nhật" }}
                                     </div>
-
                                 </div>
-                                <q-separator/>
+                                <q-separator />
                                 <div class="main-action q-mt-md text-center">
                                     <q-btn color="secondary" class="q-mr-sm q-mb-sm"
                                            @click="redirectRouter('StudentUpdateProfile')"
@@ -54,12 +53,9 @@
                                         Chỉnh sửa
                                     </q-btn>
 
-
                                     <q-btn color="green" class="q-mr-sm q-mb-sm"
-                                           @click="redirectRouter('StudentUpdate',{id: auth?.id})"
-                                    >
-                                        <q-icon name="fa-solid fa-lock" class="q-mr-sm"
-                                                size="xs"></q-icon>
+                                        @click="redirectRouter('StudentUpdateProfile')">
+                                        <q-icon name="fa-solid fa-lock" class="q-mr-sm" size="xs"></q-icon>
                                         Đặt lại mật khẩu
                                     </q-btn>
                                 </div>
@@ -69,20 +65,13 @@
                 </div>
                 <div class="col-9">
                     <q-card>
-                        <q-tabs
-                            v-model="tab"
-                            class="text-grey"
-                            active-color="primary"
-                            indicator-color="primary"
-                            align="justify"
-                            narrow-indicator
-                        >
-                            <q-tab name="home" label="Thông tin chung"/>
-                            <q-tab name="learning_outcome" label="Kết quả học tập"/>
-                            <q-tab name="report" label="Báo cáo phản án"/>
+                        <q-tabs v-model="tab" class="text-grey" active-color="primary" indicator-color="primary"
+                            align="justify" narrow-indicator>
+                            <q-tab name="home" label="Thông tin chung" />
+                            <q-tab name="learning_outcome" label="Kết quả học tập" />
+                            <q-tab name="report" label="Báo cáo phản án" />
                         </q-tabs>
-
-                        <q-separator/>
+                        <q-separator />
 
                         <q-tab-panels v-model="tab" animated>
                             <q-tab-panel name="home">
@@ -95,7 +84,7 @@
                                             </div>
                                             <div class="item q-mb-md">
                                                 <strong>Lớp: </strong>{{
-                                                    auth?.general_class?.name ?? 'Chưa cập nhật'
+                                                        auth?.general_class?.name ?? 'Chưa cập nhật'
                                                 }}
                                             </div>
                                             <div class="item q-mb-md">
@@ -103,7 +92,7 @@
                                             </div>
                                             <div class="item q-mb-md">
                                                 <strong>CMT/CCCD: </strong>{{
-                                                    auth?.citizen_identification ?? 'Chưa cập nhật'
+                                                        auth?.citizen_identification ?? 'Chưa cập nhật'
                                                 }}
                                             </div>
                                             <div class="item q-mb-md">
@@ -117,7 +106,7 @@
                                             </div>
                                             <div class="item q-mb-md">
                                                 <strong>Tình trạng sinh viên: </strong>{{
-                                                    auth.status_text ?? 'Chưa cập nhật'
+                                                        auth.status_text ?? 'Chưa cập nhật'
                                                 }}
                                             </div>
                                             <div class="item q-mb-md">
@@ -127,7 +116,7 @@
                                         <div class="col">
                                             <div class="item q-mb-md">
                                                 <strong>Giới tính: </strong>{{
-                                                    auth?.gender_text ?? 'Chưa cập nhật'
+                                                        auth?.gender_text ?? 'Chưa cập nhật'
                                                 }}
                                             </div>
 
@@ -137,7 +126,7 @@
 
                                             <div class="item q-mb-md">
                                                 <strong>Chương trình đào tạo: </strong>{{
-                                                    auth.training_text ?? 'Chưa cập nhật'
+                                                        auth.training_text ?? 'Chưa cập nhật'
                                                 }}
                                             </div>
 
@@ -159,8 +148,8 @@
                                             <div class="item q-mb-md">
                                                 <strong>Đối tượng chính sách xã
                                                     hội: </strong>{{
-                                                    auth.social_policy_object_text ?? 'Chưa cập nhật'
-                                                }}
+                                                            auth.social_policy_object_text ?? 'Chưa cập nhật'
+                                                    }}
                                             </div>
                                             <div class="item q-mb-md">
                                                 <strong>Ghi chú: </strong>{{ auth.note ?? 'Chưa cập nhật' }}
@@ -198,7 +187,7 @@
                                                         </div>
                                                     </div>
                                                     <div v-for="(item, index) in auth.families" :key="index"
-                                                         class="row">
+                                                        class="row">
                                                         <div class="col-2 q-mr-sm">
                                                             <div class="form-group q-mt-sm">
                                                                 <div class="text-bold">{{ item.relationship }}</div>
@@ -245,23 +234,23 @@
                                                 <div class="item-header q-mb-md">
                                                     <strong>Học kỳ {{ learningOutcome.semester }} - Năm học
                                                         {{
-                                                            learningOutcome.year_school_start
+                                                                learningOutcome.year_school_start
                                                         }}-{{ learningOutcome.year_school_end }}</strong>
                                                 </div>
                                                 <div class="item-body">
                                                     <q-markup-table>
                                                         <thead>
-                                                        <tr>
-                                                            <th class="text-center">STT</th>
-                                                            <th class="text-left">Mã môn học</th>
-                                                            <th class="text-left">Tên môn học</th>
-                                                            <th class="text-left">TC</th>
-                                                            <th class="text-center">Điểm chuyên cần</th>
-                                                            <th class="text-center">Điểm quá trình</th>
-                                                            <th class="text-center">Điểm Thi</th>
-                                                            <th class="text-center">Tổng kết(Điểm hệ 10)</th>
-                                                            <th class="text-center">Tổng kết(Điểm chữ)</th>
-                                                        </tr>
+                                                            <tr>
+                                                                <th class="text-center">STT</th>
+                                                                <th class="text-left">Mã môn học</th>
+                                                                <th class="text-left">Tên môn học</th>
+                                                                <th class="text-left">TC</th>
+                                                                <th class="text-center">Điểm chuyên cần</th>
+                                                                <th class="text-center">Điểm quá trình</th>
+                                                                <th class="text-center">Điểm Thi</th>
+                                                                <th class="text-center">Tổng kết(Điểm hệ 10)</th>
+                                                                <th class="text-center">Tổng kết(Điểm chữ)</th>
+                                                            </tr>
                                                         </thead>
                                                         <tbody>
                                                         <tr v-for="(item) in learningOutcome.detail ?? []"
@@ -296,7 +285,7 @@
                                                         <div class="col-3">Điểm trung bình tích lũy:</div>
                                                         <div class="col-9">
                                                             {{
-                                                                learningOutcome.cumulative_average_10 ?? 'Chưa cập nhật'
+                                                                    learningOutcome.cumulative_average_10 ?? 'Chưa cập nhật'
                                                             }}
                                                         </div>
                                                     </div>
@@ -305,7 +294,7 @@
                                                         <div class="col-3">Điểm trung bình tích lũy hệ 4:</div>
                                                         <div class="col-9">
                                                             {{
-                                                                learningOutcome.cumulative_average_4 ?? 'Chưa cập nhật'
+                                                                    learningOutcome.cumulative_average_4 ?? 'Chưa cập nhật'
                                                             }}
                                                         </div>
                                                     </div>
@@ -315,7 +304,7 @@
                                                         <div class="col-3">Số tín chỉ đạt:</div>
                                                         <div class="col-9">{{
                                                                 learningOutcome.credits ?? 'Chưa cập nhật'
-                                                            }}
+                                                        }}
                                                         </div>
                                                     </div>
 
@@ -327,7 +316,7 @@
                                                         </div>
                                                     </div>
                                                 </div>
-                                                <q-separator class="q-mb-md"/>
+                                                <q-separator class="q-mb-md" />
                                             </div>
                                         </div>
 
@@ -336,11 +325,8 @@
                                 <div v-else class="text-center">
                                     <q-img src="/images/empty.png" width="500px"></q-img>
                                 </div>
-                                <q-inner-loading
-                                    :showing="loading"
-                                    label-class="text-teal"
-                                    label-style="font-size: 1.1em"
-                                />
+                                <q-inner-loading :showing="loading" label-class="text-teal"
+                                    label-style="font-size: 1.1em" />
                             </q-tab-panel>
                             <q-tab-panel name="report">
                                 <div class="text-h6">Báo cáo phản án</div>
@@ -348,10 +334,7 @@
                                     <q-timeline class="q-pa-sm" color="secondary">
 
 
-                                        <q-timeline-entry
-                                            title="Event Title"
-                                            subtitle="February 22, 1986"
-                                        >
+                                        <q-timeline-entry title="Event Title" subtitle="February 22, 1986">
                                             <div>
                                                 Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
                                                 tempor
@@ -370,11 +353,8 @@
                                             </div>
                                         </q-timeline-entry>
 
-                                        <q-timeline-entry
-                                            title="Event Title"
-                                            subtitle="February 21, 1986"
-                                            icon="delete"
-                                        >
+                                        <q-timeline-entry title="Event Title" subtitle="February 21, 1986"
+                                            icon="delete">
                                             <div>
                                                 Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
                                                 tempor
@@ -394,11 +374,8 @@
                                         </q-timeline-entry>
 
 
-                                        <q-timeline-entry
-                                            title="Event Title"
-                                            subtitle="February 22, 1986"
-                                            avatar="https://cdn.quasar.dev/img/avatar2.jpg"
-                                        >
+                                        <q-timeline-entry title="Event Title" subtitle="February 22, 1986"
+                                            avatar="https://cdn.quasar.dev/img/avatar2.jpg">
                                             <div>
                                                 Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
                                                 tempor incididunt ut
@@ -415,10 +392,7 @@
                                             </div>
                                         </q-timeline-entry>
 
-                                        <q-timeline-entry
-                                            title="Event Title"
-                                            subtitle="February 22, 1986"
-                                        >
+                                        <q-timeline-entry title="Event Title" subtitle="February 22, 1986">
                                             <div>
                                                 Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
                                                 tempor incididunt ut
@@ -435,12 +409,8 @@
                                             </div>
                                         </q-timeline-entry>
 
-                                        <q-timeline-entry
-                                            title="Event Title"
-                                            subtitle="February 22, 1986"
-                                            color="orange"
-                                            icon="done_all"
-                                        >
+                                        <q-timeline-entry title="Event Title" subtitle="February 22, 1986"
+                                            color="orange" icon="done_all">
                                             <div>
                                                 Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
                                                 tempor incididunt ut
@@ -457,10 +427,7 @@
                                             </div>
                                         </q-timeline-entry>
 
-                                        <q-timeline-entry
-                                            title="Event Title"
-                                            subtitle="February 22, 1986"
-                                        >
+                                        <q-timeline-entry title="Event Title" subtitle="February 22, 1986">
                                             <div>
                                                 Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
                                                 tempor incididunt ut
@@ -477,10 +444,7 @@
                                             </div>
                                         </q-timeline-entry>
 
-                                        <q-timeline-entry
-                                            title="Event Title"
-                                            subtitle="February 22, 1986"
-                                        >
+                                        <q-timeline-entry title="Event Title" subtitle="February 22, 1986">
                                             <div>
                                                 Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
                                                 tempor incididunt ut
@@ -567,8 +531,8 @@ export default defineComponent({
         }
 
 
-        const redirectRouter = (nameRoute: string, params: any | [] = null): void => {
-            router.push({name: nameRoute, params: params})
+        const redirectRouter = (nameRoute: string): void => {
+            router.push({ name: nameRoute})
         }
 
         onMounted(() => {
@@ -632,7 +596,5 @@ export default defineComponent({
 
 
 }
-
-
 </style>
 

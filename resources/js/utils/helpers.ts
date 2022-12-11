@@ -56,3 +56,8 @@ export const formatTimeFrom = (stringDate: any): string => {
 export const convertTime = (time: string) => {
     return /^\d{10}$/.test(time) ? moment.unix(Number(time)).format('DD/MM/YYYY') : time
 }
+
+//AUTHOR: TRUONGTN
+export const formatDateFM = (date: any, fm: string): string => {
+    return moment(date).format(fm)
+}
