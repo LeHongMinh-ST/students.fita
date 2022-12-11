@@ -12,7 +12,7 @@
                             <div class="row">
                                 <div class="col-10">
                                     <div class="text-h6">Sinh viên</div>
-                                    <div class="text-h5">160</div>
+                                    <div class="text-h5">{{dashboardObject.studentCount}}</div>
                                 </div>
                                 <div class="col-2 items-center row">
                                     <q-icon class="fa-solid fa-chalkboard-user" size="xl"></q-icon>
@@ -28,7 +28,7 @@
                             <div class="row">
                                 <div class="col-10">
                                     <div class="text-h6">Giảng viên</div>
-                                    <div class="text-h5">160</div>
+                                    <div class="text-h5">{{dashboardObject.teacherCount}}</div>
                                 </div>
                                 <div class="col-2  items-center row">
                                     <q-icon class="fa-solid fa-chalkboard-user" size="xl"></q-icon>
@@ -44,7 +44,7 @@
                             <div class="row">
                                 <div class="col-10">
                                     <div class="text-h6">Lớp</div>
-                                    <div class="text-h5">160</div>
+                                    <div class="text-h5">{{dashboardObject.classCount}}</div>
                                 </div>
                                 <div class="col-2 items-center row">
                                     <q-icon class="fa-solid fa-chalkboard-user" size="xl"></q-icon>
@@ -60,7 +60,7 @@
                             <div class="row">
                                 <div class="col-10">
                                     <div class="text-h6">Phản ánh</div>
-                                    <div class="text-h5">160</div>
+                                    <div class="text-h5">{{dashboardObject.reportCount}}</div>
                                 </div>
                                 <div class="col-2 items-center row">
                                     <q-icon class="fa-solid fa-chalkboard-user" size="xl"></q-icon>
@@ -315,11 +315,23 @@ export default defineComponent({
 
         }
 
+        const dashboardObject = ref<Object>({
+            classCount: 0,
+            reportCount: 0,
+            studentCount: 0,
+            teacherCount: 0,
+        })
+
         const getDataDashBoard = (): void => {
             loading.value = true;
 
             api.getDashboard().then((res: any) => {
-                console.log(res.data);
+                dashboardObject.value.classCount = _.get(res, 'data.data.$classCount', 0)
+                dashboardObject.value.reportCount = _.get(res, 'data.data.$reportCount', 0)
+                dashboardObject.value.studentCount = _.get(res, 'data.data.studentCount', 0)
+                dashboardObject.value.teacherCount = _.get(res, 'data.data.teacherCount', 0)
+                console.log(dashboardObject.value.classCount);
+
             }).catch((err: any) => {
                 console.log(err);
                 $q.notify({
@@ -351,6 +363,7 @@ export default defineComponent({
             roles,
             pagePhanAnh,
             pageYcDuyetTT,
+            dashboardObject
         }
     }
 })

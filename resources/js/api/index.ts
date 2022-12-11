@@ -353,6 +353,7 @@ export default {
             url: `/students/${id}`,
         })
     },
+
     resetStudentPassword<T>(id: number, data: any): AxiosPromise<IResult<T>> {
         return apiAxios({
             method: 'put',
