@@ -77,12 +77,10 @@
                 <q-markup-table class="role-table">
                     <thead>
                         <tr>
-                            <th class="text-center" width="5%"></th>
                             <th class="text-center" width="5%">STT</th>
                             <th class="text-left">Mã sinh viên</th>
                             <th class="text-left">Tên sinh viên</th>
                             <th class="text-left">Chủ đề</th>
-                            <th class="text-left">Nội dung</th>
                             <th class="text-left">Trạng thái báo cáo</th>
                             <th class="text-left">Người tạo</th>
                             <th class="text-center">Hành động</th>
@@ -91,9 +89,7 @@
                     <tbody>
                         <template v-if="reports && reports.length > 0">
                             <tr v-for="(item, index) in reports" :key="index">
-                                <td class="text-center">
-                                    <q-checkbox v-model="checkboxArray" :val="getValueLodash(item, 'id', 0)"/>
-                                </td>
+                               
                                 <td class="text-center">
                                     {{ index + +1 + +page.perPage * (page.currentPage - 1) }}
                                 </td>
@@ -108,13 +104,19 @@
                                     </span>
                                 </td>
                                 <td class="text-left">
-                                    {{ getValueLodash(item, "subjects", "") ?? "Chưa cập nhật"}}
+                                    {{ getValueLodash(item, "subject_text", "") ?? "Chưa cập nhật"}}
                                 </td>
-                                <td class="text-left">
-                                    {{ getValueLodash(item, "content", "") ?? "Chưa cập nhật"}}
-                                </td>
-                                <td class="text-left">
-                                    {{ getValueLodash(item, "status_text", "") ?? "Chưa cập nhật"}}
+                                <td class="text-left" >
+                                    <q-badge v-if="getValueLodash(item, 'status', 0) == reportStatusEnum.Pending " align="middle" color='orange'>
+                                        {{ getValueLodash(item, "status_text", "") ?? "Chưa cập nhật"}}
+                                     </q-badge>
+                                     <q-badge v-if="getValueLodash(item, 'status', 0) == reportStatusEnum.Seen " align="middle" color='blue'>
+                                        {{ getValueLodash(item, "status_text", "") ?? "Chưa cập nhật"}}
+                                     </q-badge>
+                                     <q-badge v-if="getValueLodash(item, 'status', 0) == reportStatusEnum.Approved " align="middle" color='green'>
+                                        {{ getValueLodash(item, "status_text", "") ?? "Chưa cập nhật"}}
+                                     </q-badge>
+                                    
                                 </td>
                                 <td class="text-left">
                                     {{ getValueLodash(item, "created_by.full_name", "Chưa cập nhật") ?? "Chưa cập nhật"}}
@@ -168,8 +170,8 @@
         </q-card-section>
 
         <q-card-actions align="right">
-          <q-btn flat label="Đóng" color="primary"  v-close-popup/>
-          <q-btn label="Đồng ý" color="red"  v-close-popup/>
+            <q-btn flat label="Đóng" color="primary" @click="closeDialog" v-close-popup/>
+          <q-btn label="Đồng ý" color="red" @click="handleDelete" v-close-popup/>
         </q-card-actions>
       </q-card>
     </q-dialog>
@@ -209,6 +211,9 @@
     import {
         validationHelper
     } from "../../utils/validationHelper";
+
+    import {ReportStatusEnum} from "../../enums/reportStatus.enum";
+
     // import DeleteDepartment from "./Delete.vue";
 
     export default defineComponent({
@@ -220,6 +225,7 @@
             const items = ref < Array < any >> ([]);
             const itemIDs = ref < Array < number >> ([]);
             const reports = ref<Array<any>>([])
+            const reportId = ref<string>('')
             const {
                 setValidationErrors,
                 getValidationErrors,
@@ -253,6 +259,37 @@
             
             const openDialogDelete = (id: string): void => {
                 dialogDelete.value = true
+                reportId.value =id;
+            }
+            
+            const closeDialog = (): void => {
+                dialogDelete.value = false
+                // dialogDeleteSelect.value = false
+                reportId.value = ''
+            }
+            const handleDelete = () => {
+                $q.loading.show()
+                const data = {
+                    id: checkboxArray.value
+                }
+                api.deleteStudentReport(reportId.value).then(() => {
+                    getListReport()
+                    closeDialog()
+                    checkboxArray.value = []
+                    $q.notify({
+                    icon: 'check',
+                    message: 'Xóa thành công phản ánh',
+                    color: 'positive',
+                    position: 'top-right'
+                    })
+                }).catch(() => {
+                    $q.notify({
+                    icon: 'report_problem',
+                    message: 'Không xóa được phản ánh!',
+                    color: 'negative',
+                    position: 'top-right'
+                    })
+                }).finally(() => $q.loading.hide())
             }
 
             const getValueLodash = (res: object, data: string, d: any = null) => {
@@ -274,6 +311,7 @@
                     })
             }
 
+            const reportStatusEnum = ReportStatusEnum;
             const redirectRouter = (nameRoute: string, params: any | [] = null): void => {
                 router.push({
                     name: nameRoute,
@@ -348,7 +386,8 @@
                 search,
                 openDialogDelete,
                 dialogDelete,
-                reports
+                reports,
+                reportStatusEnum,handleDelete,closeDialog
             };
         },
     });

@@ -119,5 +119,12 @@ export default {
             data: data
         })
     },
+
+    deleteStudentReport<T>(id: string): AxiosPromise<IResult<T>> {
+        return apiAxios({
+            method: 'delete',
+            url: `/student/report/${id}`,
+        })
+    },
     
 }
