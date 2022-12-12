@@ -194,7 +194,7 @@ class StudentController extends Controller
             $student = auth('students')->user();
 
             if ($studentTemp->student_id != @$student->id) {
-                return $this->responseError('Bạn không có quyền truy cập',[], 403);
+                return $this->responseError('Bạn không có quyền truy cập', [], 403);
             }
 
             $studentTemp = $this->handleUpdateStudentByStudentTemp($studentTemp);
@@ -217,17 +217,18 @@ class StudentController extends Controller
         switch ($studentTemp->status_approved) {
             case StudentTempStatus::Pending:
                 $studentTemp->status_approved = StudentTempStatus::ClassMonitorApproved;
+                $studentTemp->student_approved = @auth('students')->id();
                 break;
             case StudentTempStatus::ClassMonitorApproved:
                 $studentTemp->status_approved = StudentTempStatus::TeacherApproved;
+                $studentTemp->teacher_approved = @auth('api')->id();
                 break;
             case StudentTempStatus::TeacherApproved:
                 $studentTemp->status_approved = StudentTempStatus::Approved;
+                $studentTemp->admin_approved = @auth('api')->id();
                 $familyTemp = $studentTemp->families;
                 $student = $this->studentRepository->getFirstBy(['id' => $studentTemp->student_id]);
-
                 $data = array_intersect_key($studentTemp->toArray(), array_flip(StudentTemp::ONLY_KEY_UPDATE));
-
                 $student?->fill($data);
 
                 $this->studentRepository->createOrUpdate($data);
@@ -294,7 +295,7 @@ class StudentController extends Controller
                 'updated_by' => auth()->id()
             ]);
             return $this->responseSuccess();
-        }catch (\Exception $exception) {
+        } catch (\Exception $exception) {
             Log::error('Error reset password student', [
                 'method' => __METHOD__,
                 'message' => $exception->getMessage()
@@ -353,7 +354,7 @@ class StudentController extends Controller
         $class = $auth->generalClass;
         $class->load(['teacher', 'department']);
 
-        if(@$data['q']) $students = $class->students()->where('full_name','like',"%{$data['q']}%")->paginate($paginate);
+        if (@$data['q']) $students = $class->students()->where('full_name', 'like', "%{$data['q']}%")->paginate($paginate);
         else $students = $class->students()->paginate($paginate);
 
         return $this->responseSuccess([
@@ -380,12 +381,14 @@ class StudentController extends Controller
 
         if (auth('api')->check()) {
             $auth = auth('api')->user();
-            $classIds = $auth->generalClass->pluck('id')->toArray();
-            $query->whereIn('class_id', $classIds);
+            if (@$auth->teacher_id && !@$auth->is_super_admin) {
+                $classIds = $auth->generalClass->pluck('id')->toArray();
+                $query->whereIn('class_id', $classIds);
+            }
         }
 
         return $this->responseSuccess([
-            'requests' => $query->paginate($paginate)
+            'requests' => $query->with(['studentApproved', 'teacherApproved', 'adminApproved', 'student'])->paginate($paginate)
         ]);
     }
 }

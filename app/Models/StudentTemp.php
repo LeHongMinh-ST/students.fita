@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\Student\StudentTempStatus;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -73,4 +74,28 @@ class StudentTemp extends Model
     {
         return $this->hasMany(FamilyTemp::class, 'student_temp_id');
     }
+
+    public function studentApproved(): BelongsTo
+    {
+        return $this->belongsTo(Student::class, 'student_approved');
+    }
+
+    public function teacherApproved(): BelongsTo
+    {
+        return $this->belongsTo(Student::class, 'teacher_approved');
+    }
+
+    public function adminApproved(): BelongsTo
+    {
+        return $this->belongsTo(Student::class, 'admin_approved');
+    }
+
+    public function getStatusApprovedTextAttribute(): string
+    {
+        return @$this->status_approved ? StudentTempStatus::getDescription($this->status_approved) : '';
+    }
+
+    protected $appends = [
+        'status_approved_text',
+    ];
 }
