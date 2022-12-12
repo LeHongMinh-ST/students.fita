@@ -464,8 +464,6 @@ class StudentController extends Controller
             $student = auth('students')->user();
             if ($student->role == StudentRole::ClassMonitor) {
                 $query->where('class_id', $student->class_id);
-            } else {
-                $query->where('student_id', $student->id);
             }
         }
 
@@ -476,6 +474,28 @@ class StudentController extends Controller
                 $query->whereIn('class_id', $classIds);
             }
         }
+        $requests = $query->with(['studentApproved', 'teacherApproved', 'adminApproved', 'student'])->get();
+        if (@$data['page'])
+            $requests= $query->with(['studentApproved', 'teacherApproved', 'adminApproved', 'student'])->paginate($paginate);
+
+        return $this->responseSuccess([
+            'requests' => $requests
+        ]);
+    }
+
+    public function getMyRequestUpdateStudent(Request $request): JsonResponse
+    {
+        $data = $request->all();
+        $paginate = $data['limit'] ?? config('constants.limit_of_paginate', 10);
+        $model = $this->studentTempRepository->getModel();
+        $query = $model->query();
+
+        if (auth('students')->check()) {
+            $student = auth('students')->user();
+            $query->where('student_id', $student->id);
+        }
+
+
         $requests = $query->with(['studentApproved', 'teacherApproved', 'adminApproved', 'student'])->get();
         if (@$data['page'])
             $requests= $query->with(['studentApproved', 'teacherApproved', 'adminApproved', 'student'])->paginate($paginate);
