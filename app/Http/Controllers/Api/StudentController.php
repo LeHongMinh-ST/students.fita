@@ -438,4 +438,16 @@ class StudentController extends Controller
         ]);
     }
 
+    public function getStudentClassMonitor(): JsonResponse
+    {
+        $student = auth('students')->user();
+        if ($student->role != StudentRole::ClassMonitor) {
+            return $this->responseError('Bạn không có quyền thực hiện chức năng này', [], 403);
+        }
+
+        $classId = $student->class_id;
+
+        $students = $this->studentRepository->allBy(['class_id' => $classId]);
+        return $this->responseSuccess(['students' => $students]);
+    }
 }

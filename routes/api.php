@@ -157,7 +157,7 @@ Route::group(['prefix' => 'student'], function () {
                 Route::put('/{id}', [ReportController::class, 'update']);
                 Route::delete('/{id}', [ReportController::class, 'destroy']);
             });
-            Route::get('/get-student', [StudentController::class, 'index']);
+            Route::get('/get-student-class-monitor', [StudentController::class, 'getStudentClassMonitor']);
         });
 
     });
