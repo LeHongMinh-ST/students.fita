@@ -4,7 +4,6 @@ namespace App\Http\Middleware;
 
 use App\Traits\ResponseTrait;
 use App\Enums\Student\StudentRole;
-use App\Traits\ResponseTrait;
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
