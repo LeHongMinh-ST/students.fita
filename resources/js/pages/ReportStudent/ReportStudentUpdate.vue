@@ -193,7 +193,6 @@ export default defineComponent({
           $q.loading.show()
           api.getReportStudent<{}>(id).then(res => {
             const data = _.get(res, 'data.data.report', '')
-            debugger;
             for (const key in report) {
               report[key].value = data[key]
             }

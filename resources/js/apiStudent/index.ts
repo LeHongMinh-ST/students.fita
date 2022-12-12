@@ -103,10 +103,12 @@ export default {
         })
     },
 
-    updateStudentReport<T>(id: number): AxiosPromise<IResult<T>> {
+    updateStudentReport<T>(data: any, id: string): AxiosPromise<IResult<T>> {
         return apiAxios({
             method: 'put',
-            url: `/student/report/${id}`
+            url: `/student/report/${id}`,
+            data: data
         })
     },
+    
 }
