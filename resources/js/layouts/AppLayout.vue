@@ -146,6 +146,7 @@ import {AuthActionTypes} from "../store/modules/auth/actions-type";
 import {permissionHelper} from "../utils/permissionHelper";
 import api from "../api";
 import {HomeMutationTypes} from "../store/modules/home/mutation-types";
+import useCount from "../uses/useCount";
 
 export default defineComponent({
     name: 'AppLayout',
@@ -155,13 +156,11 @@ export default defineComponent({
         const leftDrawerOpen = ref(false)
         const router = useRouter()
         const route = useRoute()
+        const {getRequestCount, getReportCount} = useCount()
 
         const checkActive = (routerName: string): boolean => {
             return route.name === routerName
         }
-
-        const countReport = ref<number>(0)
-        const countRequest = ref<number>(0)
 
         const {checkPermission} = permissionHelper()
 
@@ -183,38 +182,49 @@ export default defineComponent({
             return store.state.home.title
         })
 
-        const getReportCount = async () => {
-          try {
-            const res = await api.countReportPending()
-            const count = _.get(res, 'data.data.reportCount', 0)
-            store.commit(`home/${HomeMutationTypes.SET_COUNT_REPORT}`, count)
-            // countReport.value = store.getters['home/getCountReport']
-          }catch (error) {
-            console.log(error)
-          }
-        }
+        const links1 = ref<any>( [
+          {icon: 'fa-solid fa-home', text: 'Bảng điều khiển', routeName: 'Home', permission: 'dashboard-index'},
+          {
+            icon: 'fa-solid fa-building-user',
+            text: 'Quản lý bộ môn',
+            routeName: 'Department',
+            permission: 'department-index'
+          },
+          {icon: 'fa-solid fa-users', text: 'Quản lý lớp học', routeName: 'Classes', permission: 'class-index'},
+        ])
 
-      const getRequestCount = async () => {
-        try {
-          const res = await api.countStudentRequest()
-          const count = _.get(res, 'data.data.requestCount', 0)
-          store.commit(`home/${HomeMutationTypes.SET_COUNT_REQUEST}`, count)
-          // countReport.value = store.getters['home/getCountReport']
-        }catch (error) {
-          console.log(error)
-        }
-      }
+        const links2 = ref([
+          {
+            icon: 'fa-solid fa-address-card',
+            text: 'Quản lý sinh viên',
+            routeName: 'StudentIndex',
+            permission: 'student-index'
+          },
+          {
+            icon: 'fa-solid fa-rectangle-list',
+            text: 'Yêu cầu xét duyệt',
+            routeName: 'ReviewListIndex',
+            permission: 'student-update',
+            badge: store.state.home.countRequest
+          },
+          {
+            icon: 'fa-solid fa-flag',
+            text: 'Phản ánh sinh viên',
+            routeName: 'ReportStudent',
+            permission: 'report-index',
+            badge: store.state.home.countReport
+          },
+        ])
 
-        const loadBadge = (item) => {
-          if (item.routeName == 'ReviewListIndex' ) {
-            return
-          }
-
-          if (item.routeName == 'ReportStudent') {
-            return countReport.value
-          }
-          return  0
-        }
+        const linksSystem = ref([
+          {icon: 'fa-solid fa-user', text: 'Người dùng', routeName: 'User', permission: 'user-index'},
+          {
+            icon: 'fa-solid fa-user-shield',
+            text: 'Nhóm và phân quyền',
+            routeName: 'Role',
+            permission: 'role-index'
+          },
+        ])
 
         onMounted(()=> {
           getReportCount()
@@ -231,49 +241,9 @@ export default defineComponent({
             redirectRouteName,
             checkPermission,
             checkActive,
-            loadBadge,
-            links1: [
-                {icon: 'fa-solid fa-home', text: 'Bảng điều khiển', routeName: 'Home', permission: 'dashboard-index'},
-                {
-                    icon: 'fa-solid fa-building-user',
-                    text: 'Quản lý bộ môn',
-                    routeName: 'Department',
-                    permission: 'department-index'
-                },
-                {icon: 'fa-solid fa-users', text: 'Quản lý lớp học', routeName: 'Classes', permission: 'class-index'},
-            ],
-
-            links2: [
-                {
-                    icon: 'fa-solid fa-address-card',
-                    text: 'Quản lý sinh viên',
-                    routeName: 'StudentIndex',
-                    permission: 'student-index'
-                },
-                {
-                    icon: 'fa-solid fa-rectangle-list',
-                    text: 'Yêu cầu xét duyệt',
-                    routeName: 'ReviewListIndex',
-                    permission: 'student-update',
-                    badge: store.getters['home/getCountRequest']
-                },
-                {
-                    icon: 'fa-solid fa-flag',
-                    text: 'Phản ánh sinh viên',
-                    routeName: 'ReportStudent',
-                    permission: 'report-index',
-                    badge: store.getters['home/getCountReport']
-                },
-            ],
-            linksSystem: [
-                {icon: 'fa-solid fa-user', text: 'Người dùng', routeName: 'User', permission: 'user-index'},
-                {
-                    icon: 'fa-solid fa-user-shield',
-                    text: 'Nhóm và phân quyền',
-                    routeName: 'Role',
-                    permission: 'role-index'
-                },
-            ],
+            links1,
+            links2 ,
+            linksSystem
         }
     }
 })
@@ -281,7 +251,7 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .logoWrapper {
-    .logo {
+  .logo {
         text-align: center;
         padding-top: 20px;
 

@@ -1,13 +1,12 @@
 <template>
     <div class="dashboard-wrapper">
         <q-breadcrumbs>
-            <q-breadcrumbs-el label="Bảng điều khiển" icon="home" :to="{ name: 'Home' }" />
-            <q-breadcrumbs-el label="Bảng điều khiển" />
+            <q-breadcrumbs-el label="Bảng điều khiển" icon="home"  />
         </q-breadcrumbs>
         <div class="main">
             <div class="row">
                 <div class="col q-pr-sm">
-                    <q-card>
+                    <q-card class="cursor-pointer" @click="redirectRouter('StudentIndex')">
                         <q-card-section vert class="text-white vert bg-light-blue-8">
                             <div class="row">
                                 <div class="col-10">
@@ -39,8 +38,9 @@
 
 <!--                </div>-->
                 <div class="col q-pr-sm q-pl-sm">
-                    <q-card>
-                        <q-card-section vert class="text-white vert bg-teal-8">
+                  <q-card class="cursor-pointer" @click="redirectRouter('Classes')">
+
+                    <q-card-section vert class="text-white vert bg-teal-8">
                             <div class="row">
                                 <div class="col-10">
                                     <div class="text-h6">Lớp học</div>
@@ -55,7 +55,7 @@
 
                 </div>
                 <div class="col  q-pl-sm">
-                    <q-card>
+                    <q-card class="cursor-pointer" @click="redirectRouter('ReportStudent')">
                         <q-card-section vert class="text-white vert bg-orange-8">
                             <div class="row">
                                 <div class="col-10">
@@ -80,7 +80,7 @@
                             </div>
                         </q-card-section>
                         <q-card-section>
-                            <q-markup-table class="role-table">
+                            <q-markup-table class="report-table">
                                 <thead>
                                     <tr>
                                         <th class="text-center" width="5%">STT</th>
@@ -92,46 +92,30 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <template v-if="roles?.length ?? [].length > 0">
-                                        <tr v-for="(role, index) in roles" :key="index">
+                                    <template v-if="reports?.length ?? [].length > 0">
+                                        <tr v-for="(report, index) in reports" :key="index">
 
                                             <td class="text-center">{{
                                                     index + +1 + +pagePhanAnh['perPage'] * (pagePhanAnh['currentPage'] - 1)
                                             }}
                                             </td>
                                             <td class="text-left">
-                                                <span @click="redirectRouter('RoleUpdate', { id: role.id })"
+                                                <span @click="redirectRouter('RoleUpdate', { id: report.id })"
                                                     class="text-bold cursor-pointer text-link">
-                                                    {{ getValueLodash(role, 'name', '') }}
+                                                    {{ getValueLodash(report, 'name', '') }}
                                                 </span>
                                             </td>
-                                            <td class="text-left"> {{ getValueLodash(role, 'description', '') }}</td>
+                                            <td class="text-left"> {{ getValueLodash(report, 'description', '') }}</td>
                                             <td class="text-center">
-                                                {{ this.handleFormatDate(getValueLodash(role, 'created_at', '')) }}
+                                                {{ this.handleFormatDate(getValueLodash(report, 'created_at', '')) }}
                                             </td>
-                                            <td class="text-left">{{ getValueLodash(role, 'create_by.full_name', '') }}
+                                            <td class="text-left">{{ getValueLodash(report, 'create_by.full_name', '') }}
                                             </td>
                                             <td class="text-center">
-                                                <div class="inline cursor-pointer">
-                                                    <q-icon name="menu" size="sm"></q-icon>
-                                                    <q-menu touch-position>
-                                                        <q-list style="min-width: 100px">
-                                                            <q-item clickable v-close-popup
-                                                                @click="redirectRouter('RoleUpdate', { id: getValueLodash(role, 'id', 0) })">
-                                                                <q-item-section>
-                                                                    <span><q-icon name="fa-solid fa-pen-to-square"
-                                                                            class="q-mr-sm" size="xs"></q-icon>Chỉnh
-                                                                        sửa</span>
-                                                                </q-item-section>
-                                                            </q-item>
-                                                            <q-item clickable v-close-popup
-                                                                @click="this.openDialogDelete(getValueLodash(role, 'id', 0))">
-                                                                <span><q-icon name="fa-solid fa-trash" class="q-mr-sm"
-                                                                        size="xs"></q-icon>Xoá</span>
-                                                            </q-item>
-                                                        </q-list>
-                                                    </q-menu>
-                                                </div>
+                                                <span @click="redirectRouter('RoleUpdate', { id: report.id })"
+                                                      class="text-bold cursor-pointer text-link">
+                                                      Chi tiết
+                                                </span>
                                             </td>
                                         </tr>
                                     </template>
@@ -157,7 +141,7 @@
                             </div>
                         </q-card-section>
                         <q-card-section>
-                            <q-markup-table class="role-table">
+                            <q-markup-table class="request-table">
                                 <thead>
                                     <tr>
                                         <th class="text-center" width="5%">STT</th>
@@ -169,46 +153,30 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <template v-if="roles?.length ?? [].length > 0">
-                                        <tr v-for="(role, index) in roles" :key="index">
+                                    <template v-if="requests?.length ?? [].length > 0">
+                                        <tr v-for="(request, index) in requests" :key="index">
 
                                             <td class="text-center">{{
                                                     index + +1 + +pageYcDuyetTT['perPage'] * (pageYcDuyetTT['currentPage'] - 1)
                                             }}
                                             </td>
                                             <td class="text-left">
-                                                <span @click="redirectRouter('RoleUpdate', { id: role.id })"
+                                                <span @click="redirectRouter('RoleUpdate', { id: request.id })"
                                                     class="text-bold cursor-pointer text-link">
-                                                    {{ getValueLodash(role, 'name', '') }}
+                                                    {{ getValueLodash(request, 'name', '') }}
                                                 </span>
                                             </td>
-                                            <td class="text-left"> {{ getValueLodash(role, 'description', '') }}</td>
+                                            <td class="text-left"> {{ getValueLodash(request, 'description', '') }}</td>
                                             <td class="text-center">
-                                                {{ this.handleFormatDate(getValueLodash(role, 'created_at', '')) }}
+                                                {{ this.handleFormatDate(getValueLodash(request, 'created_at', '')) }}
                                             </td>
-                                            <td class="text-left">{{ getValueLodash(role, 'create_by.full_name', '') }}
+                                            <td class="text-left">{{ getValueLodash(request, 'create_by.full_name', '') }}
                                             </td>
                                             <td class="text-center">
-                                                <div class="inline cursor-pointer">
-                                                    <q-icon name="menu" size="sm"></q-icon>
-                                                    <q-menu touch-position>
-                                                        <q-list style="min-width: 100px">
-                                                            <q-item clickable v-close-popup
-                                                                @click="redirectRouter('RoleUpdate', { id: getValueLodash(role, 'id', 0) })">
-                                                                <q-item-section>
-                                                                    <span><q-icon name="fa-solid fa-pen-to-square"
-                                                                            class="q-mr-sm" size="xs"></q-icon>Chỉnh
-                                                                        sửa</span>
-                                                                </q-item-section>
-                                                            </q-item>
-                                                            <q-item clickable v-close-popup
-                                                                @click="this.openDialogDelete(getValueLodash(role, 'id', 0))">
-                                                                <span><q-icon name="fa-solid fa-trash" class="q-mr-sm"
-                                                                        size="xs"></q-icon>Xoá</span>
-                                                            </q-item>
-                                                        </q-list>
-                                                    </q-menu>
-                                                </div>
+                                                  <span @click="redirectRouter('RoleUpdate', { id: request.id })"
+                                                        class="text-bold cursor-pointer text-link">
+                                                        Chi tiết
+                                                  </span>
                                             </td>
                                         </tr>
                                     </template>
@@ -250,20 +218,6 @@ export default defineComponent({
 
         const loading = ref<boolean>(false)
 
-        const roles = ref<any>([]);
-
-        const pagePhanAnh = ref<Object>({
-            currentPage: 1,
-            total: 0,
-            perPage: 10
-        })
-
-        const pageYcDuyetTT = ref<Object>({
-            currentPage: 1,
-            total: 0,
-            perPage: 10
-        })
-
         const handleFormatDate = (date: any): string => {
             if(date != null && date != undefined && date != ""){
                 return formatDateFM(date, 'dd/MM/yyyy');
@@ -271,49 +225,8 @@ export default defineComponent({
             return "Chưa có dữ liệu";
         }
 
-        const openDialogDelete = (id: number): void => {
-            $q.dialog({
-                title: 'Xác nhận',
-                message: 'Bạn có chắc chắn muốn xoá nhóm vai trò này?',
-                cancel: true,
-                persistent: true
-            }).onOk(() => {
-                api.deleteRole(id.toString()).then((res: any) => {
-                    $q.notify({
-                        icon: 'check_circle',
-                        message: 'Xoá nhóm vai trò thành công!',
-                        color: 'positive',
-                        position: 'top-right'
-                    })
-                    getDataRole();
-                }).catch((err: any) => {
-                    $q.notify({
-                        icon: 'report_problem',
-                        message: 'Xoá nhóm vai trò thất bại!',
-                        color: 'negative',
-                        position: 'top-right'
-                    })
-                })
-            })
-        }
-
-        const getDataRole = (): void => {
-            loading.value = true;
-            console.log('loading');
-
-            api.getRoles().then((res: any) => {
-                console.log(res.data);
-            }).catch((err: any) => {
-                console.log(err);
-                $q.notify({
-                    icon: 'report_problem',
-                    message: 'Không tải được danh sách nhóm vai trò!',
-                    color: 'negative',
-                    position: 'top-right'
-                })
-            }).finally(() => loading.value = false)
-
-        }
+        const reports = ref([])
+        const requests = ref([])
 
         const dashboardObject = ref<Object>({
             classCount: 0,
@@ -330,6 +243,8 @@ export default defineComponent({
                 dashboardObject.value.reportCount = _.get(res, 'data.data.reportCount', 0)
                 dashboardObject.value.studentCount = _.get(res, 'data.data.studentCount', 0)
                 dashboardObject.value.teacherCount = _.get(res, 'data.data.teacherCount', 0)
+                reports.value = _.get(res, 'data.data.reports', [])
+                requests.value = _.get(res, 'data.data.requests', [])
             }).catch((err: any) => {
                 console.log(err);
                 $q.notify({
@@ -358,10 +273,9 @@ export default defineComponent({
             redirectRouter,
             getValueLodash,
             getDataDashBoard,
-            roles,
-            pagePhanAnh,
-            pageYcDuyetTT,
-            dashboardObject
+            dashboardObject,
+            reports,
+            requests
         }
     }
 })
