@@ -3,6 +3,7 @@ import {TrainingTypeEnum} from "../enums/trainingType.enum";
 import {StudentTempStatusEnum} from "../enums/studentTempStatus.enum";
 import {StudentStatusEnum} from "../enums/studentStatus.enum";
 import {StudentRoleEnum} from "../enums/studentRole.enum";
+import {ReportSubjectEnum} from "../enums/reportSubject.enum";
 import {StudentSocialPolicyObjectEnum} from "../enums/studentSocialPolicyObject.enum";
 
 export const VALIDATE_EMAIL_REGEX = /^[a-zA-Z0-9][a-zA-Z0-9_.-]{1,}@[a-z0-9]{1,}(\.[a-z0-9]{1,}){1,2}$/
@@ -56,3 +57,14 @@ export const STUDENT_SOCIAL_POLICY_OBJECT_LIST = [
     {label: 'Người dân tộc thiểu số vùng cao', value: StudentSocialPolicyObjectEnum.EthnicMinorityPeopleInTheHighlands},
     {label: 'Người khuyết tật', value: StudentSocialPolicyObjectEnum.DisabledPerson},
 ]
+
+
+export const SUBJECTS = [
+    {label: 'Học tập', value: ReportSubjectEnum.Study},
+    {label: 'Chuyên cần', value: ReportSubjectEnum.Diligence},
+    {label: 'Hoạt động đoàn trường', value: ReportSubjectEnum.SchoolUnionActivities},
+    {label: 'Khen thưởng', value: ReportSubjectEnum.Reward},
+    {label: 'Khác', value: ReportSubjectEnum.Other},
+]
+
+

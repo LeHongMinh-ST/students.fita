@@ -87,26 +87,14 @@ const routeAdmin: Array<RouteRecordRaw> = [
         children: [
             {
                 path: '',
-                name: 'ReportStudent',
-                component: () => import('../pages/ReportStudent/ReportStudentIndex.vue'),
+                name: 'ReportStudentAdmin',
+                component: () => import('../pages/ReportStudentAdmin/ReportStudentAdminIndex.vue'),
                 meta: {isAuthenticated: true, permission: 'report-index'}
             },
             {
-                path: 'create',
-                name: 'ReportStudentCreate',
-                component: () => import('../pages/ReportStudent/ReportStudentCreate.vue'),
-                meta: {isAuthenticated: true, permission: 'report-create'},
-            },
-            {
-                path: 'update/:id',
-                name: 'ReportStudentUpdate',
-                component: () => import('../pages/ReportStudent/ReportStudentUpdate.vue'),
-                meta: {isAuthenticated: true, permission: 'report-update'},
-            },
-            {
                 path: ':id',
-                name: 'ReportStudentDetail',
-                component: () => import('../pages/ReportStudent/ReportStudentDetail.vue'),
+                name: 'ReportStudentDetailAdmin',
+                component: () => import('../pages/ReportStudentAdmin/ReportStudentAdminDetail.vue'),
                 meta: {isAuthenticated: true, permission: 'report-index'},
             },
         ]
@@ -209,7 +197,37 @@ const routeStudent: Array<RouteRecordRaw> = [
         name: 'StudentUpdateProfile',
         component: () => import('../pages/StudentPage/StudentUpdateProfile.vue'),
         meta: {isAuthenticatedStudent: false},
-    }
+    },
+    {
+        path: 'report',
+        meta: {isAuthenticatedStudent: true},
+        children: [
+            {
+                path: '',
+                name: 'ReportStudent',
+                component: () => import('../pages/ReportStudent/ReportStudentIndex.vue'),
+                meta: {isAuthenticatedStudent: true}
+            },
+            {
+                path: 'create',
+                name: 'ReportStudentCreate',
+                component: () => import('../pages/ReportStudent/ReportStudentCreate.vue'),
+                meta: {isAuthenticatedStudent: true},
+            },
+            {
+                path: 'update/:id',
+                name: 'ReportStudentUpdate',
+                component: () => import('../pages/ReportStudent/ReportStudentUpdate.vue'),
+                meta: {isAuthenticatedStudent: true},
+            },
+            {
+                path: ':id',
+                name: 'ReportStudentDetail',
+                component: () => import('../pages/ReportStudent/ReportStudentDetail.vue'),
+                meta: {isAuthenticatedStudent: true},
+            },
+        ]
+    },
 ]
 
 

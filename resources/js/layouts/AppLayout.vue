@@ -209,7 +209,7 @@ export default defineComponent({
             {
                 icon: 'fa-solid fa-flag',
                 text: 'Phản ánh sinh viên',
-                routeName: 'ReportStudent',
+                routeName: 'ReportStudentAdmin',
                 permission: 'report-index',
                 badge: store.state.home.countReport
             },

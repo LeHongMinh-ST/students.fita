@@ -312,7 +312,20 @@ export default {
             url: '/class/get-all-class-id',
         })
     },
-
+    //
+    getAllReport<T>(params: object = {}): AxiosPromise<IResult<T>> {
+        return apiAxios({
+            method: 'get',
+            url: '/reports',
+            params: params
+        })
+    },
+    getReport<T>(id: string): AxiosPromise<IResult<T>> {
+        return apiAxios({
+            method: 'get',
+            url: `/reports/${id}`
+        })
+    },
     //AUTHOR: TRUONGTN
     /*begin */
 
