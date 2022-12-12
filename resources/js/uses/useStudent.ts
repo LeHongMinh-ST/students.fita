@@ -1,6 +1,7 @@
 import {ref} from "vue";
 import {IStudentResult} from "../models/IStudentResult";
 import api from "../api";
+import apiStudent from "../apiStudent";
 import _ from 'lodash'
 import IPaginate from "../models/IPaginate";
 
@@ -22,7 +23,7 @@ const getStudent = (id: number): void => {
 const getStudentClasses = (params = {}) => {
     isError.value = false
     isLoading.value = true
-    api.getAllStudent<IPaginate<IStudentResult[]>>(params).then(res => {
+    apiStudent.getAllStudent<IPaginate<IStudentResult[]>>(params).then(res => {
         students.value = _.get(res, 'data.data.students', [])
     }).catch(error => {
         isError.value = true

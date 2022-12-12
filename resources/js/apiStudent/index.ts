@@ -80,12 +80,21 @@ export default {
         })
     },
 
+    getAllStudent<T>(): AxiosPromise<IResult<T>> {
+        return apiAxios({
+            method: 'get',
+            url: '/student/get-student-class-monitor',
+        })
+    },
+
 	getReportStudent<T>(id: string): AxiosPromise<IResult<T>> {
         return apiAxios({
             method: 'get',
             url: `/student/report/${id}`
         })
     },
+
+
 
     getAllReportStudent<T>(params: object = {}): AxiosPromise<IResult<T>> {
         return apiAxios({
