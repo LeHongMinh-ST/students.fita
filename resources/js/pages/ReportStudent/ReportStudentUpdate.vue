@@ -87,7 +87,7 @@
       </div>
     </div>
   </template>
-  
+
   <script lang="ts">
   import {defineComponent, onMounted, ref} from "vue";
   import {useStore} from "vuex";
@@ -113,7 +113,7 @@
   import {TrainingTypeEnum} from "../../enums/trainingType.enum";
   import {StudentSocialPolicyObjectEnum} from "../../enums/studentSocialPolicyObject.enum";
 import { IReportStudent } from "../../models/IReportStudent";
-  
+
   export default defineComponent({
       name: "ReportStudentUpdate",
       setup() {
@@ -126,60 +126,59 @@ import { IReportStudent } from "../../models/IReportStudent";
           const studentRoleList = STUDENT_ROLE_LIST
           const trainingTypeList = TRAINING_TYPE_LIST
           const studentSocialPolicyObjectList = STUDENT_SOCIAL_POLICY_OBJECT_LIST
-  
+
           const {setValidationErrors, getValidationErrors, hasValidationErrors, resetValidateErrors} = validationHelper()
-  
-  
+
+
           const {classes, getAllClasses} = useClass()
-  
+
           const report = ref<IReportStudent>({
             title: "BC 1",
             subjects: "BC 1",
             content: "Nội dung báo cáo 1",
             class_id:0
           })
-  
+
           const name = ref<string>('')
-  
+
           const gender = ref<number | null>(null)
           const dob = ref<string>(moment().format('DD/MM/YYYY'))
-  
+
           const image = ref<any | null>(null);
           const imageUrl = ref<string>('/images/User-Default.jpg');
-  
+
           const handleUpload = () => {
               if (image.value) {
                   imageUrl.value = URL.createObjectURL(image.value);
-                  console.log(image.value)
               }
           }
-  
-  
+
+
           onMounted(() => {
               store.commit(`home/${HomeMutationTypes.SET_TITLE}`, 'Quản lý sinh viên')
               getAllClasses()
             //   report.value.f
           })
-  
+
           const redirectRouter = (nameRoute: string): void => {
               router.push({name: nameRoute})
           }
-  
-          
-  
+
+
+
           const isValidate = (): boolean => {
               let isCheck = true
-  
-  
+
+
               return isCheck
           }
-  
-          
+
+
           const handleCreateReport = () => {
             eventBus.$emit('notify-success', 'Cập nhật báo cáo thành công')
             redirectRouter('ReportStudent')
         }
-  
+
           return {
               name,
               gender,
@@ -205,38 +204,38 @@ import { IReportStudent } from "../../models/IReportStudent";
       }
   })
   </script>
-  
+
   <style scoped lang="scss">
   .student-wrapper {
     .main {
       margin-top: 20px;
-  
+
       .main-form {
         margin-bottom: 15px;
-  
+
         .form-group {
           margin-bottom: 15px;
         }
       }
-  
+
       .avatar-wrapper {
           height: 275px;
           width: 100%;
           border-radius: 5px;
           border: 1px solid #8f8f8f;
           margin-bottom: 40px;
-  
+
           .avatar-student {
               border-radius: 5px;
               object-fit: cover;
           }
       }
-  
+
       .family-wrapper {
         border: 1px solid #000000;
         border-radius: 5px;
         position: relative;
-  
+
         .label-family {
           position: absolute;
           top: 0px;
@@ -248,6 +247,5 @@ import { IReportStudent } from "../../models/IReportStudent";
       }
     }
   }
-  
+
   </style>
-  

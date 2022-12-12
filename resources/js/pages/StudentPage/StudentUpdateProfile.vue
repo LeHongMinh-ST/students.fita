@@ -416,7 +416,6 @@ import {
     TRAINING_TYPE_LIST
 } from "../../utils/constants";
 import {IStudentResult} from "../../models/IStudentResult";
-// import useClass from "../../uses/useClass";
 import _ from "lodash";
 import api from "../../apiStudent"
 import {TrainingTypeEnum} from "../../enums/trainingType.enum";
@@ -469,14 +468,12 @@ export default defineComponent({
 
         onMounted(() => {
             store.commit(`home/${HomeMutationTypes.SET_TITLE}`, 'Quản lý sinh viên')
-            // getAllClasses()
-            student.value = store.getters["authStudent/getAuthUserStudent"]
+            student.value = _.cloneDeep(store.getters["authStudent/getAuthUserStudent"])
             class_code.value = student.value?.general_class?.class_code || "";
             training_text.value = student.value?.training_text;
             school_year.value = student.value?.school_year;
             student_code.value = student.value?.student_code
 
-            console.log('student.value', student.value)
             if (student.value.thumbnail) {
                 imageUrl.value = student.value.thumbnail_url
             }
@@ -492,7 +489,6 @@ export default defineComponent({
             const families = student.value.families ?? []
             families.push({relationship: '', full_name: '', phone: '', job: ''})
             student.value.families = families
-            console.log('families :>> ', families);
         }
 
         const deleteFamily = (id) => {
@@ -507,8 +503,6 @@ export default defineComponent({
         }
         const isRequest = ref<boolean>(false)
         const handleUpdateStudent = () => {
-            console.log('123', 123)
-            console.log('student.families :>> ', student.value.families);
             if (!isRequest.value) {
                 $q.loading.show()
                 isRequest.value = true
