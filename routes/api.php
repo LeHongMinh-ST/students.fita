@@ -45,7 +45,7 @@ Route::group(['middleware' => ['jwt.auth', 'auth.admin']], function () {
     });
 
     Route::prefix('users')->group(function () {
-        Route::get('/', [UserController::class, 'index'])->middleware('permission:user-index');
+        Route::get('/', [UserController::class, 'index']);
         Route::delete('/delete-selected', [UserController::class, 'deleteSelected'])->middleware('permission:user-delete');
         Route::post('/', [UserController::class, 'store'])->middleware('permission:user-create');
         Route::get('/{id}', [UserController::class, 'show'])->middleware('permission:user-index');
@@ -62,6 +62,9 @@ Route::group(['middleware' => ['jwt.auth', 'auth.admin']], function () {
 
     Route::prefix('students')->group(function () {
         Route::get('/', [StudentController::class, 'index'])->middleware('permission:student-index');
+        Route::get('/request/count', [StudentController::class, 'getCountRequest'])->middleware('permission:student-update');
+        Route::get('/request', [StudentController::class, 'getRequestUpdateStudent'])->middleware('permission:student-update');
+        Route::put('/request/{id}', [StudentController::class, 'updateStudentByStudentTemp'])->middleware('permission:student-update');
         Route::post('/', [StudentController::class, 'store'])->middleware('permission:student-create');
         Route::put('/update-learning-outcome/{id}', [StudentController::class, 'updateDataLearningOutcome'])->middleware('permission:student-update');
         Route::get('/{id}', [StudentController::class, 'show'])->middleware('permission:student-index');
@@ -89,7 +92,7 @@ Route::group(['middleware' => ['jwt.auth', 'auth.admin']], function () {
         Route::put('/{id}', [DepartmentController::class, 'update'])->middleware('permission:department-update');
         Route::delete('/delete-selected', [DepartmentController::class, 'deleteSelected'])->middleware('permission:department-delete');
         Route::delete('/{id}', [DepartmentController::class, 'destroy'])->middleware('permission:department-delete');
-        Route::get('/get-all-id', [DepartmentController::class, 'getAllId'])->middleware('permission:department-index');
+        Route::get('/get-all-id', [DepartmentController::class, 'getAllId']);
     });
 
     Route::prefix('roles')->group(function () {
@@ -104,6 +107,7 @@ Route::group(['middleware' => ['jwt.auth', 'auth.admin']], function () {
 
     Route::prefix('reports')->group(function () {
         Route::get('/', [ReportController::class, 'index'])->middleware('permission:report-index');
+        Route::get('/count-pending', [ReportController::class, 'getCountReportPending'])->middleware('permission:report-index');
         Route::post('/', [ReportController::class, 'store'])->middleware('permission:report-create');
         Route::get('/{id}', [ReportController::class, 'show'])->middleware('permission:report-index');
         Route::put('/{id}', [ReportController::class, 'update'])->middleware('permission:report-update');
@@ -139,6 +143,12 @@ Route::group(['prefix' => 'student'], function () {
 
         Route::get('/class', [StudentController::class, 'getClass']);
 
+        Route::prefix('requests')->group(function () {
+            Route::get('/', [StudentController::class, 'getRequestUpdateStudent']);
+            Route::post('/', [StudentController::class, 'createStudentTemp']);
+            Route::put('/{id}', [StudentController::class, 'updateStudentByStudentTemp']);
+        });
+
         Route::group(['middleware' => ['student.class-monitor']], function () {
             Route::prefix('report')->group(function () {
                 Route::get('/', [ReportController::class, 'index']);
@@ -148,11 +158,7 @@ Route::group(['prefix' => 'student'], function () {
                 Route::delete('/{id}', [ReportController::class, 'destroy']);
             });
 
-            Route::prefix('requests')->group(function () {
-                Route::get('/', [StudentController::class, 'getRequestUpdateStudent']);
-                Route::post('/', [StudentController::class, 'createStudentTemp']);
-                Route::put('/{id}', [StudentController::class, 'updateStudentByStudentTemp']);
-            });
+
         });
 
     });

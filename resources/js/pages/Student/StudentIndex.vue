@@ -29,7 +29,7 @@
 
             <q-card-section class="table-wrapper-title">
                 <div class="table-wrapper-action">
-                    <q-btn no-caps @click="redirectRouter('StudentCreate')" color="secondary" class="q-mr-sm">
+                    <q-btn v-if="checkPermission('student-create')" no-caps @click="redirectRouter('StudentCreate')" color="secondary" class="q-mr-sm">
                         <q-icon name="fa-solid fa-plus" class="q-mr-sm" size="xs"></q-icon>
                         Tạo mới
                     </q-btn>
@@ -145,6 +145,7 @@ import {HomeMutationTypes} from "../../store/modules/home/mutation-types";
 import eventBus from "../../utils/eventBus";
 import {formatDate} from "../../utils/helpers";
 import {validationHelper} from "../../utils/validationHelper";
+import {permissionHelper} from "../../utils/permissionHelper";
 // import DeleteDepartment from "./Delete.vue";
 
 export default defineComponent({
@@ -156,6 +157,7 @@ export default defineComponent({
         const items = ref<Array<any>>([]);
         const itemIDs = ref<Array<number>>([]);
         const {setValidationErrors, getValidationErrors, hasValidationErrors, resetValidateErrors} = validationHelper()
+        const {checkPermission} = permissionHelper()
 
         const page = ref<IPage>({
             currentPage: 1,
@@ -265,7 +267,8 @@ export default defineComponent({
             page,
             gender,
             redirectRouter,
-            resetValidateErrors
+            resetValidateErrors,
+            checkPermission
         };
     },
 });

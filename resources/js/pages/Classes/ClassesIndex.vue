@@ -60,7 +60,7 @@
           </div>
         </div>
         <div class="table-wrapper-action">
-          <q-btn no-caps @click="redirectRouter('ClassesCreate')" color="secondary" class="q-mr-sm">
+          <q-btn v-if="checkPermission('class-create')" no-caps @click="redirectRouter('ClassesCreate')" color="secondary" class="q-mr-sm">
             <q-icon name="fa-solid fa-plus" class="q-mr-sm" size="xs"></q-icon>
             Tạo mới
           </q-btn>
@@ -115,7 +115,7 @@
                   <q-icon name="menu" size="sm"></q-icon>
                   <q-menu touch-position>
                     <q-list style="min-width: 100px">
-                      <q-item clickable v-close-popup
+                      <q-item clickable v-close-popup v-if="checkPermission('class-index')"
                               @click="redirectRouter('ClassesDetail', {id: getValueLodash(classItem, 'id', 0)})">
                         <q-item-section>
 
@@ -123,14 +123,14 @@
                                                                   size="xs"></q-icon>Xem chi tiết</span>
                         </q-item-section>
                       </q-item>
-                      <q-item clickable v-close-popup
+                      <q-item v-if="checkPermission('class-update')"  clickable v-close-popup
                               @click="redirectRouter('ClassesUpdate', {id: getValueLodash(classItem, 'id', 0)})">
                         <q-item-section>
                                                     <span><q-icon name="fa-solid fa-pen-to-square" class="q-mr-sm"
                                                                   size="xs"></q-icon>Chỉnh sửa</span>
                         </q-item-section>
                       </q-item>
-                      <q-item clickable v-close-popup
+                      <q-item clickable v-close-popup v-if="checkPermission('class-delete')"
                               @click="openDialogDelete(getValueLodash(classItem, 'id', 0))">
                                                 <span><q-icon name="fa-solid fa-trash" class="q-mr-sm"
                                                               size="xs"></q-icon>Xoá</span>
@@ -205,6 +205,7 @@ import eventBus from "../../utils/eventBus";
 import {useQuasar} from "quasar";
 import {formatDate} from "../../utils/helpers";
 import IPaginate from "../../models/IPaginate";
+  import {permissionHelper} from "../../utils/permissionHelper";
 
 export default defineComponent({
   name: "ClassesIndex",
@@ -212,6 +213,7 @@ export default defineComponent({
     const $q = useQuasar()
     const store = useStore()
     const router = useRouter()
+    const {checkPermission} = permissionHelper()
 
     const search = ref<string>('')
     const dialogDelete = ref<boolean>(false)
@@ -410,6 +412,7 @@ export default defineComponent({
       closeDialog,
       checkboxArray,
       checkboxAll,
+      checkPermission
     }
   }
 })
