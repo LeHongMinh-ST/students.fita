@@ -35,10 +35,16 @@
 
                             <q-menu>
                                 <q-list style="min-width: 100px">
-                                    <q-item clickable v-close-popup @click="openDialogDeleteSelect">
+                                    <q-item clickable v-close-popup @click="openDialogDeleteSelect" style="display: flex">
                                         <q-item-section>
                                             <span>
                                                 <q-icon name="fa-solid fa-trash" class="q-mr-sm" size="xs"></q-icon>Xoá
+                                                ({{ checkboxArray.length }} bản ghi)
+                                            </span>
+                                        </q-item-section>
+                                        <q-item-section>
+                                            <span>
+                                                <q-icon name="fa-solid fa-trash" class="q-mr-sm" size="xs"></q-icon>Duyệt
                                                 ({{ checkboxArray.length }} bản ghi)
                                             </span>
                                         </q-item-section>
@@ -64,7 +70,7 @@
                 <div class="table-wrapper-action">
                     <q-btn no-caps @click="redirectRouter('ReportStudentCreate')" color="secondary" class="q-mr-sm">
                         <q-icon name="fa-solid fa-plus" class="q-mr-sm" size="xs"></q-icon>
-                        Tạo mới
+                        Duyệt
                     </q-btn>
                     <q-btn no-caps  color="secondary" class="q-mr-sm">
                         <q-icon name="fa-solid fa-refresh" class="q-mr-sm" size="xs"></q-icon>
@@ -77,6 +83,9 @@
                 <q-markup-table class="role-table">
                     <thead>
                         <tr>
+                            <th class="text-center" width="5%">
+                                    <q-checkbox v-model="checkboxAll"/>  
+                            </th>
                             <th class="text-center" width="5%">STT</th>
                             <th class="text-left">Mã sinh viên</th>
                             <th class="text-left">Tên sinh viên</th>
@@ -89,7 +98,9 @@
                     <tbody>
                         <template v-if="reports && reports.length > 0">
                             <tr v-for="(item, index) in reports" :key="index">
-                               
+                                <td class="text-center">
+                                    <q-checkbox v-model="checkboxArray" :val="getValueLodash(item, 'id', 0)"/>
+                                </td>
                                 <td class="text-center">
                                     {{ index + +1 + +page.perPage * (page.currentPage - 1) }}
                                 </td>
@@ -226,6 +237,7 @@
             const itemIDs = ref < Array < number >> ([]);
             const reports = ref<Array<any>>([])
             const reportId = ref<string>('')
+            const checkboxAll = ref<boolean | string>(false);
             const {
                 setValidationErrors,
                 getValidationErrors,
@@ -310,7 +322,18 @@
                         position: "top-right"
                     })
             }
+            watch(
+                () => checkboxAll.value,
+                (value) => {
+                if (value === true) {
+                    //checkboxArray.value = departmentIds.value;
+                }
 
+                if (value === false) {
+                    checkboxArray.value = [];
+                }
+                }
+            );
             const reportStatusEnum = ReportStatusEnum;
             const redirectRouter = (nameRoute: string, params: any | [] = null): void => {
                 router.push({
@@ -387,7 +410,7 @@
                 openDialogDelete,
                 dialogDelete,
                 reports,
-                reportStatusEnum,handleDelete,closeDialog
+                reportStatusEnum,handleDelete,closeDialog,checkboxAll
             };
         },
     });
