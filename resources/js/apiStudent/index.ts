@@ -79,4 +79,11 @@ export default {
             params: params
         })
     },
+    resetMyPassword<T>(data: any): AxiosPromise<IResult<T>> {
+        return apiAxios({
+            method: 'put',
+            url: '/student/profile/reset-password',
+            data: data
+        })
+    }
 }

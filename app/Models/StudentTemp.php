@@ -43,6 +43,7 @@ class StudentTemp extends Model
         'student_approved',
         'teacher_approved',
         'admin_approved',
+        'student_id'
     ];
 
     const ONLY_KEY_UPDATE = [
