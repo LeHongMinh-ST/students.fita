@@ -88,13 +88,13 @@ const routeAdmin: Array<RouteRecordRaw> = [
             {
                 path: '',
                 name: 'ReportStudentAdmin',
-                component: () => import('../pages/ReportStudent/ReportStudentIndex.vue'),
+                component: () => import('../pages/ReportStudentAdmin/ReportStudentAdminIndex.vue'),
                 meta: {isAuthenticated: true, permission: 'report-index'}
             },
             {
                 path: ':id',
                 name: 'ReportStudentDetailAdmin',
-                component: () => import('../pages/ReportStudent/ReportStudentDetail.vue'),
+                component: () => import('../pages/ReportStudentAdmin/ReportStudentAdminDetail.vue'),
                 meta: {isAuthenticated: true, permission: 'report-index'},
             },
         ]
