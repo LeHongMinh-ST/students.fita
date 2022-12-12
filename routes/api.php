@@ -135,12 +135,19 @@ Route::group(['prefix' => 'student'], function () {
         });
     });
 
+
     Route::group(['middleware' => ['auth.student']], function () {
         Route::prefix('profile')->group(function () {
             Route::get('/', [StudentController::class, 'getProfileStudent']);
             Route::put('/update-learning-outcome/{id}', [StudentController::class, 'updateDataLearningOutcome']);
             Route::put('/reset-password', [StudentController::class, 'resetMyPassword']);
             Route::put('/{id}', [StudentController::class, 'updateProfile']);
+        });
+
+        Route::prefix('requests')->group(function () {
+            Route::get('/', [StudentController::class, 'getRequestUpdateStudent']);
+            Route::post('/', [StudentController::class, 'createStudentTemp']);
+            Route::put('/{id}', [StudentController::class, 'updateStudentByStudentTemp']);
         });
 
         Route::get('/class', [StudentController::class, 'getClass']);

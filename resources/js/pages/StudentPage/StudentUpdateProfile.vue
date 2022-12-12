@@ -38,17 +38,21 @@
                                     <div class="form-group">
                                         <label class="text-bold">Niên khóa <span class="required">*</span></label>
                                         <q-input
+                                            disable
                                             outlined
                                             dense
-                                            v-model="student.school_year"
-                                            :error-message="getValidationErrors('school_year')"
-                                            :error="hasValidationErrors('school_year')"
-                                            @update:model-value="() => resetValidateErrors('school_year')"
+                                            v-model="school_year"
                                         />
                                     </div>
                                     <div class="form-group">
                                         <label class="text-bold">Chương trình đào tạo</label>
-                                        <q-select
+                                        <q-input
+                                            disable
+                                            outlined
+                                            dense
+                                            v-model="training_text"
+                                        />
+                                        <!-- <q-select
                                             outlined
                                             dense
                                             :options="trainingTypeList"
@@ -59,7 +63,7 @@
                                             :error-message="getValidationErrors('training_type')"
                                             :error="hasValidationErrors('training_type')"
                                             @update:model-value="() => resetValidateErrors('training_type')"
-                                        />
+                                        /> -->
                                     </div>
                                     <div class="form-group">
                                         <label class="text-bold">CCCD/CMT</label>
@@ -112,10 +116,8 @@
                                         <q-input
                                             outlined
                                             dense
-                                            v-model="student.student_code"
-                                            :error-message="getValidationErrors('student_code')"
-                                            :error="hasValidationErrors('student_code')"
-                                            @update:model-value="() => resetValidateErrors('student_code')"
+                                            v-model="student_code"
+                                            disable
                                         />
                                     </div>
                                     <div class="form-group">
@@ -231,15 +233,18 @@
                                             outlined
                                             dense
                                             v-model="student.academic_level"
-                                            :error-message="getValidationErrors('academic_level')"
-                                            :error="hasValidationErrors('academic_level')"
-                                            @update:model-value="() => resetValidateErrors('academic_level')"
                                         />
                                     </div>
 
                                     <div class="form-group">
                                         <label class="text-bold">Lớp </label>
-                                        <q-select
+                                        <q-input
+                                            disable
+                                            outlined
+                                            dense
+                                            v-model="class_code"
+                                        />
+                                        <!-- <q-select
                                             outlined
                                             dense
                                             fill-input
@@ -253,7 +258,7 @@
                                             :error-message="getValidationErrors('class_id')"
                                             :error="hasValidationErrors('class_id')"
                                             @update:model-value="() => resetValidateErrors('class_id')"
-                                        />
+                                        /> -->
                                     </div>
                                     <div class="form-group">
                                         <label class="text-bold">Chuyên ngành</label>
@@ -411,9 +416,9 @@ import {
     TRAINING_TYPE_LIST
 } from "../../utils/constants";
 import {IStudentResult} from "../../models/IStudentResult";
-import useClass from "../../uses/useClass";
+// import useClass from "../../uses/useClass";
 import _ from "lodash";
-import api from "../../api"
+import api from "../../apiStudent"
 import {TrainingTypeEnum} from "../../enums/trainingType.enum";
 import {StudentSocialPolicyObjectEnum} from "../../enums/studentSocialPolicyObject.enum";
 import eventBus from "../../utils/eventBus";
@@ -430,12 +435,13 @@ export default defineComponent({
         const studentRoleList = STUDENT_ROLE_LIST
         const trainingTypeList = TRAINING_TYPE_LIST
         const studentSocialPolicyObjectList = STUDENT_SOCIAL_POLICY_OBJECT_LIST
+        const class_code = ref<string>()
+        const training_text = ref<string>()
+        const school_year = ref<string>()
+        const student_code = ref<string>()
 
         const {setValidationErrors, getValidationErrors, hasValidationErrors, resetValidateErrors} = validationHelper()
         const route = useRoute()
-
-
-        const {classes, getAllClasses} = useClass()
 
         const student = ref<IStudentResult>({
             full_name: "",
@@ -463,8 +469,14 @@ export default defineComponent({
 
         onMounted(() => {
             store.commit(`home/${HomeMutationTypes.SET_TITLE}`, 'Quản lý sinh viên')
-            getAllClasses()
+            // getAllClasses()
             student.value = store.getters["authStudent/getAuthUserStudent"]
+            class_code.value = student.value?.general_class?.class_code || "";
+            training_text.value = student.value?.training_text;
+            school_year.value = student.value?.school_year;
+            student_code.value = student.value?.student_code
+
+            console.log('student.value', student.value)
             if (student.value.thumbnail) {
                 imageUrl.value = student.value.thumbnail_url
             }
@@ -480,10 +492,11 @@ export default defineComponent({
             const families = student.value.families ?? []
             families.push({relationship: '', full_name: '', phone: '', job: ''})
             student.value.families = families
+            console.log('families :>> ', families);
         }
 
         const deleteFamily = (id) => {
-            student.value.families = student.value.families.filter((item, index) => index != id)
+            student.value.families = student?.value?.families?.filter((item, index) => index != id)
         }
 
         const isValidate = (): boolean => {
@@ -494,26 +507,26 @@ export default defineComponent({
         }
         const isRequest = ref<boolean>(false)
         const handleUpdateStudent = () => {
+            console.log('123', 123)
+            console.log('student.families :>> ', student.value.families);
             if (!isRequest.value) {
                 $q.loading.show()
                 isRequest.value = true
                 const formData = new FormData()
-
                 Object.keys(student.value).map(function (objectKey) {
-                    const value = student.value[objectKey];
+                    const value = student?.value[objectKey];
                     if (value == null) {
-                        formData.append(objectKey, "")
+                        formData.append(objectKey, JSON.stringify(""))
                     } else {
-                        formData.append(objectKey, value)
+                        formData.append(objectKey, JSON.stringify(value))
                     }
                 });
 
-                formData.append('image', image.value)
-                api.updateStudent<IStudentResult>(formData, parseInt(studentCode.value)).then(res => {
+                formData.append('image', JSON.stringify(image.value))
+                api.createStudentTemp<IStudentResult>(formData).then(res => {
                     if (res) {
-                        eventBus.$emit('notify-success', 'Cập nhật sinh viên thành công')
-                        const id = studentCode.value
-                        redirectRouter('StudentDetail', {id: id})
+                        eventBus.$emit('notify-success', 'Gửi yêu cầu nhật thông tin thành công')
+                        redirectRouter('HomeStudent')
                     }
                 }).catch(error => {
                     let errors = _.get(error.response, 'data.error', {})
@@ -534,7 +547,6 @@ export default defineComponent({
                     $q.loading.hide()
                 })
             }
-
         }
 
         return {
@@ -553,7 +565,10 @@ export default defineComponent({
             studentStatusList,
             studentRoleList,
             studentSocialPolicyObjectList,
-            classes,
+            student_code,
+            training_text,
+            school_year,
+            class_code,
             trainingTypeList,
             addFamily,
             deleteFamily,
