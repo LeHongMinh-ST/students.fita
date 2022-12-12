@@ -44,10 +44,10 @@
                             </q-menu>
                         </q-btn>
                     </q-slide-transition>
-                    <q-btn class="q-mr-sm" no-caps color="primary" @click="toggleFilter">
-                        <q-icon name="fa-solid fa-filter" class="q-mr-sm" size="xs"></q-icon>
-                        Lọc dữ liệu
-                    </q-btn>
+<!--                    <q-btn class="q-mr-sm" no-caps color="primary" @click="toggleFilter">-->
+<!--                        <q-icon name="fa-solid fa-filter" class="q-mr-sm" size="xs"></q-icon>-->
+<!--                        Lọc dữ liệu-->
+<!--                    </q-btn>-->
 
                     <div class="table-wrapper-search">
                         <q-input bottom-slots v-model="search" label="Nhập từ khóa để tìm kiếm" outlined dense>
@@ -60,7 +60,7 @@
                     </div>
                 </div>
                 <div class="table-wrapper-action">
-                    <q-btn no-caps @click="redirectRouter('RoleCreate')" color="secondary" class="q-mr-sm">
+                    <q-btn v-if="checkPermission('role-create')" no-caps @click="redirectRouter('RoleCreate')" color="secondary" class="q-mr-sm">
                         <q-icon name="fa-solid fa-plus" class="q-mr-sm" size="xs"></q-icon>
                         Tạo mới
                     </q-btn>
@@ -108,14 +108,14 @@
                                     <q-icon name="menu" size="sm"></q-icon>
                                     <q-menu touch-position>
                                         <q-list style="min-width: 100px">
-                                            <q-item clickable v-close-popup
+                                            <q-item v-if="checkPermission('role-update')" clickable v-close-popup
                                                     @click="redirectRouter('RoleUpdate', {id: getValueLodash(role, 'id', 0)})">
                                                 <q-item-section>
                                                     <span><q-icon name="fa-solid fa-pen-to-square" class="q-mr-sm"
                                                                   size="xs"></q-icon>Chỉnh sửa</span>
                                                 </q-item-section>
                                             </q-item>
-                                            <q-item clickable v-close-popup
+                                            <q-item v-if="checkPermission('role-delete')" clickable v-close-popup
                                                     @click="openDialogDelete(getValueLodash(role, 'id', 0))">
                                                 <span><q-icon name="fa-solid fa-trash" class="q-mr-sm"
                                                               size="xs"></q-icon>Xoá</span>
@@ -191,6 +191,7 @@ import {formatDate} from "../../utils/helpers";
 import IRoleResult from "../../models/IRoleResult";
 import IPaginate from "../../models/IPaginate";
 import usePage from "../../uses/usePage"
+import {permissionHelper} from "../../utils/permissionHelper";
 
 export default defineComponent({
     name: "RoleIndex",
@@ -199,6 +200,7 @@ export default defineComponent({
         const store = useStore()
         const router = useRouter()
         const {page} = usePage()
+        const {checkPermission} = permissionHelper()
 
         const search = ref<string>('')
         const dialogDelete = ref<boolean>(false)
@@ -385,6 +387,7 @@ export default defineComponent({
             closeDialog,
             checkboxArray,
             checkboxAll,
+            checkPermission
         }
     }
 })

@@ -34,20 +34,19 @@
 
                             <q-menu>
                                 <q-list style="min-width: 100px">
-                                    <q-item clickable v-close-popup @click="openDialogDeleteSelect">
+                                    <q-item v-if="checkPermission('user-delete')" clickable v-close-popup @click="openDialogDeleteSelect">
                                         <q-item-section>
-                      <span><q-icon name="fa-solid fa-trash" class="q-mr-sm"
-                                    size="xs"></q-icon>Xoá ({{ checkboxArray.length }} bản ghi)</span>
+                                          <span><q-icon name="fa-solid fa-trash" class="q-mr-sm" size="xs"></q-icon>Xoá ({{ checkboxArray.length }} bản ghi)</span>
                                         </q-item-section>
                                     </q-item>
                                 </q-list>
                             </q-menu>
                         </q-btn>
                     </q-slide-transition>
-                    <q-btn class="q-mr-sm" no-caps color="primary" @click="toggleFilter">
-                        <q-icon name="fa-solid fa-filter" class="q-mr-sm" size="xs"></q-icon>
-                        Lọc dữ liệu
-                    </q-btn>
+<!--                    <q-btn class="q-mr-sm" no-caps color="primary" @click="toggleFilter">-->
+<!--                        <q-icon name="fa-solid fa-filter" class="q-mr-sm" size="xs"></q-icon>-->
+<!--                        Lọc dữ liệu-->
+<!--                    </q-btn>-->
 
                     <div class="table-wrapper-search">
                         <q-input bottom-slots v-model="search" id="searchInput" name="searchInput"
@@ -61,7 +60,7 @@
                     </div>
                 </div>
                 <div class="table-wrapper-action">
-                    <q-btn no-caps @click="redirectRouter('UserCreate')" color="secondary" class="q-mr-sm">
+                    <q-btn v-if="checkPermission('user-create')" no-caps @click="redirectRouter('UserCreate')" color="secondary" class="q-mr-sm">
                         <q-icon name="fa-solid fa-plus" class="q-mr-sm" size="xs"></q-icon>
                         Tạo mới
                     </q-btn>
@@ -123,22 +122,24 @@
                                     <q-icon name="menu" size="sm"></q-icon>
                                     <q-menu touch-position>
                                         <q-list style="min-width: 100px">
-                                            <q-item clickable v-close-popup
+                                            <q-item v-if="checkPermission('user-update')" clickable v-close-popup
                                                     @click="redirectRouter('UserUpdate', {id: getValueLodash(user, 'id', 0)})">
                                                 <q-item-section>
-                                                    <span><q-icon name="fa-solid fa-pen-to-square" class="q-mr-sm"
-                                                                  size="xs"></q-icon>Chỉnh sửa</span>
+                                                    <span><q-icon name="fa-solid fa-pen-to-square" class="q-mr-sm" size="xs"></q-icon>Chỉnh sửa</span>
                                                 </q-item-section>
                                             </q-item>
-                                            <q-item v-if="auth.id !== getValueLodash(user, 'id', 0)" clickable v-close-popup
+                                            <q-item v-if="auth.id !== getValueLodash(user, 'id', 0) && checkPermission('user-delete')" clickable v-close-popup
                                                     @click="openDialogDelete(getValueLodash(user, 'id', 0))">
-                                                <span><q-icon name="fa-solid fa-trash" class="q-mr-sm"
-                                                              size="xs"></q-icon>Xoá</span>
+                                              <q-item-section>
+                                                <span><q-icon name="fa-solid fa-trash" class="q-mr-sm" size="xs"></q-icon>Xoá</span>
+                                              </q-item-section>
+
                                             </q-item>
-                                            <q-item v-if="auth.id !== getValueLodash(user, 'id', 0)" clickable v-close-popup
+                                            <q-item v-if="auth.id !== getValueLodash(user, 'id', 0) && checkPermission('user-update')" clickable v-close-popup
                                                     @click="openDialogResetPassword(getValueLodash(user, 'id', 0))">
-                                                <span><q-icon name="fa-solid fa-lock" class="q-mr-sm"
-                                                              size="xs"></q-icon>Đặt lại mật khẩu</span>
+                                              <q-item-section>
+                                                <span><q-icon name="fa-solid fa-lock" class="q-mr-sm" size="xs"></q-icon>Đặt lại mật khẩu</span>
+                                              </q-item-section>
                                             </q-item>
                                         </q-list>
                                     </q-menu>
@@ -148,7 +149,7 @@
                     </template>
                     <template v-else>
                         <tr>
-                            <td colspan="7" class="text-center">
+                            <td colspan="9" class="text-center">
                                 <img class="imgEmpty" src="/images/empty.png" alt="">
                             </td>
                         </tr>
@@ -259,6 +260,7 @@ import IPaginate from "../../models/IPaginate";
 import {IPage, IPayload} from "../../models/IPage";
 import _ from "lodash";
 import {validationHelper} from "../../utils/validationHelper";
+import {permissionHelper} from "../../utils/permissionHelper";
 
 export default defineComponent({
     name: "UserIndex",
@@ -279,6 +281,8 @@ export default defineComponent({
         const refPassword = ref<any>(null)
         const checkboxArray = ref<Array<string>>([])
         const checkboxAll = ref<boolean | string>(false)
+
+        const {checkPermission} = permissionHelper()
 
         const auth = store.getters['auth/getAuthUser']
 
@@ -527,7 +531,7 @@ export default defineComponent({
             getValidationErrors,
             hasValidationErrors,
             resetValidateErrors,
-            isPwd, auth
+            isPwd, auth, checkPermission
         }
     }
 })

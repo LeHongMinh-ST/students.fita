@@ -45,7 +45,7 @@ Route::group(['middleware' => ['jwt.auth', 'auth.admin']], function () {
     });
 
     Route::prefix('users')->group(function () {
-        Route::get('/', [UserController::class, 'index'])->middleware('permission:user-index');
+        Route::get('/', [UserController::class, 'index']);
         Route::delete('/delete-selected', [UserController::class, 'deleteSelected'])->middleware('permission:user-delete');
         Route::post('/', [UserController::class, 'store'])->middleware('permission:user-create');
         Route::get('/{id}', [UserController::class, 'show'])->middleware('permission:user-index');
@@ -89,7 +89,7 @@ Route::group(['middleware' => ['jwt.auth', 'auth.admin']], function () {
         Route::put('/{id}', [DepartmentController::class, 'update'])->middleware('permission:department-update');
         Route::delete('/delete-selected', [DepartmentController::class, 'deleteSelected'])->middleware('permission:department-delete');
         Route::delete('/{id}', [DepartmentController::class, 'destroy'])->middleware('permission:department-delete');
-        Route::get('/get-all-id', [DepartmentController::class, 'getAllId'])->middleware('permission:department-index');
+        Route::get('/get-all-id', [DepartmentController::class, 'getAllId']);
     });
 
     Route::prefix('roles')->group(function () {
