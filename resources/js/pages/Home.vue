@@ -22,28 +22,28 @@
                     </q-card>
 
                 </div>
-                <div class="col q-pr-sm q-pl-sm">
-                    <q-card>
-                        <q-card-section vert class="text-white vert bg-deep-orange-8">
-                            <div class="row">
-                                <div class="col-10">
-                                    <div class="text-h6">Giảng viên</div>
-                                    <div class="text-h5">{{dashboardObject.teacherCount}}</div>
-                                </div>
-                                <div class="col-2  items-center row">
-                                    <q-icon class="fa-solid fa-chalkboard-user" size="xl"></q-icon>
-                                </div>
-                            </div>
-                        </q-card-section>
-                    </q-card>
+<!--                <div v-if="" class="col q-pr-sm q-pl-sm">-->
+<!--                    <q-card>-->
+<!--                        <q-card-section vert class="text-white vert bg-deep-orange-8">-->
+<!--                            <div class="row">-->
+<!--                                <div class="col-10">-->
+<!--                                    <div class="text-h6">Giảng viên</div>-->
+<!--                                    <div class="text-h5">{{dashboardObject.teacherCount}}</div>-->
+<!--                                </div>-->
+<!--                                <div class="col-2  items-center row">-->
+<!--                                    <q-icon class="fa-solid fa-chalkboard-user" size="xl"></q-icon>-->
+<!--                                </div>-->
+<!--                            </div>-->
+<!--                        </q-card-section>-->
+<!--                    </q-card>-->
 
-                </div>
+<!--                </div>-->
                 <div class="col q-pr-sm q-pl-sm">
                     <q-card>
                         <q-card-section vert class="text-white vert bg-teal-8">
                             <div class="row">
                                 <div class="col-10">
-                                    <div class="text-h6">Lớp</div>
+                                    <div class="text-h6">Lớp học</div>
                                     <div class="text-h5">{{dashboardObject.classCount}}</div>
                                 </div>
                                 <div class="col-2 items-center row">
@@ -138,7 +138,7 @@
                                     <template v-else>
                                         <tr>
                                             <td colspan="7" class="text-center">
-                                                <img class="imgEmpty" src="/images/empty.png" alt="">
+                                                <img class="imgEmpty" src="/images/empty2.png" alt="">
                                             </td>
                                         </tr>
                                     </template>
@@ -215,7 +215,7 @@
                                     <template v-else>
                                         <tr>
                                             <td colspan="7" class="text-center">
-                                                <img class="imgEmpty" src="/images/empty.png" alt="">
+                                                <img class="imgEmpty" src="/images/empty3.png" alt="">
                                             </td>
                                         </tr>
                                     </template>
