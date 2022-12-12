@@ -67,7 +67,7 @@ class ReportController extends Controller
             if (auth('students')->check()) {
                 $student = auth('students')->user();
                 if ($student->id != $report->created_by) {
-                    return $this->responseError('Bạn không có quyền', [], 403);
+                    return $this->responseError('Bạn không có quyền thực hiện chức năng này', [], 403);
                 }
             }
 
@@ -78,7 +78,7 @@ class ReportController extends Controller
                     $classIds = $auth?->generalClass?->pluck('id')?->toArray();
 
                     if (!in_array($report->class_id, $classIds)) {
-                        return $this->responseError('Bạn không có quyền', [], 403);
+                        return $this->responseError('Bạn không có quyền thực hiện chức năng này', [], 403);
                     }
                 }
             }
@@ -107,7 +107,7 @@ class ReportController extends Controller
             $report = $this->reportRepository->findById($id);
             if (auth('students')->check()) {
                 $student = auth('students')->user();
-                if ($student->id == $report->created_by) {
+                if ($student->id != $report->created_by) {
                     return $this->responseError('Bạn không có quyền', [], 403);
                 }
             }
