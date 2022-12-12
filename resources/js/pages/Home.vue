@@ -72,7 +72,7 @@
                 </div>
             </div>
             <div class="row q-mt-md">
-                <div class="col-6 q-pr-sm">
+                <div class="col-7 q-pr-sm">
                     <q-card>
                         <q-card-section>
                             <div class="text-bold header-title">
@@ -84,10 +84,12 @@
                                 <thead>
                                     <tr>
                                         <th class="text-center" width="5%">STT</th>
-                                        <th class="text-left">Tên nhóm</th>
-                                        <th class="text-left">Mô tả</th>
+                                        <th class="text-left">Tiêu đề</th>
+                                        <th class="text-left">Chủ đề</th>
+                                        <th class="text-center">Sinh viên</th>
                                         <th class="text-center">Ngày tạo</th>
                                         <th class="text-left">Được tạo bởi</th>
+                                        <th class="text-left">Trạng thái</th>
                                         <th class="text-center">Tác vụ</th>
                                     </tr>
                                 </thead>
@@ -95,24 +97,25 @@
                                     <template v-if="reports?.length ?? [].length > 0">
                                         <tr v-for="(report, index) in reports" :key="index">
 
-                                            <td class="text-center">{{
-                                                    index + +1 + +pagePhanAnh['perPage'] * (pagePhanAnh['currentPage'] - 1)
-                                            }}
+                                            <td class="text-center">{{ index }}
                                             </td>
                                             <td class="text-left">
                                                 <span @click="redirectRouter('RoleUpdate', { id: report.id })"
                                                     class="text-bold cursor-pointer text-link">
-                                                    {{ getValueLodash(report, 'name', '') }}
+                                                    {{ getValueLodash(report, 'titile', '') }}
                                                 </span>
                                             </td>
-                                            <td class="text-left"> {{ getValueLodash(report, 'description', '') }}</td>
+                                            <td class="text-left"> {{ getValueLodash(report, 'subject_text', '') }}</td>
+                                            <td class="text-left"> {{ getValueLodash(report, 'student.full_name', '') }}</td>
                                             <td class="text-center">
                                                 {{ this.handleFormatDate(getValueLodash(report, 'created_at', '')) }}
                                             </td>
                                             <td class="text-left">{{ getValueLodash(report, 'create_by.full_name', '') }}
                                             </td>
+                                            <td class="text-left">{{ getValueLodash(report, 'status_text', '') }}
+                                            </td>
                                             <td class="text-center">
-                                                <span @click="redirectRouter('RoleUpdate', { id: report.id })"
+                                                <span @click="redirectRouter('ReportStudent', { id: report.id })"
                                                       class="text-bold cursor-pointer text-link">
                                                       Chi tiết
                                                 </span>
@@ -133,7 +136,7 @@
                         </q-card-section>
                     </q-card>
                 </div>
-                <div class="col-6 q-pl-sm">
+                <div class="col-5 q-pl-sm">
                     <q-card>
                         <q-card-section>
                             <div class="text-bold header-title">
@@ -145,33 +148,33 @@
                                 <thead>
                                     <tr>
                                         <th class="text-center" width="5%">STT</th>
-                                        <th class="text-left">Tên nhóm</th>
-                                        <th class="text-left">Mô tả</th>
+                                        <th class="text-left">Họ và tên</th>
+                                        <th class="text-left">Mã sinh viên</th>
                                         <th class="text-center">Ngày tạo</th>
-                                        <th class="text-left">Được tạo bởi</th>
                                         <th class="text-center">Tác vụ</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <template v-if="requests?.length ?? [].length > 0">
                                         <tr v-for="(request, index) in requests" :key="index">
-
-                                            <td class="text-center">{{
-                                                    index + +1 + +pageYcDuyetTT['perPage'] * (pageYcDuyetTT['currentPage'] - 1)
-                                            }}
+                                            <td class="text-center">{{ index }}
                                             </td>
                                             <td class="text-left">
                                                 <span @click="redirectRouter('RoleUpdate', { id: request.id })"
                                                     class="text-bold cursor-pointer text-link">
-                                                    {{ getValueLodash(request, 'name', '') }}
+                                                    {{ getValueLodash(request, 'full_name', '') }}
                                                 </span>
                                             </td>
-                                            <td class="text-left"> {{ getValueLodash(request, 'description', '') }}</td>
+                                            <td class="text-left">
+                                                  <span @click="redirectRouter('RoleUpdate', { id: request.id })"
+                                                        class="text-bold cursor-pointer text-link">
+                                                      {{ getValueLodash(request, 'full_name', '') }}
+                                                  </span>
+                                            </td>
                                             <td class="text-center">
                                                 {{ this.handleFormatDate(getValueLodash(request, 'created_at', '')) }}
                                             </td>
-                                            <td class="text-left">{{ getValueLodash(request, 'create_by.full_name', '') }}
-                                            </td>
+
                                             <td class="text-center">
                                                   <span @click="redirectRouter('RoleUpdate', { id: request.id })"
                                                         class="text-bold cursor-pointer text-link">
@@ -235,6 +238,8 @@ export default defineComponent({
             teacherCount: 0,
         })
 
+
+
         const getDataDashBoard = (): void => {
             loading.value = true;
 
@@ -275,7 +280,8 @@ export default defineComponent({
             getDataDashBoard,
             dashboardObject,
             reports,
-            requests
+            requests,
+            handleFormatDate
         }
     }
 })
