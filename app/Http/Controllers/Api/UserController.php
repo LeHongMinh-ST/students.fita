@@ -199,7 +199,7 @@ class UserController extends Controller
             ]);
             return $this->responseSuccess();
         } catch (\Exception $exception) {
-            Log::error('Error update user', [
+            Log::error('Error reset my password user', [
                 'method' => __METHOD__,
                 'message' => $exception->getMessage()
             ]);

@@ -66,7 +66,7 @@ class ReportController extends Controller
 
             if (auth('students')->check()) {
                 $student = auth('students')->user();
-                if ($student->id == $report->created_by) {
+                if ($student->id != $report->created_by) {
                     return $this->responseError('Bạn không có quyền', [], 403);
                 }
             }
