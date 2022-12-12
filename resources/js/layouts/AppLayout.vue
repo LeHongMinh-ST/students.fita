@@ -138,12 +138,14 @@
 </template>
 
 <script lang="ts">
-import {computed, defineComponent, ref} from 'vue'
+import {computed, defineComponent, onMounted, ref} from 'vue'
 import {fabYoutube} from '@quasar/extras/fontawesome-v6'
 import {useRoute, useRouter} from "vue-router/dist/vue-router";
 import {useStore} from "vuex";
 import {AuthActionTypes} from "../store/modules/auth/actions-type";
 import {permissionHelper} from "../utils/permissionHelper";
+import api from "../api";
+import {HomeMutationTypes} from "../store/modules/home/mutation-types";
 
 export default defineComponent({
     name: 'AppLayout',
@@ -157,6 +159,9 @@ export default defineComponent({
         const checkActive = (routerName: string): boolean => {
             return route.name === routerName
         }
+
+        const countReport = ref<number>(0)
+        const countRequest = ref<number>(0)
 
         const {checkPermission} = permissionHelper()
 
@@ -178,6 +183,43 @@ export default defineComponent({
             return store.state.home.title
         })
 
+        const getReportCount = async () => {
+          try {
+            const res = await api.countReportPending()
+            const count = _.get(res, 'data.data.reportCount', 0)
+            store.commit(`home/${HomeMutationTypes.SET_COUNT_REPORT}`, count)
+            // countReport.value = store.getters['home/getCountReport']
+          }catch (error) {
+            console.log(error)
+          }
+        }
+
+      const getRequestCount = async () => {
+        try {
+          const res = await api.countStudentRequest()
+          const count = _.get(res, 'data.data.requestCount', 0)
+          store.commit(`home/${HomeMutationTypes.SET_COUNT_REQUEST}`, count)
+          // countReport.value = store.getters['home/getCountReport']
+        }catch (error) {
+          console.log(error)
+        }
+      }
+
+        const loadBadge = (item) => {
+          if (item.routeName == 'ReviewListIndex' ) {
+            return
+          }
+
+          if (item.routeName == 'ReportStudent') {
+            return countReport.value
+          }
+          return  0
+        }
+
+        onMounted(()=> {
+          getReportCount()
+          getRequestCount()
+        })
 
         return {
             fabYoutube,
@@ -189,6 +231,7 @@ export default defineComponent({
             redirectRouteName,
             checkPermission,
             checkActive,
+            loadBadge,
             links1: [
                 {icon: 'fa-solid fa-home', text: 'Bảng điều khiển', routeName: 'Home', permission: 'dashboard-index'},
                 {
@@ -212,14 +255,14 @@ export default defineComponent({
                     text: 'Yêu cầu xét duyệt',
                     routeName: 'ReviewListIndex',
                     permission: 'student-update',
-                    badge: 10
+                    badge: store.getters['home/getCountRequest']
                 },
                 {
                     icon: 'fa-solid fa-flag',
                     text: 'Phản ánh sinh viên',
                     routeName: 'ReportStudent',
                     permission: 'report-index',
-                    badge: 10
+                    badge: store.getters['home/getCountReport']
                 },
             ],
             linksSystem: [

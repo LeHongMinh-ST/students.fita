@@ -1,9 +1,9 @@
-import axios, { AxiosPromise } from 'axios';
-import { IParams } from "../models/IParams";
+import axios, {AxiosPromise} from 'axios';
+import {IParams} from "../models/IParams";
 import IResult from "../models/IResult";
 import router from '../router';
-import { store } from '../store';
-import { AuthMutationTypes } from "../store/modules/auth/mutation-types";
+import {store} from '../store';
+import {AuthMutationTypes} from "../store/modules/auth/mutation-types";
 
 // @ts-ignore
 const baseUrl = import.meta.env.VITE_ADMIN_URL;
@@ -238,7 +238,7 @@ export default {
             url: `/users/${id}/reset-password`
         })
     },
-	getClasses<T>(params: object = {}): AxiosPromise<IResult<T>> {
+    getClasses<T>(params: object = {}): AxiosPromise<IResult<T>> {
         return apiAxios({
             method: 'get',
             url: '/classes',
@@ -283,10 +283,10 @@ export default {
             url: `/classes/${id}`,
         })
     },
-    importStudentClass<T>(id: number, data:any): AxiosPromise<IResult<T>> {
+    importStudentClass<T>(id: number, data: any): AxiosPromise<IResult<T>> {
         return apiAxios({
             method: 'post',
-            data:data,
+            data: data,
             url: `/classes/${id}/import-student`,
         })
     },
@@ -391,11 +391,23 @@ export default {
             url: `/profile`
         })
     },
-    downloadExcelTemplate() {
+    downloadExcelTemplate<T>(): AxiosPromise<IResult<T>> {
         return apiAxios({
             method: 'get',
             url: '/classes/download/get-template-import-file',
             responseType: 'blob',
         })
     },
+    countReportPending<T>(): AxiosPromise<IResult<T>> {
+        return apiAxios({
+            method: 'get',
+            url: '/reports/count-pending',
+        })
+    },
+    countStudentRequest<T>(): AxiosPromise<IResult<T>> {
+        return apiAxios({
+            method: 'get',
+            url: '/students/request/count',
+        })
+    }
 }
