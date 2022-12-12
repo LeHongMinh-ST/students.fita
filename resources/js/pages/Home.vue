@@ -72,7 +72,69 @@
                 </div>
             </div>
             <div class="row q-mt-md">
-                <div class="col-7 q-pr-sm">
+              <div class="col-5 q-pr-sm">
+                <q-card>
+                  <q-card-section>
+                    <div class="text-bold header-title">
+                      Yêu cầu duyệt thông tin
+                    </div>
+                  </q-card-section>
+                  <q-card-section>
+                    <q-markup-table class="request-table">
+                      <thead>
+                      <tr>
+                        <th class="text-center" width="5%">STT</th>
+                        <th class="text-left">Họ và tên</th>
+                        <th class="text-left">Mã sinh viên</th>
+                        <th class="text-center">Ngày tạo</th>
+                        <th class="text-center">Tác vụ</th>
+                      </tr>
+                      </thead>
+                      <tbody>
+                      <template v-if="requests?.length ?? [].length > 0">
+                        <tr v-for="(request, index) in requests" :key="index">
+                          <td class="text-center">{{ index }}
+                          </td>
+                          <td class="text-left">
+                                                <span @click="redirectRouter('RoleUpdate', { id: request.id })"
+                                                      class="text-bold cursor-pointer text-link">
+                                                    {{ getValueLodash(request, 'full_name', '') }}
+                                                </span>
+                          </td>
+                          <td class="text-left">
+                                                  <span @click="redirectRouter('RoleUpdate', { id: request.id })"
+                                                        class="text-bold cursor-pointer text-link">
+                                                      {{ getValueLodash(request, 'full_name', '') }}
+                                                  </span>
+                          </td>
+                          <td class="text-center">
+                            {{ this.handleFormatDate(getValueLodash(request, 'created_at', '')) }}
+                          </td>
+
+                          <td class="text-center">
+                                                  <span @click="redirectRouter('RoleUpdate', { id: request.id })"
+                                                        class="text-bold cursor-pointer text-link">
+                                                        Chi tiết
+                                                  </span>
+                          </td>
+                        </tr>
+                      </template>
+                      <template v-else>
+                        <tr>
+                          <td colspan="7" class="text-center">
+                            <img class="imgEmpty" src="/images/empty2.png" alt="">
+                          </td>
+                        </tr>
+                      </template>
+                      </tbody>
+
+                    </q-markup-table>
+
+                  </q-card-section>
+                </q-card>
+              </div>
+
+              <div class="col-7 q-pl-sm">
                     <q-card>
                         <q-card-section>
                             <div class="text-bold header-title">
@@ -124,68 +186,7 @@
                                     </template>
                                     <template v-else>
                                         <tr>
-                                            <td colspan="7" class="text-center">
-                                                <img class="imgEmpty" src="/images/empty2.png" alt="">
-                                            </td>
-                                        </tr>
-                                    </template>
-                                </tbody>
-
-                            </q-markup-table>
-
-                        </q-card-section>
-                    </q-card>
-                </div>
-                <div class="col-5 q-pl-sm">
-                    <q-card>
-                        <q-card-section>
-                            <div class="text-bold header-title">
-                                Yêu cầu duyệt thông tin
-                            </div>
-                        </q-card-section>
-                        <q-card-section>
-                            <q-markup-table class="request-table">
-                                <thead>
-                                    <tr>
-                                        <th class="text-center" width="5%">STT</th>
-                                        <th class="text-left">Họ và tên</th>
-                                        <th class="text-left">Mã sinh viên</th>
-                                        <th class="text-center">Ngày tạo</th>
-                                        <th class="text-center">Tác vụ</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <template v-if="requests?.length ?? [].length > 0">
-                                        <tr v-for="(request, index) in requests" :key="index">
-                                            <td class="text-center">{{ index }}
-                                            </td>
-                                            <td class="text-left">
-                                                <span @click="redirectRouter('RoleUpdate', { id: request.id })"
-                                                    class="text-bold cursor-pointer text-link">
-                                                    {{ getValueLodash(request, 'full_name', '') }}
-                                                </span>
-                                            </td>
-                                            <td class="text-left">
-                                                  <span @click="redirectRouter('RoleUpdate', { id: request.id })"
-                                                        class="text-bold cursor-pointer text-link">
-                                                      {{ getValueLodash(request, 'full_name', '') }}
-                                                  </span>
-                                            </td>
-                                            <td class="text-center">
-                                                {{ this.handleFormatDate(getValueLodash(request, 'created_at', '')) }}
-                                            </td>
-
-                                            <td class="text-center">
-                                                  <span @click="redirectRouter('RoleUpdate', { id: request.id })"
-                                                        class="text-bold cursor-pointer text-link">
-                                                        Chi tiết
-                                                  </span>
-                                            </td>
-                                        </tr>
-                                    </template>
-                                    <template v-else>
-                                        <tr>
-                                            <td colspan="7" class="text-center">
+                                            <td colspan="8" class="text-center">
                                                 <img class="imgEmpty" src="/images/empty3.png" alt="">
                                             </td>
                                         </tr>
@@ -294,6 +295,20 @@ export default defineComponent({
 
         .header-title {
             font-size: 18px;
+        }
+
+        tr {
+          th {
+            text-transform: uppercase;
+            font-weight: bold;
+            color: #949597;
+          }
+
+          td {
+            .text-link {
+              color: #337ab7;
+            }
+          }
         }
     }
 }
