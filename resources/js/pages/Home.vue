@@ -15,39 +15,39 @@
                                     <div class="text-h5">{{dashboardObject.studentCount}}</div>
                                 </div>
                                 <div class="col-2 items-center row">
-                                    <q-icon class="fa-solid fa-chalkboard-user" size="xl"></q-icon>
+                                    <q-icon class="fa-solid fa-address-card" size="xl"></q-icon>
                                 </div>
                             </div>
                         </q-card-section>
                     </q-card>
 
                 </div>
-                <div class="col q-pr-sm q-pl-sm">
-                    <q-card>
-                        <q-card-section vert class="text-white vert bg-deep-orange-8">
-                            <div class="row">
-                                <div class="col-10">
-                                    <div class="text-h6">Giảng viên</div>
-                                    <div class="text-h5">{{dashboardObject.teacherCount}}</div>
-                                </div>
-                                <div class="col-2  items-center row">
-                                    <q-icon class="fa-solid fa-chalkboard-user" size="xl"></q-icon>
-                                </div>
-                            </div>
-                        </q-card-section>
-                    </q-card>
+<!--                <div v-if="" class="col q-pr-sm q-pl-sm">-->
+<!--                    <q-card>-->
+<!--                        <q-card-section vert class="text-white vert bg-deep-orange-8">-->
+<!--                            <div class="row">-->
+<!--                                <div class="col-10">-->
+<!--                                    <div class="text-h6">Giảng viên</div>-->
+<!--                                    <div class="text-h5">{{dashboardObject.teacherCount}}</div>-->
+<!--                                </div>-->
+<!--                                <div class="col-2  items-center row">-->
+<!--                                    <q-icon class="fa-solid fa-chalkboard-user" size="xl"></q-icon>-->
+<!--                                </div>-->
+<!--                            </div>-->
+<!--                        </q-card-section>-->
+<!--                    </q-card>-->
 
-                </div>
+<!--                </div>-->
                 <div class="col q-pr-sm q-pl-sm">
                     <q-card>
                         <q-card-section vert class="text-white vert bg-teal-8">
                             <div class="row">
                                 <div class="col-10">
-                                    <div class="text-h6">Lớp</div>
+                                    <div class="text-h6">Lớp học</div>
                                     <div class="text-h5">{{dashboardObject.classCount}}</div>
                                 </div>
                                 <div class="col-2 items-center row">
-                                    <q-icon class="fa-solid fa-chalkboard-user" size="xl"></q-icon>
+                                    <q-icon class="fa-solid fa-users" size="xl"></q-icon>
                                 </div>
                             </div>
                         </q-card-section>
@@ -63,7 +63,7 @@
                                     <div class="text-h5">{{dashboardObject.reportCount}}</div>
                                 </div>
                                 <div class="col-2 items-center row">
-                                    <q-icon class="fa-solid fa-chalkboard-user" size="xl"></q-icon>
+                                    <q-icon class="fa-solid fa-flag" size="xl"></q-icon>
                                 </div>
                             </div>
                         </q-card-section>
@@ -92,24 +92,22 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <template v-if="roles?.length ?? [].length > 0">
-                                        <tr v-for="(role, index) in roles" :key="index">
-
+                                    <template v-if="_.get(this.dataReports, 'data.data.reports', [])?.length ?? [].length > 0">
+                                        <tr v-for="(report, index) in  _.get(this.dataReports, 'data.data.reports', [])" :key="index">
                                             <td class="text-center">{{
-                                                    index + +1 + +pagePhanAnh['perPage'] * (pagePhanAnh['currentPage'] - 1)
+                                                    index + 1
                                             }}
                                             </td>
                                             <td class="text-left">
-                                                <span @click="redirectRouter('RoleUpdate', { id: role.id })"
+                                                <span @click="redirectRouter('RoleUpdate', { id: report.title })"
                                                     class="text-bold cursor-pointer text-link">
-                                                    {{ getValueLodash(role, 'name', '') }}
+                                                    {{ getValueLodash(report, 'content', '') }}
                                                 </span>
                                             </td>
-                                            <td class="text-left"> {{ getValueLodash(role, 'description', '') }}</td>
                                             <td class="text-center">
-                                                {{ this.handleFormatDate(getValueLodash(role, 'created_at', '')) }}
+                                                {{ this.handleFormatDate(getValueLodash(report, 'created_at', '')) }}
                                             </td>
-                                            <td class="text-left">{{ getValueLodash(role, 'create_by.full_name', '') }}
+                                            <td class="text-left">{{ getValueLodash(report, 'create_by', '') }}
                                             </td>
                                             <td class="text-center">
                                                 <div class="inline cursor-pointer">
@@ -117,7 +115,7 @@
                                                     <q-menu touch-position>
                                                         <q-list style="min-width: 100px">
                                                             <q-item clickable v-close-popup
-                                                                @click="redirectRouter('RoleUpdate', { id: getValueLodash(role, 'id', 0) })">
+                                                                @click="redirectRouter('RoleUpdate', { id: getValueLodash(report, 'id', 0) })">
                                                                 <q-item-section>
                                                                     <span><q-icon name="fa-solid fa-pen-to-square"
                                                                             class="q-mr-sm" size="xs"></q-icon>Chỉnh
@@ -125,7 +123,7 @@
                                                                 </q-item-section>
                                                             </q-item>
                                                             <q-item clickable v-close-popup
-                                                                @click="this.openDialogDelete(getValueLodash(role, 'id', 0))">
+                                                                @click="this.openDialogDelete(getValueLodash(report, 'id', 0))">
                                                                 <span><q-icon name="fa-solid fa-trash" class="q-mr-sm"
                                                                         size="xs"></q-icon>Xoá</span>
                                                             </q-item>
@@ -138,7 +136,7 @@
                                     <template v-else>
                                         <tr>
                                             <td colspan="7" class="text-center">
-                                                <img class="imgEmpty" src="/images/empty.png" alt="">
+                                                <img class="imgEmpty" src="/images/empty2.png" alt="">
                                             </td>
                                         </tr>
                                     </template>
@@ -215,7 +213,7 @@
                                     <template v-else>
                                         <tr>
                                             <td colspan="7" class="text-center">
-                                                <img class="imgEmpty" src="/images/empty.png" alt="">
+                                                <img class="imgEmpty" src="/images/empty3.png" alt="">
                                             </td>
                                         </tr>
                                     </template>
@@ -322,20 +320,30 @@ export default defineComponent({
             teacherCount: 0,
         })
 
+        const dataReports = ref<any>([]);
+        const dataYcDuyetTT = ref<any>([]);
+
+        const reportObject = ref<Object>({
+            title : ref<string> (""),
+            content : ref<string> (""),
+            created_at : Date,
+            created_by : ref<string> ("")
+
+        })
+
         const getDataDashBoard = (): void => {
             loading.value = true;
 
             api.getDashboard().then((res: any) => {
-                dashboardObject.value.classCount = _.get(res, 'data.data.$classCount', 0)
-                dashboardObject.value.reportCount = _.get(res, 'data.data.$reportCount', 0)
+                dashboardObject.value.classCount = _.get(res, 'data.data.classCount', 0)
+                dashboardObject.value.reportCount = _.get(res, 'data.data.reportCount', 0)
                 dashboardObject.value.studentCount = _.get(res, 'data.data.studentCount', 0)
                 dashboardObject.value.teacherCount = _.get(res, 'data.data.teacherCount', 0)
-
             }).catch((err: any) => {
                 console.log(err);
                 $q.notify({
                     icon: 'report_problem',
-                    message: 'Không tải được dữ liệu dashboard!',
+                    message: 'Không tải được dữ liệu!',
                     color: 'negative',
                     position: 'top-right'
                 })
@@ -347,8 +355,8 @@ export default defineComponent({
             loading.value = true;
 
             api.getReports().then((res: any) => {
-                console.log(res.data);
-
+                dataReports.value = res.data.data.reports;
+                console.log(dataReports.value);
             }).catch((err: any) => {
                 console.log(err);
                 $q.notify({

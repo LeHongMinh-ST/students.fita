@@ -48,7 +48,7 @@
                                 </div>
                                 <q-separator/>
                                 <div class="main-action q-mt-md text-center">
-                                    <q-btn color="secondary" class="q-mr-sm q-mb-sm"
+                                    <q-btn v-if="checkPermission('student-update')" color="secondary" class="q-mr-sm q-mb-sm"
                                            @click="redirectRouter('StudentUpdate',{id: student?.id})"
                                     >
                                         <q-icon name="fa-solid fa-pen-to-square" class="q-mr-sm"
@@ -58,13 +58,13 @@
 
 
 
-                                    <q-btn color="red"  class="q-mb-sm"  @click="dialogDelete = true">
+                                    <q-btn v-if="checkPermission('student-delete')" color="red"  class="q-mb-sm"  @click="dialogDelete = true">
                                         <q-icon name="fa-solid fa-trash " class="q-mr-sm"
                                                 size="xs"></q-icon>
                                         Xóa
                                     </q-btn>
 
-                                    <q-btn color="green" class="q-mr-sm q-mb-sm"
+                                    <q-btn v-if="checkPermission('student-update')" color="green" class="q-mr-sm q-mb-sm"
                                            @click="openDialogResetPassword"
                                     >
                                         <q-icon name="fa-solid fa-lock" class="q-mr-sm"
@@ -583,6 +583,7 @@ import {useRouter} from "vue-router/dist/vue-router";
 import eventBus from "../../utils/eventBus";
 import {validationHelper} from "../../utils/validationHelper";
 import _ from "lodash";
+import {permissionHelper} from "../../utils/permissionHelper";
 
 export default defineComponent({
     name: "StudentDetail",
@@ -593,6 +594,7 @@ export default defineComponent({
         const userId = ref<string>('')
         const tab = ref<string>('home')
         const $q = useQuasar()
+        const {checkPermission} = permissionHelper()
 
         const {
             setValidationErrors,
@@ -714,7 +716,8 @@ export default defineComponent({
             isPwd,
             getValidationErrors,
             hasValidationErrors,
-            handleResetPassword
+            handleResetPassword,
+            checkPermission
         }
     }
 })

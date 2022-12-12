@@ -5,16 +5,16 @@ import {StudentRoleEnum} from "../enums/studentRole.enum";
 
 export function permissionHelper(): any {
     const store = useStore()
-    const auth = store.getters["auth/getAuthUser"]
-    const student = store.getters["authStudent/getAuthUserStudent"]
 
     const checkPermission = (permission: string): boolean => {
+        const auth = store.getters["auth/getAuthUser"]
         if (auth.is_super_admin) return true
         const permissions = _.get(auth, 'role.permissions', [])
         return permissions.some((item: IPermissionResult) => item.code === permission)
     }
 
     const checkClassMonitor = (): boolean => {
+        const student = store.getters["authStudent/getAuthUserStudent"]
         return student.role == StudentRoleEnum.ClassMonitor
     }
 

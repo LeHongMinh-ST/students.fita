@@ -152,7 +152,7 @@
                                     <span><q-icon class="social-icon" name="fa-brands fa-windows" size="md"/><span class="social-text">Liên kết với tài khoản Microsoft</span></span>
                                 </div>
 
-                                <div v-if="socialGoogle.id === null" class="google social-btn q-btn text-white" @click="getUrlSocial('google')">
+                                <div v-if="socialGoogle?.id === null" class="google social-btn q-btn text-white" @click="getUrlSocial('google')">
                                         <span>
                                             <q-icon class="social-icon" name="fa-brands fa-google-plus-g" size="md"/>
                                             <span class="social-text">Liên kết với tài khoản Google</span>
@@ -162,7 +162,7 @@
                                 <div v-else class="google social-btn q-btn text-white">
                                         <span>
                                             <q-icon class="social-icon" name="fa-brands fa-google-plus-g" size="md"/>
-                                            <span class="social-text">{{ socialGoogle.email}}</span>
+                                            <span class="social-text">{{ socialGoogle?.email ?? 'Liên kết với tài khoản Google'}}</span>
                                         </span>
                                 </div>
                             </div>
@@ -331,7 +331,10 @@ export default defineComponent({
                 imageUrl.value = profile.value.thumbnail_url
             }
 
-            socialGoogle.value = profile.value.socials.find(item => item.social_provider === 'google')
+            const social = profile.value.socials.find(item => item.social_provider === 'google')
+            if (social) {
+              socialGoogle.value = social
+            }
         })
 
         const redirectRouter = (nameRoute: string, params: any | [] = null): void => {

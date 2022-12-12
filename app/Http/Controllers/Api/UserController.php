@@ -28,6 +28,7 @@ class UserController extends Controller
 
     public function index(Request $request): JsonResponse
     {
+
         $data = $request->all();
         $relationships = ['role', 'department'];
         $columns = ['*'];
@@ -48,7 +49,7 @@ class UserController extends Controller
             $condition[] = ['is_teacher', '=', 1];
         }
 
-        $sort = $data['sort'] ?? 'DESC';
+        $sort = @$data['sort'] ?? 'DESC';
         $condition[] = ['created_at', 'ORDER_BY', $sort];
 
         $users = $this->userRepository->allBy($condition, $relationships, $columns);

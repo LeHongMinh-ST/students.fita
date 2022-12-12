@@ -102,7 +102,9 @@
                             <q-icon :color="checkActive(link.routeName) ? 'white' : 'grey'" :name="link.icon"/>
                         </q-item-section>
                         <q-item-section>
-                            <q-item-label>{{ link.text }}</q-item-label>
+                            <q-item-label>{{ link.text }}
+                              <q-badge v-if="link.badge" rounded color="red" :label="link.badge" />
+                            </q-item-label>
                         </q-item-section>
                     </q-item>
                     <q-separator v-if="checkPermission('user-index')||checkPermission('role-index') " class="q-my-md"/>
@@ -207,15 +209,17 @@ export default defineComponent({
                 },
                 {
                     icon: 'fa-solid fa-rectangle-list',
-                    text: 'Danh sách xét duyệt',
+                    text: 'Yêu cầu xét duyệt',
                     routeName: 'ReviewListIndex',
-                    permission: 'student-update'
+                    permission: 'student-update',
+                    badge: 10
                 },
                 {
                     icon: 'fa-solid fa-flag',
-                    text: 'Báo cáo sinh viên',
+                    text: 'Phản ánh sinh viên',
                     routeName: 'ReportStudent',
-                    permission: 'report-index'
+                    permission: 'report-index',
+                    badge: 10
                 },
             ],
             linksSystem: [
