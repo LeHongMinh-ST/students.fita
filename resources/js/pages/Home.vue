@@ -330,7 +330,6 @@ export default defineComponent({
                 dashboardObject.value.reportCount = _.get(res, 'data.data.$reportCount', 0)
                 dashboardObject.value.studentCount = _.get(res, 'data.data.studentCount', 0)
                 dashboardObject.value.teacherCount = _.get(res, 'data.data.teacherCount', 0)
-                console.log(dashboardObject.value.classCount);
 
             }).catch((err: any) => {
                 console.log(err);
@@ -344,9 +343,28 @@ export default defineComponent({
 
         }
 
+        const getDataReports = (): void => {
+            loading.value = true;
+
+            api.getReports().then((res: any) => {
+                console.log(res.data);
+
+            }).catch((err: any) => {
+                console.log(err);
+                $q.notify({
+                    icon: 'report_problem',
+                    message: 'Không tải được dữ liệu reports!',
+                    color: 'negative',
+                    position: 'top-right'
+                })
+            }).finally(() => loading.value = false)
+
+        }
+
         onMounted(() => {
             store.commit(`home/${HomeMutationTypes.SET_TITLE}`, 'Bảng điều khiển');
             getDataDashBoard();
+            getDataReports();
         })
 
         const redirectRouter = (nameRoute: string, params: any | [] = null): void => {
