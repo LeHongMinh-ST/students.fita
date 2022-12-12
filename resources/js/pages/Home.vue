@@ -15,7 +15,7 @@
                                     <div class="text-h5">{{dashboardObject.studentCount}}</div>
                                 </div>
                                 <div class="col-2 items-center row">
-                                    <q-icon class="fa-solid fa-chalkboard-user" size="xl"></q-icon>
+                                    <q-icon class="fa-solid fa-address-card" size="xl"></q-icon>
                                 </div>
                             </div>
                         </q-card-section>
@@ -47,7 +47,7 @@
                                     <div class="text-h5">{{dashboardObject.classCount}}</div>
                                 </div>
                                 <div class="col-2 items-center row">
-                                    <q-icon class="fa-solid fa-chalkboard-user" size="xl"></q-icon>
+                                    <q-icon class="fa-solid fa-users" size="xl"></q-icon>
                                 </div>
                             </div>
                         </q-card-section>
@@ -63,7 +63,7 @@
                                     <div class="text-h5">{{dashboardObject.reportCount}}</div>
                                 </div>
                                 <div class="col-2 items-center row">
-                                    <q-icon class="fa-solid fa-chalkboard-user" size="xl"></q-icon>
+                                    <q-icon class="fa-solid fa-flag" size="xl"></q-icon>
                                 </div>
                             </div>
                         </q-card-section>
