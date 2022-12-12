@@ -592,6 +592,7 @@ import IUserResult from "../../models/IUserResult";
 import {AuthStudentMutationTypes} from "../../store/modules/auth_student/mutation-types";
 import api from "../../api";
 import {validationHelper} from "../../utils/validationHelper";
+import eventBus from "../../utils/eventBus";
 
 export default defineComponent({
     name: "HomeStudent",
@@ -637,7 +638,14 @@ export default defineComponent({
 
         onMounted(() => {
             store.commit(`home/${HomeMutationTypes.SET_TITLE}`, 'Hồ sơ sinh viên')
-
+            eventBus.$on('notify-success', (message: string) => {
+                $q.notify({
+                    icon: 'check',
+                    message: message,
+                    color: 'positive',
+                    position: 'top-right'
+                })
+            })
         })
         const isPwd = ref<boolean>(true);
 

@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Traits\ResponseTrait;
 use App\Enums\Student\StudentRole;
 use App\Traits\ResponseTrait;
 use Closure;
@@ -10,7 +11,6 @@ use Illuminate\Http\Response;
 
 class StudentClassMonitor
 {
-
     use ResponseTrait;
     /**
      * Handle an incoming request.

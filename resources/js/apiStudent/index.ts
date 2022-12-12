@@ -85,5 +85,12 @@ export default {
             url: '/student/profile/reset-password',
             data: data
         })
-    }
+    },
+    createStudentTemp<T>(data: any): AxiosPromise<IResult<T>> {
+        return apiAxios({
+            method: 'post',
+            url: '/student/requests/',
+            data: data,
+        })
+    },
 }

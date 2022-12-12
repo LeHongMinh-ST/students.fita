@@ -139,8 +139,12 @@ class StudentController extends Controller
         DB::beginTransaction();
         try {
             $auth = auth('students')->user();
-
-            $data = $request->all();
+            $data = [];
+            $dataRequest = $request->all();
+            foreach ($dataRequest as $key => $value) {
+                if($key == "id") $data["student_id"] = json_decode($value, true);
+                else $data[$key] = json_decode($value, true);
+            }
             $student = $this->studentRepository->findById($auth->id);
 
             if ($request->hasFile('image')) {
@@ -152,7 +156,7 @@ class StudentController extends Controller
                 'updated_by' => auth()->id(),
             ]));
 
-            $studentTemp = $this->studentRepository->getFirstBy([
+            $studentTemp = $this->studentTempRepository->getFirstBy([
                 'student_id' => $auth->id,
                 'status_approved' => StudentTempStatus::Pending
             ]);
@@ -166,13 +170,13 @@ class StudentController extends Controller
                     'student_id' => $auth->id,
                     'status_approved' => StudentTempStatus::Pending
                 ]);
-                $studentTemp = $this->studentRepository->create($dataStudent);
+                $studentTemp = $this->studentTempRepository->create($dataStudent);
             }
 
             if (!empty($data['families'])) {
                 foreach ($data['families'] as $family) {
                     $studentTemp->families()->updateOrCreate([
-                        'family_id' => $family['id'],
+                        'family_id' => @$family['id'],
                     ], array_merge($family));
                 }
             }

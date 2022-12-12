@@ -151,7 +151,6 @@ export default defineComponent({
         const handleUpload = () => {
             if (image.value) {
                 imageUrl.value = URL.createObjectURL(image.value);
-                console.log(image.value)
             }
         }
 
@@ -165,9 +164,9 @@ export default defineComponent({
             router.push({name: nameRoute})
         }
 
-        
 
-        
+
+
 
         const isValidate = (): boolean => {
             let isCheck = true

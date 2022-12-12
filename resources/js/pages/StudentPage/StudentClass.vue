@@ -225,7 +225,6 @@ export default defineComponent({
                 const res = await api.getClassUserCurrent<IPaginate<IStudentResult[]>>(
                     payload
                 );
-                console.log('res', res)
                 students.value = _.get(res, "data.data.students.data", []);
                 teacher_name.value = _.get(res, "data.data.class.teacher.full_name")
                 class_code.value = _.get(res, "data.data.class.class_code")
@@ -315,6 +314,10 @@ export default defineComponent({
 }
 .table-wrapper-title{
   padding-bottom: 0px;
+  .table-wrapper-search {
+          margin-top: 20px;
+          width: 20vw;
+        }
 }
 .wrapper-info-class {
   justify-content: center !important;
