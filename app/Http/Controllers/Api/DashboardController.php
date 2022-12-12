@@ -37,14 +37,18 @@ class DashboardController extends Controller
         $modelReport = $this->reportRepository->getModel();
         $modelRequest = $this->studentTempRepository->getModel();
         $queryReport = $modelReport->query()->where('status', ReportStatus::Pending);
-        $queryRequest = $modelRequest->query()->where('status_approved', StudentTempStatus::ClassMonitorApproved);
+        $queryRequest = $modelRequest->query();
 
         if (auth('api')->check()) {
             $user = auth('api')->user();
             if (@$user->teacher_id && !@$user->is_super_admin) {
                 $classIds = $user?->generalClass?->pluck('id')?->toArray();
                 $queryReport->whereIn('class_id', $classIds);
-                $queryRequest->whereIn('class_id', $classIds);
+                $queryRequest->where('status_approved', StudentTempStatus::ClassMonitorApproved)->whereIn('class_id', $classIds);
+            }
+
+            if (!@$user->teacher_id || @$user->is_super_admin) {
+                $queryRequest->where('status_approved', StudentTempStatus::TeacherApproved);
             }
         }
 

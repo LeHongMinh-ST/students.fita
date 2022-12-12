@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Enums\Student\StudentRole;
 use App\Enums\Student\StudentTempStatus;
+use App\Exceptions\PermissionStatusException;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Student\ImportStudentRequest;
 use App\Http\Requests\Student\ResetPasswordRequest;
@@ -201,6 +202,12 @@ class StudentController extends Controller
             $this->studentTempRepository->createOrUpdate($studentTemp);
             DB::commit();
             return $this->responseSuccess();
+        }catch (PermissionStatusException $exception) {
+            Log::error('Error change status student', [
+                'method' => __METHOD__,
+                'message' => $exception->getMessage()
+            ]);
+            return $this->responseError($exception->getMessage(), [], 403, 403);
         } catch (\Exception $exception) {
             DB::rollBack();
             Log::error('Error update update student By StudentTemp ', [
@@ -211,19 +218,35 @@ class StudentController extends Controller
         }
     }
 
+    /**
+     * @throws PermissionStatusException
+     */
     private function handleUpdateStudentByStudentTemp($studentTemp)
     {
-
+        $auth = auth('api')->user();
+        $student = auth('students')->user();
         switch ($studentTemp->status_approved) {
             case StudentTempStatus::Pending:
+                if (!$student) {
+                    throw new PermissionStatusException('Bạn không có quyền thực hiện chức năng này');
+                }
+
                 $studentTemp->status_approved = StudentTempStatus::ClassMonitorApproved;
                 $studentTemp->student_approved = @auth('students')->id();
                 break;
             case StudentTempStatus::ClassMonitorApproved:
+                if (!$auth->is_teacher) {
+                    throw new PermissionStatusException('Bạn không có quyền thực hiện chức năng này');
+                }
+
                 $studentTemp->status_approved = StudentTempStatus::TeacherApproved;
                 $studentTemp->teacher_approved = @auth('api')->id();
                 break;
             case StudentTempStatus::TeacherApproved:
+                if ($auth->is_teacher) {
+                    throw new PermissionStatusException('Bạn không có quyền thực hiện chức năng này');
+                }
+
                 $studentTemp->status_approved = StudentTempStatus::Approved;
                 $studentTemp->admin_approved = @auth('api')->id();
                 $familyTemp = $studentTemp->families;
@@ -231,7 +254,7 @@ class StudentController extends Controller
                 $data = array_intersect_key($studentTemp->toArray(), array_flip(StudentTemp::ONLY_KEY_UPDATE));
                 $student?->fill($data);
 
-                $this->studentRepository->createOrUpdate($data);
+                $this->studentRepository->createOrUpdate($student);
                 if (!empty($familyTemp)) {
                     foreach ($familyTemp as $family) {
                         $student->families()->updateOrCreate(['id' => $family['family_id']], $family);
