@@ -143,7 +143,7 @@ Route::group(['prefix' => 'student'], function () {
 
         Route::get('/class', [StudentController::class, 'getClass']);
 
-        Route::prefix('requests')->group(function () {
+        Route::prefix('/requests')->group(function () {
             Route::get('/', [StudentController::class, 'getRequestUpdateStudent']);
             Route::post('/', [StudentController::class, 'createStudentTemp']);
             Route::put('/{id}', [StudentController::class, 'updateStudentByStudentTemp']);
@@ -157,8 +157,7 @@ Route::group(['prefix' => 'student'], function () {
                 Route::put('/{id}', [ReportController::class, 'update']);
                 Route::delete('/{id}', [ReportController::class, 'destroy']);
             });
-
-
+            Route::get('/get-student', [StudentController::class, 'index']);
         });
 
     });
