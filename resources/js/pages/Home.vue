@@ -326,17 +326,15 @@ export default defineComponent({
             loading.value = true;
 
             api.getDashboard().then((res: any) => {
-                dashboardObject.value.classCount = _.get(res, 'data.data.$classCount', 0)
-                dashboardObject.value.reportCount = _.get(res, 'data.data.$reportCount', 0)
+                dashboardObject.value.classCount = _.get(res, 'data.data.classCount', 0)
+                dashboardObject.value.reportCount = _.get(res, 'data.data.reportCount', 0)
                 dashboardObject.value.studentCount = _.get(res, 'data.data.studentCount', 0)
                 dashboardObject.value.teacherCount = _.get(res, 'data.data.teacherCount', 0)
-                console.log(dashboardObject.value.classCount);
-
             }).catch((err: any) => {
                 console.log(err);
                 $q.notify({
                     icon: 'report_problem',
-                    message: 'Không tải được dữ liệu dashboard!',
+                    message: 'Không tải được dữ liệu!',
                     color: 'negative',
                     position: 'top-right'
                 })
