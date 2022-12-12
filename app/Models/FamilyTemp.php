@@ -10,7 +10,7 @@ class FamilyTemp extends Model
 {
     use HasFactory;
 
-    protected $table = 'families';
+    protected $table = 'family_temps';
 
     protected $fillable = [
         'family_id',

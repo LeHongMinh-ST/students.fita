@@ -139,8 +139,12 @@ class StudentController extends Controller
         DB::beginTransaction();
         try {
             $auth = auth('students')->user();
-
-            $data = $request->all();
+            $data = [];
+            $dataRequest = $request->all();
+            foreach ($dataRequest as $key => $value) {
+                if($key == "id") $data["student_id"] = json_decode($value, true);
+                else $data[$key] = json_decode($value, true);
+            }
             $student = $this->studentRepository->findById($auth->id);
 
             if ($request->hasFile('image')) {
@@ -152,7 +156,7 @@ class StudentController extends Controller
                 'updated_by' => auth()->id(),
             ]));
 
-            $studentTemp = $this->studentRepository->getFirstBy([
+            $studentTemp = $this->studentTempRepository->getFirstBy([
                 'student_id' => $auth->id,
                 'status_approved' => StudentTempStatus::Pending
             ]);
@@ -166,13 +170,13 @@ class StudentController extends Controller
                     'student_id' => $auth->id,
                     'status_approved' => StudentTempStatus::Pending
                 ]);
-                $studentTemp = $this->studentRepository->create($dataStudent);
+                $studentTemp = $this->studentTempRepository->create($dataStudent);
             }
 
             if (!empty($data['families'])) {
                 foreach ($data['families'] as $family) {
                     $studentTemp->families()->updateOrCreate([
-                        'family_id' => $family['id'],
+                        'family_id' => @$family['id'],
                     ], array_merge($family));
                 }
             }
@@ -464,8 +468,6 @@ class StudentController extends Controller
             $student = auth('students')->user();
             if ($student->role == StudentRole::ClassMonitor) {
                 $query->where('class_id', $student->class_id);
-            } else {
-                $query->where('student_id', $student->id);
             }
         }
 
@@ -476,6 +478,28 @@ class StudentController extends Controller
                 $query->whereIn('class_id', $classIds);
             }
         }
+        $requests = $query->with(['studentApproved', 'teacherApproved', 'adminApproved', 'student'])->get();
+        if (@$data['page'])
+            $requests= $query->with(['studentApproved', 'teacherApproved', 'adminApproved', 'student'])->paginate($paginate);
+
+        return $this->responseSuccess([
+            'requests' => $requests
+        ]);
+    }
+
+    public function getMyRequestUpdateStudent(Request $request): JsonResponse
+    {
+        $data = $request->all();
+        $paginate = $data['limit'] ?? config('constants.limit_of_paginate', 10);
+        $model = $this->studentTempRepository->getModel();
+        $query = $model->query();
+
+        if (auth('students')->check()) {
+            $student = auth('students')->user();
+            $query->where('student_id', $student->id);
+        }
+
+
         $requests = $query->with(['studentApproved', 'teacherApproved', 'adminApproved', 'student'])->get();
         if (@$data['page'])
             $requests= $query->with(['studentApproved', 'teacherApproved', 'adminApproved', 'student'])->paginate($paginate);
