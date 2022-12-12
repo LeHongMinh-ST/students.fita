@@ -10,6 +10,7 @@ use App\Http\Requests\Profile\ResetMyPasswordRequest;
 use App\Http\Requests\Student\ImportStudentRequest;
 use App\Http\Requests\Student\ResetPasswordRequest;
 use App\Http\Requests\Student\StoretStudentRequest;
+use App\Http\Requests\Student\StudentChangeUpdateTempMultiple;
 use App\Http\Requests\Student\UpdateStudentRequest;
 use App\Http\Requests\Student\UpdateStudentTempRequest;
 use App\Imports\StudentImport;
@@ -206,6 +207,42 @@ class StudentController extends Controller
             return $this->responseSuccess();
         }catch (PermissionStatusException $exception) {
             Log::error('Error change status student', [
+                'method' => __METHOD__,
+                'message' => $exception->getMessage()
+            ]);
+            return $this->responseError($exception->getMessage(), [], 403, 403);
+        } catch (\Exception $exception) {
+            DB::rollBack();
+            Log::error('Error update update student By StudentTemp ', [
+                'method' => __METHOD__,
+                'message' => $exception->getMessage()
+            ]);
+            return $this->responseError();
+        }
+    }
+
+    public function updateStudentByStudentTempMultiple(StudentChangeUpdateTempMultiple $request): JsonResponse
+    {
+        DB::beginTransaction();
+        try {
+            $ids = $request->get('request_id', []);
+
+            $studentTemps = $this->studentRepository->getByWhereIn('id', $ids);
+            $student = auth('students')->user();
+
+            foreach ($studentTemps as $studentTemp) {
+                if ($studentTemp->student_id != @$student->id) {
+                    return $this->responseError('Bạn không có quyền truy cập', [], 403);
+                }
+
+                $studentTemp = $this->handleUpdateStudentByStudentTemp($studentTemp);
+                $this->studentTempRepository->createOrUpdate($studentTemp);
+            }
+
+            DB::commit();
+            return $this->responseSuccess();
+        }catch (PermissionStatusException $exception) {
+            Log::error('Error change status student multiple', [
                 'method' => __METHOD__,
                 'message' => $exception->getMessage()
             ]);
@@ -439,9 +476,12 @@ class StudentController extends Controller
                 $query->whereIn('class_id', $classIds);
             }
         }
+        $requests = $query->with(['studentApproved', 'teacherApproved', 'adminApproved', 'student'])->get();
+        if (@$data['page'])
+            $requests= $query->with(['studentApproved', 'teacherApproved', 'adminApproved', 'student'])->paginate($paginate);
 
         return $this->responseSuccess([
-            'requests' => $query->with(['studentApproved', 'teacherApproved', 'adminApproved', 'student'])->paginate($paginate)
+            'requests' => $requests
         ]);
     }
 
