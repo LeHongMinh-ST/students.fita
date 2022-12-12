@@ -138,6 +138,7 @@ Route::group(['prefix' => 'student'], function () {
         Route::prefix('profile')->group(function () {
             Route::get('/', [StudentController::class, 'getProfileStudent']);
             Route::put('/update-learning-outcome/{id}', [StudentController::class, 'updateDataLearningOutcome']);
+            Route::put('/reset-password}', [StudentController::class, 'resetMyPassword']);
             Route::put('/{id}', [StudentController::class, 'updateProfile']);
         });
 

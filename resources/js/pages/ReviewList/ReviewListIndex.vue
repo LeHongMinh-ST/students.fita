@@ -80,13 +80,13 @@
                         <th class="text-center" width="5%"></th>
                         <th class="text-center" width="5%">STT</th>
                         <th class="text-left">Mã sinh viên</th>
-                        <th class="text-left">Tên sinh viên</th>
+                        <th class="text-left">Họ và tên</th>
                         <th class="text-left">Chủ đề</th>
                         <th class="text-left">Nội dung</th>
 
                         <th class="text-left">Trạng thái xét duyệt</th>
                         <th class="text-left">Người tạo</th>
-                        <th class="text-left">Người phê duyệt</th>
+                        <th class="text-left">Người duyệt</th>
                         <th class="text-center">Hành động</th>
                     </tr>
                     </thead>

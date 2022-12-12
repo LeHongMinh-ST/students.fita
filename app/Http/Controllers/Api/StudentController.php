@@ -6,6 +6,7 @@ use App\Enums\Student\StudentRole;
 use App\Enums\Student\StudentTempStatus;
 use App\Exceptions\PermissionStatusException;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Profile\ResetMyPasswordRequest;
 use App\Http\Requests\Student\ImportStudentRequest;
 use App\Http\Requests\Student\ResetPasswordRequest;
 use App\Http\Requests\Student\StoretStudentRequest;
@@ -20,6 +21,7 @@ use App\Traits\ResponseTrait;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Maatwebsite\Excel\Facades\Excel;
@@ -321,6 +323,33 @@ class StudentController extends Controller
             return $this->responseSuccess();
         } catch (\Exception $exception) {
             Log::error('Error reset password student', [
+                'method' => __METHOD__,
+                'message' => $exception->getMessage()
+            ]);
+            return $this->responseError();
+        }
+    }
+
+    public function resetMyPassword(ResetMyPasswordRequest $request): JsonResponse
+    {
+        try {
+            $student = auth('students')->user();
+
+            if (!Hash::check($request->input('password_old', ''), $student->password)) {
+                return $this->responseError('', [
+                    'password_old' => ['Mật khẩu cũ không chính xác!']
+                ], '400');
+            }
+
+            $password = $request->input('password', '');
+
+            $this->studentRepository->updateById($student->id, [
+                'password' => $password,
+                'updated_by' => auth()->id()
+            ]);
+            return $this->responseSuccess();
+        } catch (\Exception $exception) {
+            Log::error('Error reset my password student', [
                 'method' => __METHOD__,
                 'message' => $exception->getMessage()
             ]);
