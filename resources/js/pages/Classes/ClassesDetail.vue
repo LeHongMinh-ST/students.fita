@@ -230,13 +230,13 @@
               </td>
               <td class="text-left">
                    <span class="cursor-pointer text-bold text-primary"
-                         @click="redirectRouter('StudentDetail',{id: student?.id})">
+                         @click="redirectRouter('StudentDetail',{id: student.id})">
                          {{ getValueLodash(student, "student_code", "") ?? "Chưa cập nhật" }}
                   </span>
               </td>
               <td class="text-left">
                   <span class="cursor-pointer text-bold text-primary"
-                        @click="redirectRouter('StudentDetail',{id: student?.id})">
+                        @click="redirectRouter('StudentDetail',{id: student.id})">
                       {{ getValueLodash(student, "full_name", "") ?? "Chưa cập nhật" }}
                   </span>
 
@@ -364,8 +364,8 @@ export default defineComponent({
       }
     ]
 
-    const redirectRouter = (nameRoute: string): void => {
-      router.push({name: nameRoute});
+    const redirectRouter = (nameRoute: string, params: {}): void => {
+      router.push({name: nameRoute, params: params});
     };
 
     const getValueLodash = (res: object, data: string, d: any = null) => {
