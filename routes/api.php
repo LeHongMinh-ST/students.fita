@@ -62,6 +62,9 @@ Route::group(['middleware' => ['jwt.auth', 'auth.admin']], function () {
 
     Route::prefix('students')->group(function () {
         Route::get('/', [StudentController::class, 'index'])->middleware('permission:student-index');
+        Route::get('/count-request', [StudentController::class, 'getCountRequest'])->middleware('permission:student-update');
+        Route::get('/request', [StudentController::class, 'getRequestUpdateStudent'])->middleware('permission:student-update');
+        Route::put('/request/{id}', [StudentController::class, 'updateStudentByStudentTemp'])->middleware('permission:student-update');
         Route::post('/', [StudentController::class, 'store'])->middleware('permission:student-create');
         Route::put('/update-learning-outcome/{id}', [StudentController::class, 'updateDataLearningOutcome'])->middleware('permission:student-update');
         Route::get('/{id}', [StudentController::class, 'show'])->middleware('permission:student-index');
@@ -104,6 +107,7 @@ Route::group(['middleware' => ['jwt.auth', 'auth.admin']], function () {
 
     Route::prefix('reports')->group(function () {
         Route::get('/', [ReportController::class, 'index'])->middleware('permission:report-index');
+        Route::get('/count-pending', [ReportController::class, 'getCountReportPending'])->middleware('permission:report-index');
         Route::post('/', [ReportController::class, 'store'])->middleware('permission:report-create');
         Route::get('/{id}', [ReportController::class, 'show'])->middleware('permission:report-index');
         Route::put('/{id}', [ReportController::class, 'update'])->middleware('permission:report-update');
@@ -138,6 +142,7 @@ Route::group(['prefix' => 'student'], function () {
         });
 
         Route::get('/class', [StudentController::class, 'getClass']);
+
         Route::prefix('requests')->group(function () {
             Route::get('/', [StudentController::class, 'getRequestUpdateStudent']);
             Route::post('/', [StudentController::class, 'createStudentTemp']);

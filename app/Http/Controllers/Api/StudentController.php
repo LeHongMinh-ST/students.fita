@@ -249,6 +249,7 @@ class StudentController extends Controller
 
                 $studentTemp->status_approved = StudentTempStatus::Approved;
                 $studentTemp->admin_approved = @auth('api')->id();
+
                 $familyTemp = $studentTemp->families;
                 $student = $this->studentRepository->getFirstBy(['id' => $studentTemp->student_id]);
                 $data = array_intersect_key($studentTemp->toArray(), array_flip(StudentTemp::ONLY_KEY_UPDATE));
@@ -281,11 +282,11 @@ class StudentController extends Controller
             }
         }
 
-        if (!empty($data['reports'])) {
-            foreach ($data['reports'] as $reports) {
-                $student->reports()->updateOrCreate(['id' => $reports['id'] ?? 0], $reports);
-            }
-        }
+//        if (!empty($data['reports'])) {
+//            foreach ($data['reports'] as $reports) {
+//                $student->reports()->updateOrCreate(['id' => $reports['id'] ?? 0], $reports);
+//            }
+//        }
 
         //Lấy dữ liệu học tập
         app(CrawlDataLearningOutcomeService::class)->crawlData($student?->student_code);
@@ -414,4 +415,27 @@ class StudentController extends Controller
             'requests' => $query->with(['studentApproved', 'teacherApproved', 'adminApproved', 'student'])->paginate($paginate)
         ]);
     }
+
+    public function getCountRequest(): JsonResponse
+    {
+        $modelRequest = $this->studentTempRepository->getModel();
+        $queryRequest = $modelRequest->query();
+
+        if (auth('api')->check()) {
+            $user = auth('api')->user();
+            if (@$user->teacher_id && !@$user->is_super_admin) {
+                $classIds = $user?->generalClass?->pluck('id')?->toArray();
+                $queryRequest->where('status_approved', StudentTempStatus::ClassMonitorApproved)->whereIn('class_id', $classIds);
+            }
+
+            if (!@$user->teacher_id || @$user->is_super_admin) {
+                $queryRequest->where('status_approved', StudentTempStatus::TeacherApproved);
+            }
+        }
+
+        return $this->responseSuccess([
+            'requestCount' => $queryRequest->count()
+        ]);
+    }
+
 }

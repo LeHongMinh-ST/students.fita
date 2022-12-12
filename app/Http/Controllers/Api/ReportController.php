@@ -140,4 +140,23 @@ class ReportController extends Controller
         }
     }
 
+    public function getCountReportPending(): JsonResponse
+    {
+        $modelReport = $this->reportRepository->getModel();
+        $queryReport = $modelReport->query()->where('status', ReportStatus::Pending);
+
+        if (auth('api')->check()) {
+            $user = auth('api')->user();
+            if (@$user->teacher_id && !@$user->is_super_admin) {
+                $classIds = $user?->generalClass?->pluck('id')?->toArray();
+                $queryReport->whereIn('class_id', $classIds);
+            }
+            $queryReport->where('status', ReportStatus::Pending);
+        }
+
+        return $this->responseSuccess([
+            'reportCount' => $queryReport->count()
+        ]);
+    }
+
 }
