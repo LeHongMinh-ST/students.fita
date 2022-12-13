@@ -537,7 +537,11 @@ export default defineComponent({
 
                 Object.keys(student.value).map(function (objectKey) {
                     const value = student.value[objectKey];
-                    formData.append(objectKey, value)
+                    if (value == null) {
+                        formData.append(objectKey, "")
+                    } else {
+                        formData.append(objectKey, value)
+                    }
                 });
 
                 formData.append('image', image.value)

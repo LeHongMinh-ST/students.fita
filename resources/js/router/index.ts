@@ -306,6 +306,13 @@ router.beforeEach((to, from, next) => {
                 next({name: 'Home'})
             }
         }
+
+        if (store.state.authStudent.isAuthenticatedStudent) {
+            if (to.name === 'LoginStudent') {
+                next({name: 'HomeStudent'})
+            }
+            next()
+        }
         next()
     }
 });

@@ -6,9 +6,11 @@ use App\Enums\Student\StudentRole;
 use App\Enums\Student\StudentTempStatus;
 use App\Exceptions\PermissionStatusException;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Profile\ResetMyPasswordRequest;
 use App\Http\Requests\Student\ImportStudentRequest;
 use App\Http\Requests\Student\ResetPasswordRequest;
 use App\Http\Requests\Student\StoretStudentRequest;
+use App\Http\Requests\Student\StudentChangeUpdateTempMultiple;
 use App\Http\Requests\Student\UpdateStudentRequest;
 use App\Http\Requests\Student\UpdateStudentTempRequest;
 use App\Imports\StudentImport;
@@ -20,6 +22,7 @@ use App\Traits\ResponseTrait;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Maatwebsite\Excel\Facades\Excel;
@@ -218,6 +221,42 @@ class StudentController extends Controller
         }
     }
 
+    public function updateStudentByStudentTempMultiple(StudentChangeUpdateTempMultiple $request): JsonResponse
+    {
+        DB::beginTransaction();
+        try {
+            $ids = $request->get('request_id', []);
+
+            $studentTemps = $this->studentRepository->getByWhereIn('id', $ids);
+            $student = auth('students')->user();
+
+            foreach ($studentTemps as $studentTemp) {
+                if ($studentTemp->student_id != @$student->id) {
+                    return $this->responseError('Bạn không có quyền truy cập', [], 403);
+                }
+
+                $studentTemp = $this->handleUpdateStudentByStudentTemp($studentTemp);
+                $this->studentTempRepository->createOrUpdate($studentTemp);
+            }
+
+            DB::commit();
+            return $this->responseSuccess();
+        }catch (PermissionStatusException $exception) {
+            Log::error('Error change status student multiple', [
+                'method' => __METHOD__,
+                'message' => $exception->getMessage()
+            ]);
+            return $this->responseError($exception->getMessage(), [], 403, 403);
+        } catch (\Exception $exception) {
+            DB::rollBack();
+            Log::error('Error update update student By StudentTemp ', [
+                'method' => __METHOD__,
+                'message' => $exception->getMessage()
+            ]);
+            return $this->responseError();
+        }
+    }
+
     /**
      * @throws PermissionStatusException
      */
@@ -249,6 +288,7 @@ class StudentController extends Controller
 
                 $studentTemp->status_approved = StudentTempStatus::Approved;
                 $studentTemp->admin_approved = @auth('api')->id();
+
                 $familyTemp = $studentTemp->families;
                 $student = $this->studentRepository->getFirstBy(['id' => $studentTemp->student_id]);
                 $data = array_intersect_key($studentTemp->toArray(), array_flip(StudentTemp::ONLY_KEY_UPDATE));
@@ -281,11 +321,11 @@ class StudentController extends Controller
             }
         }
 
-        if (!empty($data['reports'])) {
-            foreach ($data['reports'] as $reports) {
-                $student->reports()->updateOrCreate(['id' => $reports['id'] ?? 0], $reports);
-            }
-        }
+//        if (!empty($data['reports'])) {
+//            foreach ($data['reports'] as $reports) {
+//                $student->reports()->updateOrCreate(['id' => $reports['id'] ?? 0], $reports);
+//            }
+//        }
 
         //Lấy dữ liệu học tập
         app(CrawlDataLearningOutcomeService::class)->crawlData($student?->student_code);
@@ -320,6 +360,33 @@ class StudentController extends Controller
             return $this->responseSuccess();
         } catch (\Exception $exception) {
             Log::error('Error reset password student', [
+                'method' => __METHOD__,
+                'message' => $exception->getMessage()
+            ]);
+            return $this->responseError();
+        }
+    }
+
+    public function resetMyPassword(ResetMyPasswordRequest $request): JsonResponse
+    {
+        try {
+            $student = auth('students')->user();
+
+            if (!Hash::check($request->input('password_old', ''), $student->password)) {
+                return $this->responseError('', [
+                    'password_old' => ['Mật khẩu cũ không chính xác!']
+                ], '400');
+            }
+
+            $password = $request->input('password', '');
+
+            $this->studentRepository->updateById($student->id, [
+                'password' => $password,
+                'updated_by' => auth()->id()
+            ]);
+            return $this->responseSuccess();
+        } catch (\Exception $exception) {
+            Log::error('Error reset my password student', [
                 'method' => __METHOD__,
                 'message' => $exception->getMessage()
             ]);
@@ -409,9 +476,47 @@ class StudentController extends Controller
                 $query->whereIn('class_id', $classIds);
             }
         }
+        $requests = $query->with(['studentApproved', 'teacherApproved', 'adminApproved', 'student'])->get();
+        if (@$data['page'])
+            $requests= $query->with(['studentApproved', 'teacherApproved', 'adminApproved', 'student'])->paginate($paginate);
 
         return $this->responseSuccess([
-            'requests' => $query->with(['studentApproved', 'teacherApproved', 'adminApproved', 'student'])->paginate($paginate)
+            'requests' => $requests
         ]);
+    }
+
+    public function getCountRequest(): JsonResponse
+    {
+        $modelRequest = $this->studentTempRepository->getModel();
+        $queryRequest = $modelRequest->query();
+
+        if (auth('api')->check()) {
+            $user = auth('api')->user();
+            if (@$user->teacher_id && !@$user->is_super_admin) {
+                $classIds = $user?->generalClass?->pluck('id')?->toArray();
+                $queryRequest->where('status_approved', StudentTempStatus::ClassMonitorApproved)->whereIn('class_id', $classIds);
+            }
+
+            if (!@$user->teacher_id || @$user->is_super_admin) {
+                $queryRequest->where('status_approved', StudentTempStatus::TeacherApproved);
+            }
+        }
+
+        return $this->responseSuccess([
+            'requestCount' => $queryRequest->count()
+        ]);
+    }
+
+    public function getStudentClassMonitor(): JsonResponse
+    {
+        $student = auth('students')->user();
+        if ($student->role != StudentRole::ClassMonitor) {
+            return $this->responseError('Bạn không có quyền thực hiện chức năng này', [], 403);
+        }
+
+        $classId = $student->class_id;
+
+        $students = $this->studentRepository->allBy(['class_id' => $classId]);
+        return $this->responseSuccess(['students' => $students]);
     }
 }

@@ -62,7 +62,7 @@ class DashboardController extends Controller
             'teacherCount' => $teacherCount,
             'reportCount' => $reportCount,
             'classCount' => $classCount,
-            'report' => $reports,
+            'reports' => $reports,
             'requests' => $requests,
         ]);
     }

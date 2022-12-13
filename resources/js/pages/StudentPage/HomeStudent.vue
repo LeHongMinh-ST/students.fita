@@ -467,6 +467,101 @@
                 </div>
             </div>
         </div>
+        <q-dialog v-model="isShowDialogResetPassword" @hide="() => isShowDialogResetPassword = false">
+            <q-card>
+                <q-card-section>
+                    <div class="text-h6">Đổi mật khẩu</div>
+                </q-card-section>
+                <q-card-section class="row items-center" style="width: 100%">
+                    <div class="row">
+                        <div class="col-12 q-pr-sm">
+                            <div class="form-group">
+                                <label class="text-bold">Mật khẩu cũ <span
+                                    class="required">*</span></label>
+                                <q-input
+                                    :type="isPwd ? 'password' : 'text'"
+                                    outlined
+                                    dense
+                                    v-model="password_old"
+                                    :error-message="getValidationErrors('password_old')"
+                                    :error="hasValidationErrors('password_old')"
+                                    @update:model-value="() => resetValidateErrors('password_old')"
+                                >
+                                    <template v-slot:append>
+                                        <q-icon
+                                            :name="isPwd ? 'visibility_off' : 'visibility'"
+                                            class="cursor-pointer"
+                                            @click="isPwd = !isPwd"
+                                        />
+                                    </template>
+                                </q-input>
+                            </div>
+                        </div>
+                        <div class="col-6 q-pr-sm">
+                            <div class="form-group">
+                                <label class="text-bold">Mật khẩu mới <span
+                                    class="required">*</span></label>
+                                <q-input
+                                    :type="isPwd ? 'password' : 'text'"
+
+                                    outlined
+                                    dense
+                                    v-model="password"
+                                    :error-message="getValidationErrors('password')"
+                                    :error="hasValidationErrors('password')"
+                                    @update:model-value="() => resetValidateErrors('password')"
+                                >
+                                    <template v-slot:append>
+                                        <q-icon
+                                            :name="isPwd ? 'visibility_off' : 'visibility'"
+                                            class="cursor-pointer"
+                                            @click="isPwd = !isPwd"
+                                        />
+                                    </template>
+                                </q-input>
+                            </div>
+                        </div>
+                        <div class="col-6 q-pr-sm">
+                            <div class="form-group">
+                                <label class="text-bold">Xác nhận mật khẩu <span
+                                    class="required">*</span></label>
+                                <q-input
+                                    :type="isPwd ? 'password' : 'text'"
+                                    outlined
+                                    dense
+                                    v-model="password_confirm"
+                                    :error-message="getValidationErrors('password_confirm')"
+                                    :error="hasValidationErrors('password_confirm')"
+                                    @update:model-value="() => resetValidateErrors('password_confirm')"
+                                >
+                                    <template v-slot:append>
+                                        <q-icon
+                                            :name="isPwd ? 'visibility_off' : 'visibility'"
+                                            class="cursor-pointer"
+                                            @click="isPwd = !isPwd"
+                                        />
+                                    </template>
+                                </q-input>
+                            </div>
+                        </div>
+                    </div>
+                </q-card-section>
+                <q-card-actions align="right" class="row">
+                    <q-btn
+                        flat
+                        label="Đóng"
+                        color="primary"
+                        @click="() => isShowDialogResetPassword = false"
+                        v-close-popup
+                    />
+                    <q-btn
+                        label="Lưu"
+                        color="blue"
+                        @click="handleResetPassword"
+                    />
+                </q-card-actions>
+            </q-card>
+        </q-dialog>
         <!-- <q-dialog v-model="dialogDelete" persistent>
             <q-card>
                 <q-card-section class="row items-center">
@@ -495,6 +590,8 @@ import {IStudentResult} from "../../models/IStudentResult";
 import _ from "lodash";
 import IUserResult from "../../models/IUserResult";
 import {AuthStudentMutationTypes} from "../../store/modules/auth_student/mutation-types";
+import api from "../../api";
+import {validationHelper} from "../../utils/validationHelper";
 
 export default defineComponent({
     name: "HomeStudent",
@@ -505,7 +602,9 @@ export default defineComponent({
         const tab = ref<string>('home')
         const $q = useQuasar()
         let auth = store.getters["authStudent/getAuthUserStudent"]
-
+        const password = ref<string>('')
+        const password_old = ref<string>('')
+        const password_confirm = ref<string>('')
         const handleUpdateLearningOutcome = () => {
             loading.value = true
             apiStudent.updateLearningOutcome<IStudentResult>(auth.id).then(res => {
@@ -521,6 +620,7 @@ export default defineComponent({
                 loading.value = false
             })
         }
+        const {setValidationErrors, getValidationErrors, hasValidationErrors, resetValidateErrors} = validationHelper()
 
         const getAuthUser = async (): Promise<any> => {
             await apiStudent.getAuthUserStudent<IUserResult>().then((res) => {
@@ -531,17 +631,81 @@ export default defineComponent({
         }
 
 
-        const redirectRouter = (nameRoute: string): void => {
-            router.push({ name: nameRoute})
+        const redirectRouter = (nameRoute: string, params: {}): void => {
+            router.push({name: nameRoute, params: params})
         }
 
         onMounted(() => {
             store.commit(`home/${HomeMutationTypes.SET_TITLE}`, 'Hồ sơ sinh viên')
 
         })
+        const isPwd = ref<boolean>(true);
+
+        const handleOpenResetPassword = () => {
+            password.value = ''
+            password_old.value = ''
+            password_confirm.value = ''
+            isShowDialogResetPassword.value = true
+        }
+        const isShowDialogResetPassword = ref<boolean>(false)
+
+        const isRequest = ref<boolean>(false)
+
+        const handleResetPassword = () => {
+
+            if (!isRequest.value) {
+                isRequest.value = true
+                $q.loading.show()
+
+                const data = {
+                    password: password.value,
+                    password_old: password_old.value,
+                    password_confirmation: password_confirm.value
+                }
+
+                api.resetMyPassword<IStudentResult>(data).then(res => {
+                    isShowDialogResetPassword.value = false
+                    $q.notify({
+                        icon: 'check',
+                        message: 'Đổi mật khẩu thành công',
+                        color: 'positive',
+                        position: 'top-right'
+                    })
+                }).catch(error => {
+                    let errors = _.get(error.response, 'data.error', {})
+                    if (Object.keys(errors).length === 0) {
+                        let message = _.get(error.response, 'data.message', '')
+                        $q.notify({
+                            icon: 'report_problem',
+                            message,
+                            color: 'negative',
+                            position: 'top-right'
+                        })
+                    }
+                    if (Object.keys(errors).length > 0) {
+                        setValidationErrors(errors)
+                    }
+                }).finally(() => {
+                    $q.loading.hide()
+
+                    isRequest.value = false
+                })
+            }
+
+        }
 
         return {
-            auth, loading, tab, redirectRouter, handleUpdateLearningOutcome
+            auth,
+            loading,
+            tab,
+            redirectRouter,
+            handleUpdateLearningOutcome,
+            password,
+            password_confirm,
+            password_old,
+            handleResetPassword,
+            hasValidationErrors,
+            getValidationErrors,isPwd
         }
     }
 })

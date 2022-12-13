@@ -25,7 +25,8 @@
                                 <div class="column items-center">
 
                                     <q-avatar size="72px">
-                                        <img :src="auth.thumbnail ? auth.thumbnail_url : 'https://cdn.quasar.dev/img/avatar4.jpg'">
+                                        <img
+                                            :src="auth.thumbnail ? auth.thumbnail_url : 'https://cdn.quasar.dev/img/avatar4.jpg'">
                                     </q-avatar>
 
                                     <div class="text-subtitle1 q-mt-md q-mb-xs">{{ auth.full_name }}</div>
@@ -103,7 +104,7 @@
                         </q-item-section>
                         <q-item-section>
                             <q-item-label>{{ link.text }}
-                              <q-badge v-if="link.badge" rounded color="red" :label="link.badge" />
+                                <q-badge v-if="link.badge" rounded color="red" :label="link.badge"/>
                             </q-item-label>
                         </q-item-section>
                     </q-item>
@@ -138,12 +139,13 @@
 </template>
 
 <script lang="ts">
-import {computed, defineComponent, ref} from 'vue'
+import {computed, defineComponent, onMounted, ref} from 'vue'
 import {fabYoutube} from '@quasar/extras/fontawesome-v6'
 import {useRoute, useRouter} from "vue-router/dist/vue-router";
 import {useStore} from "vuex";
 import {AuthActionTypes} from "../store/modules/auth/actions-type";
 import {permissionHelper} from "../utils/permissionHelper";
+import useCount from "../uses/useCount";
 
 export default defineComponent({
     name: 'AppLayout',
@@ -153,6 +155,7 @@ export default defineComponent({
         const leftDrawerOpen = ref(false)
         const router = useRouter()
         const route = useRoute()
+        const {getRequestCount, getReportCount} = useCount()
 
         const checkActive = (routerName: string): boolean => {
             return route.name === routerName
@@ -178,6 +181,54 @@ export default defineComponent({
             return store.state.home.title
         })
 
+        const links1 = ref<any>([
+            {icon: 'fa-solid fa-home', text: 'Bảng điều khiển', routeName: 'Home', permission: 'dashboard-index'},
+            {
+                icon: 'fa-solid fa-building-user',
+                text: 'Quản lý bộ môn',
+                routeName: 'Department',
+                permission: 'department-index'
+            },
+            {icon: 'fa-solid fa-users', text: 'Quản lý lớp học', routeName: 'Classes', permission: 'class-index'},
+        ])
+
+        const links2 = ref([
+            {
+                icon: 'fa-solid fa-address-card',
+                text: 'Quản lý sinh viên',
+                routeName: 'StudentIndex',
+                permission: 'student-index'
+            },
+            {
+                icon: 'fa-solid fa-rectangle-list',
+                text: 'Yêu cầu xét duyệt',
+                routeName: 'ReviewListIndex',
+                permission: 'student-update',
+                badge: store.state.home.countRequest
+            },
+            {
+                icon: 'fa-solid fa-flag',
+                text: 'Phản ánh sinh viên',
+                routeName: 'ReportStudent',
+                permission: 'report-index',
+                badge: store.state.home.countReport
+            },
+        ])
+
+        const linksSystem = ref([
+            {icon: 'fa-solid fa-user', text: 'Người dùng', routeName: 'User', permission: 'user-index'},
+            {
+                icon: 'fa-solid fa-user-shield',
+                text: 'Nhóm và phân quyền',
+                routeName: 'Role',
+                permission: 'role-index'
+            },
+        ])
+
+        onMounted(() => {
+            getReportCount()
+            getRequestCount()
+        })
 
         return {
             fabYoutube,
@@ -189,48 +240,9 @@ export default defineComponent({
             redirectRouteName,
             checkPermission,
             checkActive,
-            links1: [
-                {icon: 'fa-solid fa-home', text: 'Bảng điều khiển', routeName: 'Home', permission: 'dashboard-index'},
-                {
-                    icon: 'fa-solid fa-building-user',
-                    text: 'Quản lý bộ môn',
-                    routeName: 'Department',
-                    permission: 'department-index'
-                },
-                {icon: 'fa-solid fa-users', text: 'Quản lý lớp học', routeName: 'Classes', permission: 'class-index'},
-            ],
-
-            links2: [
-                {
-                    icon: 'fa-solid fa-address-card',
-                    text: 'Quản lý sinh viên',
-                    routeName: 'StudentIndex',
-                    permission: 'student-index'
-                },
-                {
-                    icon: 'fa-solid fa-rectangle-list',
-                    text: 'Yêu cầu xét duyệt',
-                    routeName: 'ReviewListIndex',
-                    permission: 'student-update',
-                    badge: 10
-                },
-                {
-                    icon: 'fa-solid fa-flag',
-                    text: 'Phản ánh sinh viên',
-                    routeName: 'ReportStudent',
-                    permission: 'report-index',
-                    badge: 10
-                },
-            ],
-            linksSystem: [
-                {icon: 'fa-solid fa-user', text: 'Người dùng', routeName: 'User', permission: 'user-index'},
-                {
-                    icon: 'fa-solid fa-user-shield',
-                    text: 'Nhóm và phân quyền',
-                    routeName: 'Role',
-                    permission: 'role-index'
-                },
-            ],
+            links1,
+            links2,
+            linksSystem
         }
     }
 })
