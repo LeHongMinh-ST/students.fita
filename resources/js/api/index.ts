@@ -444,4 +444,10 @@ export default {
             data: data
         })
     },
+    deleteRequest<T>(id: number): AxiosPromise<IResult<T>> {
+        return apiAxios({
+            method: 'delete',
+            url: `/students/request/${id}`,
+        })
+    },
 }

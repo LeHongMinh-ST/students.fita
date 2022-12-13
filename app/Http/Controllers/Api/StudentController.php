@@ -16,7 +16,9 @@ use App\Http\Requests\Student\StudentTempChangeStatusRequest;
 use App\Http\Requests\Student\UpdateStudentRequest;
 use App\Http\Requests\Student\UpdateStudentTempRequest;
 use App\Imports\StudentImport;
+use App\Models\Student;
 use App\Models\StudentTemp;
+use App\Models\User;
 use App\Repositories\Student\StudentRepositoryInterface;
 use App\Repositories\Student\StudentTempRepositoryInterface;
 use App\Services\CrawlDataLearningOutcomeService;
@@ -28,7 +30,6 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Maatwebsite\Excel\Facades\Excel;
-use mysql_xdevapi\Exception;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 class StudentController extends Controller
@@ -271,6 +272,11 @@ class StudentController extends Controller
     {
         try {
             $studentTemp = $this->studentTempRepository->getFirstBy(['id' => $id], ['*'], ['student']);
+
+            if ($studentTemp->status_approved == StudentTempStatus::Approved) {
+                return $this->responseError('Yêu cầu đã được duyệt không thể xóa', [], 400, 400);
+            }
+
             if (auth('students')->check()) {
                 $student = auth('students')->user();
                 if ($student->role != StudentRole::ClassMonitor) {
@@ -289,7 +295,6 @@ class StudentController extends Controller
                     }
                 }
             }
-
             $this->studentTempRepository->deleteBy($id);
 
             return $this->responseSuccess();
@@ -306,8 +311,11 @@ class StudentController extends Controller
     {
         try {
             $requestIds = $request->get('request_ids', []);
+
             $studentTemps = $this->studentTempRepository->getByWhereIn('id', $requestIds);
+
             $studentTemps->load('student');
+
             $arrayClass = $studentTemps->pluck('student.class_id')->toArray();
 
             if (auth('api')->check()) {
@@ -319,6 +327,10 @@ class StudentController extends Controller
                     }
                 }
             }
+
+            $requestIds = $studentTemps->filter(function ($item) {
+               return $item->status_approved != StudentTempStatus::Approved;
+            })->pluck('id')->toArray();
 
             $condition[] = ['id', 'in', $requestIds];
             $this->studentTempRepository->deleteBy($condition);
@@ -339,47 +351,79 @@ class StudentController extends Controller
     {
         $auth = auth('api')->user();
         $student = auth('students')->user();
+
         switch ($status) {
             case StudentTempStatus::ClassMonitorApproved:
                 if (!$student) {
                     throw new PermissionStatusException('Bạn không có quyền thực hiện chức năng này');
                 }
 
-                $studentTemp->status_approved = StudentTempStatus::ClassMonitorApproved;
-                $studentTemp->student_approved = @auth('students')->id();
-
-
+                if ($studentTemp->status_approved == StudentTempStatus::Pending) {
+                    $studentTemp->status_approved = StudentTempStatus::ClassMonitorApproved;
+                    $studentTemp->student_approved = @auth('students')->id();
+                }
                 break;
             case StudentTempStatus::TeacherApproved:
                 if (!$auth->is_teacher) {
                     throw new PermissionStatusException('Bạn không có quyền thực hiện chức năng này');
                 }
 
-                $studentTemp->status_approved = StudentTempStatus::TeacherApproved;
-                $studentTemp->teacher_approved = @auth('api')->id();
+                if ($studentTemp->status_approved == StudentTempStatus::ClassMonitorApproved) {
+                    $studentTemp->status_approved = StudentTempStatus::TeacherApproved;
+                    $studentTemp->teacher_approved = @auth('api')->id();
+                }
                 break;
             case StudentTempStatus::Approved:
                 if ($auth->is_teacher) {
                     throw new PermissionStatusException('Bạn không có quyền thực hiện chức năng này');
                 }
 
-                $studentTemp->status_approved = StudentTempStatus::Approved;
-                $studentTemp->admin_approved = @auth('api')->id();
+                if ($studentTemp->status_approved == StudentTempStatus::TeacherApproved) {
+                    $studentTemp->status_approved = StudentTempStatus::Approved;
+                    $studentTemp->admin_approved = @auth('api')->id();
 
-                $familyTemp = $studentTemp->families;
-                $student = $this->studentRepository->getFirstBy(['id' => $studentTemp->student_id]);
-                $data = array_intersect_key($studentTemp->toArray(), array_flip(StudentTemp::ONLY_KEY_UPDATE));
-                $student?->fill($data);
+                    $familyTemp = $studentTemp->families;
+                    $student = $this->studentRepository->getFirstBy(['id' => $studentTemp->student_id]);
+                    $data = array_intersect_key($studentTemp->toArray(), array_flip(StudentTemp::ONLY_KEY_UPDATE));
+                    $student?->fill($data);
 
-                $this->studentRepository->createOrUpdate($student);
-                if (!empty($familyTemp)) {
-                    foreach ($familyTemp as $family) {
-                        $student->families()->updateOrCreate(['id' => $family['family_id']], $family);
+                    $this->studentRepository->createOrUpdate($student);
+                    if (!empty($familyTemp)) {
+                        foreach ($familyTemp as $family) {
+                            $student->families()->updateOrCreate(['id' => $family['family_id']], $family);
+                        }
                     }
                 }
                 break;
             case StudentTempStatus::Reject:
-                $studentTemp->status_approved = StudentTempStatus::TeacherApproved;
+                if ($studentTemp->status_approved != StudentTempStatus::Approved) {
+                    if (auth('students')->check()) {
+                        if ($studentTemp->status_approved == StudentTempStatus::Pending) {
+                            $studentTemp->status_approved = StudentTempStatus::Reject;
+                            $studentTemp->rejectable_type = Student::class;
+                            $studentTemp->rejectable_id = $student->id;
+                        }
+                    }
+
+                    if (auth('api')->check()) {
+                        if ($auth->is_teacher && !$auth->is_super_admin){
+                            if ($studentTemp->status_approved == StudentTempStatus::ClassMonitorApproved) {
+                                $studentTemp->status_approved = StudentTempStatus::Reject;
+                                $studentTemp->rejectable_type = User::class;
+                                $studentTemp->rejectable_id = $auth->id;
+                            }
+                        }
+
+                        if (!$auth->is_teacher || $auth->is_super_admin) {
+                            if ($studentTemp->status_approved != StudentTempStatus::Approved) {
+                                $studentTemp->status_approved = StudentTempStatus::Reject;
+                                $studentTemp->rejectable_type = User::class;
+                                $studentTemp->rejectable_id = $auth->id;
+                            }
+                        }
+
+                    }
+                }
                 break;
         }
 
@@ -534,6 +578,7 @@ class StudentController extends Controller
     public function getRequestUpdateStudent(Request $request): JsonResponse
     {
         $data = $request->all();
+        $relationship = ['studentApproved', 'teacherApproved', 'adminApproved', 'student', 'rejectable'];
         $paginate = $data['limit'] ?? config('constants.limit_of_paginate', 10);
         $model = $this->studentTempRepository->getModel();
         $query = $model->query();
@@ -573,9 +618,9 @@ class StudentController extends Controller
             $query->where('admin_approved', $data['admin_approved']);
         }
 
-        $requests = $query->with(['studentApproved', 'teacherApproved', 'adminApproved', 'student'])->get();
+        $requests = $query->with($relationship)->get();
         if (@$data['page'])
-            $requests = $query->with(['studentApproved', 'teacherApproved', 'adminApproved', 'student'])->paginate($paginate);
+            $requests = $query->with($relationship)->paginate($paginate);
 
         return $this->responseSuccess([
             'requests' => $requests

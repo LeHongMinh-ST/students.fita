@@ -72,7 +72,7 @@ Route::group(['middleware' => ['jwt.auth', 'auth.admin']], function () {
         Route::post('/{id}', [StudentController::class, 'update'])->middleware('permission:student-update');
         Route::put('/{id}/reset-password', [StudentController::class, 'resetPassword'])->middleware('permission:student-update');
         Route::delete('/request/delete-selected', [StudentController::class, 'deleteRequestSelected'])->middleware('permission:student-delete');
-        Route::delete('/request', [StudentController::class, 'deleteRequest'])->middleware('permission:student-delete');
+        Route::delete('/request/{id}', [StudentController::class, 'deleteRequest'])->middleware('permission:student-delete');
         Route::delete('/{id}', [StudentController::class, 'destroy'])->middleware('permission:student-delete');
     });
 
@@ -149,7 +149,11 @@ Route::group(['prefix' => 'student'], function () {
         Route::prefix('requests')->group(function () {
             Route::get('/', [StudentController::class, 'getRequestUpdateStudent']);
             Route::post('/', [StudentController::class, 'createStudentTemp']);
+            Route::put('/selected', [StudentController::class, 'updateStudentByStudentTempMultiple']);
             Route::put('/{id}', [StudentController::class, 'updateStudentByStudentTemp']);
+            Route::delete('/delete-selected', [StudentController::class, 'deleteRequestSelected']);
+            Route::delete('/{id}', [StudentController::class, 'deleteRequest']);
+
         });
 
         Route::get('/class', [StudentController::class, 'getClass']);
