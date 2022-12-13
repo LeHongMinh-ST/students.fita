@@ -2,6 +2,7 @@
 
 namespace App\Enums\Student;
 
+use BenSampo\Enum\Contracts\LocalizedEnum;
 use BenSampo\Enum\Enum;
 
 /**
@@ -10,7 +11,7 @@ use BenSampo\Enum\Enum;
  * @method static static TeacherApproved()
  * @method static static Approved()
  */
-final class StudentTempStatus extends Enum
+final class StudentTempStatus extends Enum implements LocalizedEnum
 {
     const Pending = 1;
     const ClassMonitorApproved = 2;

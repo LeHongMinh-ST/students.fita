@@ -142,7 +142,7 @@ class StudentController extends Controller
             $data = [];
             $dataRequest = $request->all();
             foreach ($dataRequest as $key => $value) {
-                if($key == "id") $data["student_id"] = json_decode($value, true);
+                if ($key == "id") $data["student_id"] = json_decode($value, true);
                 else $data[$key] = json_decode($value, true);
             }
             $student = $this->studentRepository->findById($auth->id);
@@ -209,7 +209,7 @@ class StudentController extends Controller
             $this->studentTempRepository->createOrUpdate($studentTemp);
             DB::commit();
             return $this->responseSuccess();
-        }catch (PermissionStatusException $exception) {
+        } catch (PermissionStatusException $exception) {
             Log::error('Error change status student', [
                 'method' => __METHOD__,
                 'message' => $exception->getMessage()
@@ -245,7 +245,7 @@ class StudentController extends Controller
 
             DB::commit();
             return $this->responseSuccess();
-        }catch (PermissionStatusException $exception) {
+        } catch (PermissionStatusException $exception) {
             Log::error('Error change status student multiple', [
                 'method' => __METHOD__,
                 'message' => $exception->getMessage()
@@ -478,9 +478,30 @@ class StudentController extends Controller
                 $query->whereIn('class_id', $classIds);
             }
         }
+
+        if (@$data['q']) {
+            $text = $data['q'];
+            $query->where('student_code', 'like', '%' . $text . '%')
+                ->orWhereHas('student', function ($q) use ($text) {
+                    return $q->where('full_name', 'like', '%' . $text . '%');
+                });
+        }
+
+        if (@$data['status_approved']) {
+            $query->where('status_approved', $data['status_approved']);
+        }
+
+        if (@$data['teacher_approved']) {
+            $query->where('teacher_approved', $data['teacher_approved']);
+        }
+
+        if (@$data['admin_approved']) {
+            $query->where('admin_approved', $data['admin_approved']);
+        }
+
         $requests = $query->with(['studentApproved', 'teacherApproved', 'adminApproved', 'student'])->get();
         if (@$data['page'])
-            $requests= $query->with(['studentApproved', 'teacherApproved', 'adminApproved', 'student'])->paginate($paginate);
+            $requests = $query->with(['studentApproved', 'teacherApproved', 'adminApproved', 'student'])->paginate($paginate);
 
         return $this->responseSuccess([
             'requests' => $requests
@@ -502,7 +523,7 @@ class StudentController extends Controller
 
         $requests = $query->with(['studentApproved', 'teacherApproved', 'adminApproved', 'student'])->get();
         if (@$data['page'])
-            $requests= $query->with(['studentApproved', 'teacherApproved', 'adminApproved', 'student'])->paginate($paginate);
+            $requests = $query->with(['studentApproved', 'teacherApproved', 'adminApproved', 'student'])->paginate($paginate);
 
         return $this->responseSuccess([
             'requests' => $requests

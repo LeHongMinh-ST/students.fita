@@ -219,6 +219,7 @@
                         <th class="text-left">Giới tính</th>
                         <th class="text-left">Ngày sinh</th>
                         <th class="text-left">SĐT</th>
+                        <th class="text-left">Vai trò</th>
                         <th class="text-center">Tác vụ</th>
                     </tr>
                     </thead>
@@ -253,6 +254,9 @@
                             <td class="text-left">
                                 {{ getValueLodash(student, "phone", "") }}
                             </td>
+                            <td class="text-left">
+                              {{ getValueLodash(student, "role_text", "") }}
+                            </td>
                             <td class="text-center">
                                 <div class="inline cursor-pointer">
                                     <q-icon name="menu" size="sm"></q-icon>
@@ -263,14 +267,10 @@
                                                 v-close-popup
                                                 @click="openDialogDelete(student)"
                                             >
-                          <span
-                          ><q-icon
-                              name="fa-solid fa-trash"
-                              class="q-mr-sm"
-                              size="xs"
-                          ></q-icon
-                          >Xoá sinh viên khỏi lớp</span
-                          >
+                                            <span><q-icon
+                                                name="fa-solid fa-trash"
+                                                class="q-mr-sm"
+                                                size="xs"></q-icon>Xoá sinh viên khỏi lớp</span>
                                             </q-item>
                                         </q-list>
                                     </q-menu>

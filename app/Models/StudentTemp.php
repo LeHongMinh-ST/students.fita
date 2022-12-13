@@ -66,7 +66,7 @@ class StudentTemp extends Model
         'social_policy_object',
     ];
 
-    public function students(): BelongsTo
+    public function student(): BelongsTo
     {
         return $this->belongsTo(Student::class);
     }

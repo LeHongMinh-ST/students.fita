@@ -100,13 +100,13 @@ const routeAdmin: Array<RouteRecordRaw> = [
         ]
     },
     {
-        path: 'review-list',
+        path: 'request-student',
         meta: {isAuthenticated: true},
         children: [
             {
                 path: '',
-                name: 'ReviewListIndex',
-                component: () => import('../pages/ReviewList/ReviewListIndex.vue'),
+                name: 'RequestStudentIndex',
+                component: () => import('../pages/RequestStudent/RequestStudentIndex.vue'),
                 meta: {isAuthenticated: true, permission: 'student-update'},
             },
         ]

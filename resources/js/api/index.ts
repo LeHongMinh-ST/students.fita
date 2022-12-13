@@ -422,5 +422,12 @@ export default {
             method: 'get',
             url: '/students/request/count',
         })
-    }
+    },
+    getRequestStudent<T>(params: {} = {}): AxiosPromise<IResult<T>> {
+        return apiAxios({
+            method: 'get',
+            url: '/students/request',
+            params
+        })
+    },
 }
