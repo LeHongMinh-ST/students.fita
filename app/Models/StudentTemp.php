@@ -2,7 +2,12 @@
 
 namespace App\Models;
 
+use App\Enums\Student\StudentGender;
+use App\Enums\Student\StudentRole;
+use App\Enums\Student\StudentSocialPolicyObject;
+use App\Enums\Student\StudentStatus;
 use App\Enums\Student\StudentTempStatus;
+use App\Enums\Student\StudentTrainingType;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -98,6 +103,45 @@ class StudentTemp extends Model
         return $this->morphTo(__FUNCTION__, 'reject_type','reject_id');
     }
 
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::deleting(function (StudentTemp $student) {
+            $student->families()->delete();
+        });
+    }
+
+    public function getThumbnailUrlAttribute(): string
+    {
+        return asset("/storage/{$this->thumbnail}");
+    }
+
+    public function getSocialPolicyObjectTextAttribute(): string
+    {
+        return StudentSocialPolicyObject::getDescription($this->social_policy_object);
+    }
+
+    public function getRoleTextAttribute(): string
+    {
+        return StudentRole::getDescription($this->role);
+    }
+
+    public function getStatusTextAttribute(): string
+    {
+        return StudentStatus::getDescription($this->status);
+    }
+
+    public function getGenderTextAttribute(): string
+    {
+        return StudentGender::getDescription($this->gender);
+    }
+
+    public function getTrainingTextAttribute(): string
+    {
+        return StudentTrainingType::getDescription($this->training_type);
+    }
+
     public function getStatusApprovedTextAttribute(): string
     {
         return @$this->status_approved ? StudentTempStatus::getDescription($this->status_approved) : '';
@@ -105,5 +149,11 @@ class StudentTemp extends Model
 
     protected $appends = [
         'status_approved_text',
+        'thumbnail_url',
+        'role_text',
+        'status_text',
+        'social_policy_object_text',
+        'gender_text',
+        'training_text',
     ];
 }

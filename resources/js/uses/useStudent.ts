@@ -20,6 +20,16 @@ const getStudent = (id: number): void => {
     }).finally(()=> isLoading.value = false)
 }
 
+const getStudentTemp = (id: number): void => {
+    isError.value = false
+    isLoading.value = true
+    api.getRequestStudentDetail<IStudentResult>(id).then((res) => {
+        student.value = _.get(res, 'data.data.request', {full_name: "", student_code: ""})
+    }).catch(() => {
+        isError.value = true
+    }).finally(()=> isLoading.value = false)
+}
+
 const getStudentClasses = (params = {}) => {
     isError.value = false
     isLoading.value = true
@@ -39,5 +49,6 @@ export default function () {
         getStudentClasses,
         isError,
         isLoading,
+        getStudentTemp
     }
 }
