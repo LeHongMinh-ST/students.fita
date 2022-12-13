@@ -57,12 +57,20 @@
 
               <q-menu>
                 <q-list style="min-width: 100px">
-                  <q-item clickable v-close-popup @click="openDialogDeleteSelect">
+                  <q-item clickable v-close-popup @click="dialogChangeSelect = true">
                     <q-item-section>
-                                            <span>
-                                                <q-icon name="fa-solid fa-trash" class="q-mr-sm" size="xs"></q-icon>Xoá
-                                                ({{ checkboxArray.length }} bản ghi)
-                                            </span>
+                      <span>
+                          <q-icon name="fa-solid fa-check" class="q-mr-sm" size="xs"></q-icon>Duyệt toàn bộ
+                          ({{ checkboxArray.length }} bản ghi)
+                      </span>
+                    </q-item-section>
+                  </q-item>
+                  <q-item clickable v-close-popup @click="dialogDeleteSelect = true">
+                    <q-item-section>
+                      <span>
+                          <q-icon name="fa-solid fa-trash" class="q-mr-sm" size="xs"></q-icon>Xoá toàn bộ
+                          ({{ checkboxArray.length }} bản ghi)
+                      </span>
                     </q-item-section>
                   </q-item>
                 </q-list>
@@ -386,29 +394,41 @@ export default defineComponent({
       }
     }
 
+    const isRequest = ref<boolean>(false)
+
     const handleDeleteSelect = () => {
-      $q.loading.show()
-      const data = {
-        request_id: checkboxArray.value
+      if (!isRequest.value) {
+        isRequest.value = true
+        $q.loading.show()
+
+        const data = {
+          request_id: checkboxArray.value
+        }
+
+        api.deleteRequestSelected(data).then(() => {
+          handleGetRequestStudentTemp()
+          handleGeRequestId()
+          dialogDeleteSelect.value = false
+          checkboxArray.value = []
+          $q.notify({
+            icon: 'check',
+            message: 'Xóa thành công yêu cầu',
+            color: 'positive',
+            position: 'top-right'
+          })
+        }).catch(() => {
+          $q.notify({
+            icon: 'report_problem',
+            message: 'Không xóa được yêu cầu',
+            color: 'negative',
+            position: 'top-right'
+          })
+        }).finally(() => {
+          $q.loading.hide()
+          isRequest.value = false
+        })
       }
-      api.deleteUserSelected(data).then(() => {
-        handleGetRequestStudentTemp()
-        dialogDeleteSelect.value = false
-        checkboxArray.value = []
-        $q.notify({
-          icon: 'check',
-          message: 'Xóa thành công yêu cầu',
-          color: 'positive',
-          position: 'top-right'
-        })
-      }).catch(() => {
-        $q.notify({
-          icon: 'report_problem',
-          message: 'Không xóa được yêu cầu',
-          color: 'negative',
-          position: 'top-right'
-        })
-      }).finally(() => $q.loading.hide())
+
     }
 
     onMounted(() => {
@@ -468,7 +488,8 @@ export default defineComponent({
       handleGetRequestStudentTemp,
       studentStatusTempEnum,
       filter,
-      dialogDeleteSelect
+      dialogDeleteSelect,
+      handleDeleteSelect
     }
   },
 })
