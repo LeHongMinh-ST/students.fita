@@ -156,7 +156,7 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <template v-if="this._.get(this.dataReports, 'data.data.reports', [])?.length ?? [].length > 0">
+                                    <template v-if="_.get(this.dataReports, 'data.data.reports', [])?.length ?? [].length > 0">
                                         <tr v-for="(report, index) in  this._.get(this.dataReports, 'data.data.reports', [])" :key="index">
                                             <td class="text-center">{{
                                                     index + 1

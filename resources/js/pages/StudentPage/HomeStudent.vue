@@ -1,7 +1,7 @@
 <template>
     <div class="student-wrapper">
         <q-breadcrumbs>
-            <q-breadcrumbs-el label="Hồ sơ sinh viên" icon="home" :to="{name: 'HomeStudent'}"/>
+            <q-breadcrumbs-el label="Hồ sơ sinh viên" icon="home" :to="{ name: 'HomeStudent' }" />
         </q-breadcrumbs>
         <div class="main">
             <div class="row">
@@ -46,15 +46,12 @@
                                 <q-separator />
                                 <div class="main-action q-mt-md text-center">
                                     <q-btn color="secondary" class="q-mr-sm q-mb-sm"
-                                           @click="redirectRouter('StudentUpdateProfile')"
-                                    >
-                                        <q-icon name="fa-solid fa-pen-to-square" class="q-mr-sm"
-                                                size="xs"></q-icon>
+                                        @click="redirectRouter('StudentUpdateProfile')">
+                                        <q-icon name="fa-solid fa-pen-to-square" class="q-mr-sm" size="xs"></q-icon>
                                         Chỉnh sửa
                                     </q-btn>
 
-                                    <q-btn color="green" class="q-mr-sm q-mb-sm"
-                                        @click="handleOpenResetPassword">
+                                    <q-btn color="green" class="q-mr-sm q-mb-sm" @click="handleOpenResetPassword">
                                         <q-icon name="fa-solid fa-lock" class="q-mr-sm" size="xs"></q-icon>
                                         Đặt lại mật khẩu
                                     </q-btn>
@@ -70,6 +67,7 @@
                             <q-tab name="home" label="Thông tin chung" />
                             <q-tab name="learning_outcome" label="Kết quả học tập" />
                             <q-tab name="report" label="Báo cáo phản án" />
+                            <q-tab name="request" label="Danh sách yêu cầu" />
                         </q-tabs>
                         <q-separator />
 
@@ -216,20 +214,18 @@
                                     </div>
                                 </div>
                             </q-tab-panel>
-
                             <q-tab-panel name="learning_outcome">
                                 <div class="learning_outcome-header text-right">
                                     <q-btn no-caps @click="handleUpdateLearningOutcome" color="secondary"
-                                           class="q-mr-sm">
+                                        class="q-mr-sm">
                                         <q-icon name="fa-solid fa-refresh" class="q-mr-sm" size="xs"></q-icon>
                                         Cập nhật dữ liệu
                                     </q-btn>
                                 </div>
                                 <q-scroll-area v-if="auth?.learning_outcomes.length > 0" style="height: 100vh">
                                     <div class="learning_outcome-content q-pl-sm q-pr-sm">
-                                        <div class="item row"
-                                             v-for="(learningOutcome) in auth?.learning_outcomes ?? []"
-                                             :key="learningOutcome.id">
+                                        <div class="item row" v-for="(learningOutcome) in auth?.learning_outcomes ?? []"
+                                            :key="learningOutcome.id">
                                             <div class="col">
                                                 <div class="item-header q-mb-md">
                                                     <strong>Học kỳ {{ learningOutcome.semester }} - Năm học
@@ -253,18 +249,20 @@
                                                             </tr>
                                                         </thead>
                                                         <tbody>
-                                                        <tr v-for="(item) in learningOutcome.detail ?? []"
-                                                            :key="item.id">
-                                                            <td class="text-center">{{ item.order }}</td>
-                                                            <td class="text-left">{{ item.subject_code }}</td>
-                                                            <td class="text-left">{{ item.subject_name }}</td>
-                                                            <td class="text-left">{{ item.credits }}</td>
-                                                            <td class="text-center">{{ item.diligence_point }}</td>
-                                                            <td class="text-center">{{ item.progress_point }}</td>
-                                                            <td class="text-center">{{ item.exam_point }}</td>
-                                                            <td class="text-center">{{ item.total_point_number }}</td>
-                                                            <td class="text-center">{{ item.total_point_string }}</td>
-                                                        </tr>
+                                                            <tr v-for="(item) in learningOutcome.detail ?? []"
+                                                                :key="item.id">
+                                                                <td class="text-center">{{ item.order }}</td>
+                                                                <td class="text-left">{{ item.subject_code }}</td>
+                                                                <td class="text-left">{{ item.subject_name }}</td>
+                                                                <td class="text-left">{{ item.credits }}</td>
+                                                                <td class="text-center">{{ item.diligence_point }}</td>
+                                                                <td class="text-center">{{ item.progress_point }}</td>
+                                                                <td class="text-center">{{ item.exam_point }}</td>
+                                                                <td class="text-center">{{ item.total_point_number }}
+                                                                </td>
+                                                                <td class="text-center">{{ item.total_point_string }}
+                                                                </td>
+                                                            </tr>
                                                         </tbody>
                                                     </q-markup-table>
                                                 </div>
@@ -461,6 +459,72 @@
                                     </q-timeline>
                                 </q-scroll-area>
                             </q-tab-panel>
+                            <q-tab-panel name="request">
+
+                                <q-scroll-area class="q-px-lg q-pb-md" style="height: 100vh">
+                                    <q-card>
+
+                                        <q-card-section>
+                                            <q-markup-table class="request-table">
+                                                <thead>
+                                                    <tr>
+                                                        <th class="text-center" width="5%">STT</th>
+                                                        <th class="text-left">Họ và tên</th>
+                                                        <th class="text-left">Mã sinh viên</th>
+                                                        <th class="text-center">Ngày tạo</th>
+                                                        <th class="text-center">Tác vụ</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <template v-if="[].length ?? [].length > 0">
+                                                        <tr v-for="(request, index) in []" :key="index">
+                                                            <td class="text-center">{{ index }}
+                                                            </td>
+                                                            <td class="text-left">
+                                                                <span
+                                                                    @click="redirectRouter('RoleUpdate', { id: request.id })"
+                                                                    class="text-bold cursor-pointer text-link">
+                                                                    {{ getValueLodash(request, 'full_name', '') }}
+                                                                </span>
+                                                            </td>
+                                                            <td class="text-left">
+                                                                <span
+                                                                    @click="redirectRouter('RoleUpdate', { id: request.id })"
+                                                                    class="text-bold cursor-pointer text-link">
+                                                                    {{ getValueLodash(request, 'full_name', '') }}
+                                                                </span>
+                                                            </td>
+                                                            <td class="text-center">
+                                                                {{ this.handleFormatDate(getValueLodash(request,
+                                                                        'created_at', ''))
+                                                                }}
+                                                            </td>
+
+                                                            <td class="text-center">
+                                                                <span
+                                                                    @click="redirectRouter('RoleUpdate', { id: request.id })"
+                                                                    class="text-bold cursor-pointer text-link">
+                                                                    Chi tiết
+                                                                </span>
+                                                            </td>
+                                                        </tr>
+                                                    </template>
+                                                    <template v-else>
+                                                        <tr>
+                                                            <td colspan="7" class="text-center">
+                                                                <img class="imgEmpty" src="/images/empty2.png" alt="">
+                                                            </td>
+                                                        </tr>
+                                                    </template>
+                                                </tbody>
+
+                                            </q-markup-table>
+
+                                        </q-card-section>
+                                    </q-card>
+                                </q-scroll-area>
+                            </q-tab-panel>
+
 
                         </q-tab-panels>
                     </q-card>
@@ -476,70 +540,42 @@
                     <div class="row">
                         <div class="col-12 q-pr-sm">
                             <div class="form-group">
-                                <label class="text-bold">Mật khẩu cũ <span
-                                    class="required">*</span></label>
-                                <q-input
-                                    :type="isPwd ? 'password' : 'text'"
-                                    outlined
-                                    dense
-                                    v-model="password_old"
+                                <label class="text-bold">Mật khẩu cũ <span class="required">*</span></label>
+                                <q-input :type="isPwd ? 'password' : 'text'" outlined dense v-model="password_old"
                                     :error-message="getValidationErrors('password_old')"
                                     :error="hasValidationErrors('password_old')"
-                                    @update:model-value="() => resetValidateErrors('password_old')"
-                                >
+                                    @update:model-value="() => resetValidateErrors('password_old')">
                                     <template v-slot:append>
-                                        <q-icon
-                                            :name="isPwd ? 'visibility_off' : 'visibility'"
-                                            class="cursor-pointer"
-                                            @click="isPwd = !isPwd"
-                                        />
+                                        <q-icon :name="isPwd ? 'visibility_off' : 'visibility'" class="cursor-pointer"
+                                            @click="isPwd = !isPwd" />
                                     </template>
                                 </q-input>
                             </div>
                         </div>
                         <div class="col-6 q-pr-sm">
                             <div class="form-group">
-                                <label class="text-bold">Mật khẩu mới <span
-                                    class="required">*</span></label>
-                                <q-input
-                                    :type="isPwd ? 'password' : 'text'"
-
-                                    outlined
-                                    dense
-                                    v-model="password"
+                                <label class="text-bold">Mật khẩu mới <span class="required">*</span></label>
+                                <q-input :type="isPwd ? 'password' : 'text'" outlined dense v-model="password"
                                     :error-message="getValidationErrors('password')"
                                     :error="hasValidationErrors('password')"
-                                    @update:model-value="() => resetValidateErrors('password')"
-                                >
+                                    @update:model-value="() => resetValidateErrors('password')">
                                     <template v-slot:append>
-                                        <q-icon
-                                            :name="isPwd ? 'visibility_off' : 'visibility'"
-                                            class="cursor-pointer"
-                                            @click="isPwd = !isPwd"
-                                        />
+                                        <q-icon :name="isPwd ? 'visibility_off' : 'visibility'" class="cursor-pointer"
+                                            @click="isPwd = !isPwd" />
                                     </template>
                                 </q-input>
                             </div>
                         </div>
                         <div class="col-6 q-pr-sm">
                             <div class="form-group">
-                                <label class="text-bold">Xác nhận mật khẩu <span
-                                    class="required">*</span></label>
-                                <q-input
-                                    :type="isPwd ? 'password' : 'text'"
-                                    outlined
-                                    dense
-                                    v-model="password_confirm"
+                                <label class="text-bold">Xác nhận mật khẩu <span class="required">*</span></label>
+                                <q-input :type="isPwd ? 'password' : 'text'" outlined dense v-model="password_confirm"
                                     :error-message="getValidationErrors('password_confirm')"
                                     :error="hasValidationErrors('password_confirm')"
-                                    @update:model-value="() => resetValidateErrors('password_confirm')"
-                                >
+                                    @update:model-value="() => resetValidateErrors('password_confirm')">
                                     <template v-slot:append>
-                                        <q-icon
-                                            :name="isPwd ? 'visibility_off' : 'visibility'"
-                                            class="cursor-pointer"
-                                            @click="isPwd = !isPwd"
-                                        />
+                                        <q-icon :name="isPwd ? 'visibility_off' : 'visibility'" class="cursor-pointer"
+                                            @click="isPwd = !isPwd" />
                                     </template>
                                 </q-input>
                             </div>
@@ -547,18 +583,9 @@
                     </div>
                 </q-card-section>
                 <q-card-actions align="right" class="row">
-                    <q-btn
-                        flat
-                        label="Đóng"
-                        color="primary"
-                        @click="() => isShowDialogResetPassword = false"
-                        v-close-popup
-                    />
-                    <q-btn
-                        label="Lưu"
-                        color="blue"
-                        @click="handleResetPassword"
-                    />
+                    <q-btn flat label="Đóng" color="primary" @click="() => isShowDialogResetPassword = false"
+                        v-close-popup />
+                    <q-btn label="Lưu" color="blue" @click="handleResetPassword" />
                 </q-card-actions>
             </q-card>
         </q-dialog>
@@ -580,18 +607,18 @@
 
 
 <script lang="ts">
-import {defineComponent, onMounted, ref} from "vue";
-import {HomeMutationTypes} from "../../store/modules/home/mutation-types";
-import {useStore} from "vuex"
-import {useRouter} from "vue-router";
-import {useQuasar} from "quasar";
+import { defineComponent, onMounted, ref } from "vue";
+import { HomeMutationTypes } from "../../store/modules/home/mutation-types";
+import { useStore } from "vuex"
+import { useRouter } from "vue-router";
+import { useQuasar } from "quasar";
 import apiStudent from "../../apiStudent";
-import {IStudentResult} from "../../models/IStudentResult";
+import { IStudentResult } from "../../models/IStudentResult";
 import _ from "lodash";
 import IUserResult from "../../models/IUserResult";
-import {AuthStudentMutationTypes} from "../../store/modules/auth_student/mutation-types";
+import { AuthStudentMutationTypes } from "../../store/modules/auth_student/mutation-types";
 import api from "../../api";
-import {validationHelper} from "../../utils/validationHelper";
+import { validationHelper } from "../../utils/validationHelper";
 import eventBus from "../../utils/eventBus";
 
 export default defineComponent({
@@ -621,7 +648,7 @@ export default defineComponent({
                 loading.value = false
             })
         }
-        const {setValidationErrors, getValidationErrors, hasValidationErrors, resetValidateErrors} = validationHelper()
+        const { setValidationErrors, getValidationErrors, hasValidationErrors, resetValidateErrors } = validationHelper()
 
         const getAuthUser = async (): Promise<any> => {
             await apiStudent.getAuthUserStudent<IUserResult>().then((res) => {
@@ -631,9 +658,26 @@ export default defineComponent({
             return auth
         }
 
+        const getMyRequest = (): void => {
+            loading.value = true;
+
+            api.getMyRequest().then((res: any) => {
+                console.log(res);
+
+            }).catch((err: any) => {
+                console.log(err);
+                $q.notify({
+                    icon: 'report_problem',
+                    message: 'Không tải được dữ liệu!',
+                    color: 'negative',
+                    position: 'top-right'
+                })
+            }).finally(() => loading.value = false)
+
+        }
 
         const redirectRouter = (nameRoute: string, params: {}): void => {
-            router.push({name: nameRoute, params: params})
+            router.push({ name: nameRoute, params: params })
         }
 
         onMounted(() => {
@@ -646,6 +690,8 @@ export default defineComponent({
                     position: 'top-right'
                 })
             })
+            getMyRequest();
+
         })
         const isPwd = ref<boolean>(true);
 
@@ -698,7 +744,6 @@ export default defineComponent({
                     }
                 }).finally(() => {
                     $q.loading.hide()
-
                     isRequest.value = false
                 })
             }
@@ -716,7 +761,7 @@ export default defineComponent({
             password_old,
             handleResetPassword,
             hasValidationErrors,
-            getValidationErrors,isPwd,
+            getValidationErrors, isPwd,
             handleOpenResetPassword,
             isShowDialogResetPassword,
             resetValidateErrors
