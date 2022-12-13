@@ -54,7 +54,7 @@
                                     </q-btn>
 
                                     <q-btn color="green" class="q-mr-sm q-mb-sm"
-                                        @click="redirectRouter('StudentUpdateProfile')">
+                                        @click="handleOpenResetPassword">
                                         <q-icon name="fa-solid fa-lock" class="q-mr-sm" size="xs"></q-icon>
                                         Đặt lại mật khẩu
                                     </q-btn>
@@ -592,6 +592,7 @@ import IUserResult from "../../models/IUserResult";
 import {AuthStudentMutationTypes} from "../../store/modules/auth_student/mutation-types";
 import api from "../../api";
 import {validationHelper} from "../../utils/validationHelper";
+import eventBus from "../../utils/eventBus";
 
 export default defineComponent({
     name: "HomeStudent",
@@ -637,11 +638,21 @@ export default defineComponent({
 
         onMounted(() => {
             store.commit(`home/${HomeMutationTypes.SET_TITLE}`, 'Hồ sơ sinh viên')
-
+            eventBus.$on('notify-success', (message: string) => {
+                $q.notify({
+                    icon: 'check',
+                    message: message,
+                    color: 'positive',
+                    position: 'top-right'
+                })
+            })
         })
         const isPwd = ref<boolean>(true);
 
         const handleOpenResetPassword = () => {
+            resetValidateErrors('password')
+            resetValidateErrors('password_old')
+            resetValidateErrors('password_confirm')
             password.value = ''
             password_old.value = ''
             password_confirm.value = ''
@@ -663,7 +674,7 @@ export default defineComponent({
                     password_confirmation: password_confirm.value
                 }
 
-                api.resetMyPassword<IStudentResult>(data).then(res => {
+                apiStudent.resetMyPassword<IStudentResult>(data).then(res => {
                     isShowDialogResetPassword.value = false
                     $q.notify({
                         icon: 'check',
@@ -705,7 +716,10 @@ export default defineComponent({
             password_old,
             handleResetPassword,
             hasValidationErrors,
-            getValidationErrors,isPwd
+            getValidationErrors,isPwd,
+            handleOpenResetPassword,
+            isShowDialogResetPassword,
+            resetValidateErrors
         }
     }
 })

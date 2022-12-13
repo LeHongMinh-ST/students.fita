@@ -266,7 +266,6 @@ export default defineComponent({
       api.getClasses<IPaginate<[]>>(payload).then(res => {
         classes.value = _.get(res, 'data.data.class.data')
 
-        console.log("aaaaaaaaaaa "+classes);
         page.value.currentPage = _.get(res, 'data.data.class.current_page', 1)
         page.value.total = _.get(res, 'data.data.class.last_page', 0)
         page.value.perPage = _.get(res, 'data.data.class.per_page', 0)
@@ -322,7 +321,6 @@ export default defineComponent({
 
     const handleGetClassIds = (): void => {
       api.getAllClassId<number[]>().then(res=>{
-        console.log("test"+res);
         classIds.value = _.get(res, 'data.data.classes', [])
       } )
     }

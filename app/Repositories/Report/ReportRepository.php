@@ -28,8 +28,8 @@ class ReportRepository extends BaseRepository implements ReportRepositoryInterfa
             $query->where('status', $data['status']);
         }
 
-        if (isset($data['subject'])) {
-            $query->where('subject', $data['subject']);
+        if (isset($data['subjects'])) {
+            $query->where('subjects', $data['subjects']);
         }
 
         if (auth('api')->check()) {

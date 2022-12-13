@@ -71,6 +71,8 @@ Route::group(['middleware' => ['jwt.auth', 'auth.admin']], function () {
         Route::get('/{id}', [StudentController::class, 'show'])->middleware('permission:student-index');
         Route::post('/{id}', [StudentController::class, 'update'])->middleware('permission:student-update');
         Route::put('/{id}/reset-password', [StudentController::class, 'resetPassword'])->middleware('permission:student-update');
+        Route::delete('/request/delete-selected', [StudentController::class, 'deleteRequestSelected'])->middleware('permission:student-delete');
+        Route::delete('/request/{id}', [StudentController::class, 'deleteRequest'])->middleware('permission:student-delete');
         Route::delete('/{id}', [StudentController::class, 'destroy'])->middleware('permission:student-delete');
     });
 
@@ -135,18 +137,30 @@ Route::group(['prefix' => 'student'], function () {
         });
     });
 
+
     Route::group(['middleware' => ['auth.student']], function () {
         Route::prefix('profile')->group(function () {
             Route::get('/', [StudentController::class, 'getProfileStudent']);
             Route::put('/update-learning-outcome/{id}', [StudentController::class, 'updateDataLearningOutcome']);
-            Route::put('/reset-password}', [StudentController::class, 'resetMyPassword']);
+            Route::put('/reset-password', [StudentController::class, 'resetMyPassword']);
             Route::put('/{id}', [StudentController::class, 'updateProfile']);
+        });
+
+        Route::prefix('requests')->group(function () {
+            Route::get('/', [StudentController::class, 'getRequestUpdateStudent']);
+            Route::post('/', [StudentController::class, 'createStudentTemp']);
+            Route::put('/selected', [StudentController::class, 'updateStudentByStudentTempMultiple']);
+            Route::put('/{id}', [StudentController::class, 'updateStudentByStudentTemp']);
+            Route::delete('/delete-selected', [StudentController::class, 'deleteRequestSelected']);
+            Route::delete('/{id}', [StudentController::class, 'deleteRequest']);
+
         });
 
         Route::get('/class', [StudentController::class, 'getClass']);
 
         Route::prefix('/requests')->group(function () {
             Route::get('/', [StudentController::class, 'getRequestUpdateStudent']);
+            Route::get('/my-request', [StudentController::class, 'getMyRequestUpdateStudent']);
             Route::post('/', [StudentController::class, 'createStudentTemp']);
             Route::put('/selected', [StudentController::class, 'updateStudentByStudentTempMultiple']);
             Route::put('/{id}', [StudentController::class, 'updateStudentByStudentTemp']);

@@ -202,14 +202,14 @@ export default defineComponent({
             {
                 icon: 'fa-solid fa-rectangle-list',
                 text: 'Yêu cầu xét duyệt',
-                routeName: 'ReviewListIndex',
+                routeName: 'RequestStudentIndex',
                 permission: 'student-update',
                 badge: store.state.home.countRequest
             },
             {
                 icon: 'fa-solid fa-flag',
                 text: 'Phản ánh sinh viên',
-                routeName: 'ReportStudent',
+                routeName: 'ReportStudentAdmin',
                 permission: 'report-index',
                 badge: store.state.home.countReport
             },

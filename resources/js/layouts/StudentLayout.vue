@@ -167,7 +167,7 @@ export default defineComponent({
             ],
             links2: [
                 {icon: 'fa-solid fa-circle-info', text: 'Duyệt thông tin', routeName: 'RequestIndex'},
-                {icon: 'fa-solid fa-flag', text: 'Phản ánh lớp học', routeName: 'ClassStudent',},
+                {icon: 'fa-solid fa-flag', text: 'Phản ánh lớp học', routeName: 'ReportStudent',},
             ]
         }
     }

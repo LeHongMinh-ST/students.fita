@@ -79,4 +79,63 @@ export default {
             params: params
         })
     },
-}
+    resetMyPassword<T>(data: any): AxiosPromise<IResult<T>> {
+        return apiAxios({
+            method: 'put',
+            url: '/student/profile/reset-password',
+            data: data
+        })
+    },
+    createStudentTemp<T>(data: any): AxiosPromise<IResult<T>> {
+        return apiAxios({
+            method: 'post',
+            url: '/student/requests/',
+            data: data,
+        })
+    },
+	getAllStudent<T>(): AxiosPromise<IResult<T>> {
+        return apiAxios({
+            method: 'get',
+            url: '/student/get-student-class-monitor',
+        })
+    },
+
+	getReportStudent<T>(id: string): AxiosPromise<IResult<T>> {
+        return apiAxios({
+            method: 'get',
+            url: `/student/report/${id}`
+        })
+    },
+
+
+
+    getAllReportStudent<T>(params: object = {}): AxiosPromise<IResult<T>> {
+        return apiAxios({
+            method: 'get',
+            url: '/student/report',
+            params: params
+        })
+    },
+
+    createStudentReport<T>(data: any): AxiosPromise<IResult<T>> {
+        return apiAxios({
+            method: 'post',
+            url: '/student/report',
+            data: data
+        })
+    },
+
+    updateStudentReport<T>(data: any, id: string): AxiosPromise<IResult<T>> {
+        return apiAxios({
+            method: 'put',
+            url: `/student/report/${id}`,
+            data: data
+        })
+    },
+
+    deleteStudentReport<T>(id: string): AxiosPromise<IResult<T>> {
+        return apiAxios({
+            method: 'delete',
+            url: `/student/report/${id}`,
+        })
+    },}

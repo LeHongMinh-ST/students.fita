@@ -231,6 +231,13 @@ export default {
             url: `/users/${id}`,
         })
     },
+    deleteUserSelected<T>(data: any): AxiosPromise<IResult<T>> {
+        return apiAxios({
+            method: 'delete',
+            url: `/users/delete-selected`,
+            data: data
+        })
+    },
     resetPassword<T>(id: number, data: any): AxiosPromise<IResult<T>> {
         return apiAxios({
             method: 'put',
@@ -312,7 +319,20 @@ export default {
             url: '/class/get-all-class-id',
         })
     },
-
+    //
+    getAllReport<T>(params: object = {}): AxiosPromise<IResult<T>> {
+        return apiAxios({
+            method: 'get',
+            url: '/reports',
+            params: params
+        })
+    },
+    getReport<T>(id: string): AxiosPromise<IResult<T>> {
+        return apiAxios({
+            method: 'get',
+            url: `/reports/${id}`
+        })
+    },
     //AUTHOR: TRUONGTN
     /*begin */
 
@@ -423,5 +443,25 @@ export default {
             method: 'get',
             url: '/students/request/count',
         })
-    }
+    },
+    getRequestStudent<T>(params: {} = {}): AxiosPromise<IResult<T>> {
+        return apiAxios({
+            method: 'get',
+            url: '/students/request',
+            params
+        })
+    },
+    deleteRequestSelected<T>(data: any): AxiosPromise<IResult<T>> {
+        return apiAxios({
+            method: 'delete',
+            url: `/students/request/delete-selected`,
+            data: data
+        })
+    },
+    deleteRequest<T>(id: number): AxiosPromise<IResult<T>> {
+        return apiAxios({
+            method: 'delete',
+            url: `/students/request/${id}`,
+        })
+    },
 }

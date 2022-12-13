@@ -43,6 +43,9 @@ class StudentTemp extends Model
         'student_approved',
         'teacher_approved',
         'admin_approved',
+        'student_id',
+        'reject_type',
+        'reject_id',
     ];
 
     const ONLY_KEY_UPDATE = [
@@ -65,7 +68,7 @@ class StudentTemp extends Model
         'social_policy_object',
     ];
 
-    public function students(): BelongsTo
+    public function student(): BelongsTo
     {
         return $this->belongsTo(Student::class);
     }
@@ -88,6 +91,11 @@ class StudentTemp extends Model
     public function adminApproved(): BelongsTo
     {
         return $this->belongsTo(Student::class, 'admin_approved');
+    }
+
+    public function rejectable()
+    {
+        return $this->morphTo(__FUNCTION__, 'reject_type','reject_id');
     }
 
     public function getStatusApprovedTextAttribute(): string

@@ -146,7 +146,7 @@ class UserController extends Controller
 
             $auth = auth('api')->user();
             if (in_array($auth->id, $userIds)) {
-                return $this->responseError('Lỗi không thể xóa thành công!');
+                return $this->responseError('Lỗi không thể xoá người dùng đang sử dụng!');
             }
 
             $condition[] = ['id', 'in', $userIds];
