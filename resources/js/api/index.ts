@@ -450,4 +450,18 @@ export default {
             url: `/students/request/${id}`,
         })
     },
+    changeStatusRequest<T>(id: number, data: object): AxiosPromise<IResult<T>> {
+        return apiAxios({
+            method: 'put',
+            data: data,
+            url: `/students/request/${id}`
+        })
+    },
+    changeStatusRequestSelect<T>(id: number, data: object): AxiosPromise<IResult<T>> {
+        return apiAxios({
+            method: 'put',
+            data: data,
+            url: `/students/request/selected`
+        })
+    },
 }

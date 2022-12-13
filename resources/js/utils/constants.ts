@@ -72,7 +72,14 @@ export const REPORT_STATUS = [
     {label: 'Chờ duyệt', value: ReportStatusEnum.Pending},
     {label: 'Đã Xem', value: ReportStatusEnum.Seen},
     {label: 'Đã xử lý', value: ReportStatusEnum.Approved},
+]
 
+export const REQUEST_STATUS = [
+    {label: 'Chờ phê duyệt', value: StudentTempStatusEnum.Pending},
+    {label: 'Lớp trưởng đã duyệt', value: StudentTempStatusEnum.ClassMonitorApproved},
+    {label: 'Giáo viên đã duyệt', value: StudentTempStatusEnum.TeacherApproved},
+    {label: 'Ban chủ nhiệm khoa đã duyệt', value: StudentTempStatusEnum.Approved},
+    {label: 'Đã từ chối', value: StudentTempStatusEnum.Reject},
 ]
 
 

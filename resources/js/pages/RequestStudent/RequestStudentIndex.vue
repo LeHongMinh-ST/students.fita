@@ -23,8 +23,8 @@
                                 <q-select
                                     outlined
                                     dense
-                                    v-model="filter.status"
-                                    :options="reportStatusArray"
+                                    v-model="filter.status_approved"
+                                    :options="requestStatusArray"
                                     option-label="label"
                                     option-value="value"
                                     map-options
@@ -35,7 +35,7 @@
                     </div>
                 </q-card-section>
                 <q-card-section>
-                    <q-btn color="secondary" no-caps class="q-mr-sm" @click="getListReport()">
+                    <q-btn color="secondary" no-caps class="q-mr-sm" @click="handleFilter">
                         <q-icon class="fa-solid fa-check q-mr-sm" size="sm"></q-icon>
                         Áp dụng
                     </q-btn>
@@ -58,28 +58,30 @@
 
                             <q-menu>
                                 <q-list style="min-width: 100px">
-                                    <q-item clickable v-close-popup @click="dialogChangeSelect = true">
+                                    <q-item clickable v-close-popup
+                                            @click="handleChangeStatusSelect(checkTeacher() ? studentStatusTempEnum.TeacherApproved : studentStatusTempEnum.Approved)">
                                         <q-item-section>
-                      <span>
-                          <q-icon name="fa-solid fa-list-check" class="q-mr-sm" size="xs"></q-icon>Duyệt toàn bộ
-                          ({{ checkboxArray.length }} bản ghi)
-                      </span>
+                                          <span>
+                                              <q-icon name="fa-solid fa-list-check" class="q-mr-sm" size="xs"></q-icon>Duyệt toàn bộ
+                                              ({{ checkboxArray.length }} bản ghi)
+                                          </span>
                                         </q-item-section>
                                     </q-item>
-                                    <q-item clickable v-close-popup @click="dialogChangeSelect = true">
+                                    <q-item clickable v-close-popup
+                                            @click="handleChangeStatusSelect(studentStatusTempEnum.Reject)">
                                         <q-item-section>
-                      <span>
-                          <q-icon name="fa-solid fa-xmark" class="q-mr-sm" size="xs"></q-icon>Từ chối
-                          ({{ checkboxArray.length }} bản ghi)
-                      </span>
+                                          <span>
+                                              <q-icon name="fa-solid fa-xmark" class="q-mr-sm" size="xs"></q-icon>Từ chối
+                                              ({{ checkboxArray.length }} bản ghi)
+                                          </span>
                                         </q-item-section>
                                     </q-item>
                                     <q-item clickable v-close-popup @click="dialogDeleteSelect = true">
                                         <q-item-section>
-                      <span>
-                          <q-icon name="fa-solid fa-trash" class="q-mr-sm" size="xs"></q-icon>Xoá toàn bộ
-                          ({{ checkboxArray.length }} bản ghi)
-                      </span>
+                                          <span>
+                                              <q-icon name="fa-solid fa-trash" class="q-mr-sm" size="xs"></q-icon>Xoá toàn bộ
+                                              ({{ checkboxArray.length }} bản ghi)
+                                          </span>
                                         </q-item-section>
                                     </q-item>
                                 </q-list>
@@ -139,16 +141,16 @@
                                 {{ index + +1 + +page.perPage * (page.currentPage - 1) }}
                             </td>
                             <td class="text-left">
-                <span class="text-bold cursor-pointer text-link"
-                      @click="redirectRouter('ReportStudentDetail', {id: getValueLodash(item, 'id', 0)})">
-                    {{ getValueLodash(item, "student.student_code", "") ?? "Chưa cập nhật" }}
-                </span>
+                                <span class="text-bold cursor-pointer text-link"
+                                      @click="redirectRouter('ReportStudentDetail', {id: getValueLodash(item, 'id', 0)})">
+                                    {{ getValueLodash(item, "student.student_code", "") ?? "Chưa cập nhật" }}
+                                </span>
                             </td>
                             <td class="text-left">
-                <span class="text-bold cursor-pointer text-link"
-                      @click="redirectRouter('ReportStudentDetail', {id: getValueLodash(item, 'id', 0)})">
-                    {{ getValueLodash(item, "student.full_name", "") ?? "Chưa cập nhật" }}
-                </span>
+                                <span class="text-bold cursor-pointer text-link"
+                                      @click="redirectRouter('ReportStudentDetail', {id: getValueLodash(item, 'id', 0)})">
+                                    {{ getValueLodash(item, "student.full_name", "") ?? "Chưa cập nhật" }}
+                                </span>
                             </td>
                             <td class="text-center">{{ handleFormatDate(getValueLodash(item, 'created_at', '')) }}</td>
                             <td class="text-left">
@@ -209,13 +211,17 @@
                                                                   size="xs"></q-icon>Chi tiết</span>
                                                 </q-item-section>
                                             </q-item>
-                                            <q-item v-if="checkPermission('student-update')" clickable v-close-popup
-                                                    @click="openDialogDelete(getValueLodash(item, 'id', 0))">
+                                            <q-item
+                                                v-if="checkPermission('student-update') && checkStatusApproved(item)"
+                                                clickable v-close-popup
+                                                @click="handleChangeStatus(getValueLodash(item, 'id', 0), checkTeacher() ? studentStatusTempEnum.TeacherApproved : studentStatusTempEnum.Approved)">
                                                 <span><q-icon name="fa-solid fa-check" class="q-mr-sm"
                                                               size="xs"></q-icon>Duyệt yêu cầu</span>
                                             </q-item>
-                                            <q-item v-if="checkPermission('student-update')" clickable v-close-popup
-                                                    @click="openDialogDelete(getValueLodash(item, 'id', 0))">
+                                            <q-item
+                                                v-if="checkPermission('student-update') && item.status_approved != studentStatusTempEnum.Approved"
+                                                clickable v-close-popup
+                                                @click="handleChangeStatus(getValueLodash(item, 'id', 0), studentStatusTempEnum.Reject)">
                                                 <span><q-icon name="fa-solid fa-xmark" class="q-mr-sm"
                                                               size="xs"></q-icon>Từ chối yêu cầu</span>
                                             </q-item>
@@ -288,6 +294,7 @@ import {validationHelper} from "../../utils/validationHelper";
 import api from "../../api";
 import {permissionHelper} from "../../utils/permissionHelper";
 import {StudentTempStatusEnum} from "../../enums/studentTempStatus.enum";
+import {REQUEST_STATUS} from "../../utils/constants";
 
 export default defineComponent({
     name: "RequestStudentIndex",
@@ -297,7 +304,7 @@ export default defineComponent({
         const studentCode = ref<string>("");
         const requests = ref<Array<any>>([]);
         const requestId = ref([])
-        const {checkPermission} = permissionHelper()
+        const {checkPermission, checkTeacher} = permissionHelper()
         const {
             setValidationErrors,
             getValidationErrors,
@@ -315,6 +322,21 @@ export default defineComponent({
             perPage: 10,
         });
 
+        const checkStatusApproved = (item) => {
+            const auth = store.getters["auth/getAuthUser"]
+            if (auth.is_teacher && !auth.is_super_admin) {
+                return item.status_approved == studentStatusTempEnum.ClassMonitorApproved
+            }
+
+            if (!auth.is_teacher) {
+                return item.status_approved == studentStatusTempEnum.TeacherApproved
+            }
+            if (auth.is_super_admin) {
+                return true
+            }
+            return false
+        }
+
         const currentPage = ref<number>(1);
         const loading = ref<boolean>(false);
         const isFilter = ref<boolean>(false);
@@ -330,6 +352,21 @@ export default defineComponent({
         }
         const closeFilter = (): void => {
             isFilter.value = false;
+        }
+
+        const requestStatusArray = [{value: 0, label: 'Tất cả'}, ...REQUEST_STATUS]
+
+        const clearFilter = () => {
+            filter.value = _.cloneDeep({
+                status_approved: 0,
+            })
+            handleGetRequestStudentTemp()
+            handleGetRequestId()
+        }
+
+        const handleFilter = () => {
+            handleGetRequestId()
+            handleGetRequestStudentTemp()
         }
 
         const handleFormatDate = (value: string): string => {
@@ -380,7 +417,10 @@ export default defineComponent({
             eventBus.$emit('notify-success', 'Từ chối thành công');
         })
 
-        watch(() => search.value, () => handleGetRequestStudentTemp())
+        watch(() => search.value, () => {
+            handleGetRequestStudentTemp()
+            handleGetRequestId()
+        })
 
         const handleGetRequestStudentTemp = async (): Promise<void> => {
             loading.value = true
@@ -412,7 +452,15 @@ export default defineComponent({
 
         const handleGetRequestId = async (): Promise<void> => {
             try {
-                const res = await api.getRequestStudent()
+                const payload = {}
+                if (filter.value.status_approved) {
+                    payload.status_approved = filter.value.status_approved
+                }
+
+                if (search.value) {
+                    payload.q = search.value
+                }
+                const res = await api.getRequestStudent(payload)
                 const requestsArr = _.get(res, 'data.data.requests', [])
                 requestId.value = requestsArr.map(item => item.id)
             } catch (error) {
@@ -428,7 +476,7 @@ export default defineComponent({
                 $q.loading.show()
 
                 const data = {
-                    request_id: checkboxArray.value
+                    request_ids: checkboxArray.value
                 }
 
                 api.deleteRequestSelected(data).then(() => {
@@ -482,6 +530,71 @@ export default defineComponent({
                 }
                 isRequest.value = false
             }
+        }
+
+        const handleChangeStatus = async (id, status) => {
+            if (!isRequest.value) {
+                isRequest.value = true
+                try {
+                    const data = {
+                        status: status
+                    }
+                    const res = await api.changeStatusRequest(id, data)
+                    if (res) {
+                        generateNotify('Cập nhật thành công', true)
+                    }
+                } catch (error) {
+                    let errors = _.get(error.response, 'data.error', {})
+                    if (Object.keys(errors).length === 0) {
+                        let message = _.get(error.response, 'data.message', '')
+                        $q.notify({
+                            icon: 'report_problem',
+                            message,
+                            color: 'negative',
+                            position: 'top-right'
+                        })
+                    }
+                    if (Object.keys(errors).length > 0) {
+                        setValidationErrors(errors)
+                    }
+                }
+                isRequest.value = false
+            }
+
+
+        }
+
+        const handleChangeStatusSelect = async (status) => {
+            if (!isRequest.value) {
+                isRequest.value = true
+                try {
+                    const data = {
+                        status: status,
+                        request_ids: checkboxArray.value
+                    }
+                    const res = await api.changeStatusRequestSelect(data)
+                    if (res) {
+                        generateNotify('Cập nhật thành công', true)
+                    }
+                } catch (error) {
+                    let errors = _.get(error.response, 'data.error', {})
+                    if (Object.keys(errors).length === 0) {
+                        let message = _.get(error.response, 'data.message', '')
+                        $q.notify({
+                            icon: 'report_problem',
+                            message,
+                            color: 'negative',
+                            position: 'top-right'
+                        })
+                    }
+                    if (Object.keys(errors).length > 0) {
+                        setValidationErrors(errors)
+                    }
+                }
+                isRequest.value = false
+            }
+
+
         }
 
         onMounted(() => {
@@ -543,7 +656,14 @@ export default defineComponent({
             filter,
             dialogDeleteSelect,
             handleDeleteSelect,
-            handleDelete
+            handleDelete,
+            handleChangeStatus,
+            checkTeacher,
+            handleChangeStatusSelect,
+            checkStatusApproved,
+            requestStatusArray,
+            clearFilter,
+            handleFilter
         }
     },
 })

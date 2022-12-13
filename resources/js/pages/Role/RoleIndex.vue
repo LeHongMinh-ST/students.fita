@@ -257,6 +257,7 @@ export default defineComponent({
                     position: 'top-right'
                 })
             }).finally(() => loadingRoles.value = false)
+            handleGetRoleIds()
         }
 
         const openDialogDelete = (id: string): void => {
