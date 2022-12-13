@@ -93,26 +93,26 @@
                       <tbody>
                       <template v-if="requests?.length ?? [].length > 0">
                         <tr v-for="(request, index) in requests" :key="index">
-                          <td class="text-center">{{ index }}
+                          <td class="text-center">{{ index + 1 }}
                           </td>
                           <td class="text-left">
-                                                <span @click="redirectRouter('RoleUpdate', { id: request.id })"
+                                                <span @click="redirectRouter('RequestStudentDetail', { id: request.id })"
                                                       class="text-bold cursor-pointer text-link">
                                                     {{ getValueLodash(request, 'full_name', '') }}
                                                 </span>
                           </td>
                           <td class="text-left">
-                                                  <span @click="redirectRouter('RoleUpdate', { id: request.id })"
+                                                  <span @click="redirectRouter('RequestStudentDetail', { id: request.id })"
                                                         class="text-bold cursor-pointer text-link">
                                                       {{ getValueLodash(request, 'full_name', '') }}
                                                   </span>
                           </td>
                           <td class="text-center">
-                            {{ this.handleFormatDate(getValueLodash(request, 'created_at', '')) }}
+                            {{ handleFormatDate(getValueLodash(request, 'created_at', '')) }}
                           </td>
 
                           <td class="text-center">
-                                                  <span @click="redirectRouter('RoleUpdate', { id: request.id })"
+                                                  <span @click="redirectRouter('RequestStudentDetail', { id: request.id })"
                                                         class="text-bold cursor-pointer text-link">
                                                         Chi tiết
                                                   </span>
@@ -224,7 +224,7 @@ import { useQuasar } from "quasar";
 import { useRouter } from "vue-router";
 import api from "../api";
 import _ from "lodash";
-import { formatDateFM } from '../utils/helpers';
+import {formatDate, formatDateFM} from '../utils/helpers';
 
 export default defineComponent({
     name: "Home",
@@ -236,10 +236,7 @@ export default defineComponent({
         const loading = ref<boolean>(false)
 
         const handleFormatDate = (date: any): string => {
-            if(date != null && date != undefined && date != ""){
-                return formatDateFM(date, 'dd/MM/yyyy');
-            }
-            return "Chưa có dữ liệu";
+            return formatDate(date)
         }
 
         const reports = ref([])

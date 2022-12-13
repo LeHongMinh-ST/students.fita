@@ -47,7 +47,7 @@ class DashboardController extends Controller
                 $queryRequest->where('status_approved', StudentTempStatus::ClassMonitorApproved)->whereIn('class_id', $classIds);
             }
 
-            if (!@$user->teacher_id || @$user->is_super_admin) {
+            if (!@$user->teacher_id) {
                 $queryRequest->where('status_approved', StudentTempStatus::TeacherApproved);
             }
         }
