@@ -5,6 +5,7 @@ import {StudentStatusEnum} from "../enums/studentStatus.enum";
 import {StudentRoleEnum} from "../enums/studentRole.enum";
 import {ReportSubjectEnum} from "../enums/reportSubject.enum";
 import {StudentSocialPolicyObjectEnum} from "../enums/studentSocialPolicyObject.enum";
+import {ReportStatusEnum} from "../enums/reportStatus.enum";
 
 export const VALIDATE_EMAIL_REGEX = /^[a-zA-Z0-9][a-zA-Z0-9_.-]{1,}@[a-z0-9]{1,}(\.[a-z0-9]{1,}){1,2}$/
 export const VALIDATE_PHONE_REGEX_RULE = /((^0|^84|^\+84|^\(\+84\))+([0-9]{2}))+([0-9]{7}|[0-9]{1}\.[0-9]{3}\.[0-9]{3}|[0-9]{1}-[0-9]{3}-[0-9]{3}|[0-9]{1}\s[0-9]{3}\s[0-9]{3}$)/
@@ -65,6 +66,13 @@ export const SUBJECTS = [
     {label: 'Hoạt động đoàn trường', value: ReportSubjectEnum.SchoolUnionActivities},
     {label: 'Khen thưởng', value: ReportSubjectEnum.Reward},
     {label: 'Khác', value: ReportSubjectEnum.Other},
+]
+
+export const REPORT_STATUS = [
+    {label: 'Chờ duyệt', value: ReportStatusEnum.Pending},
+    {label: 'Đã Xem', value: ReportStatusEnum.Seen},
+    {label: 'Đã xử lý', value: ReportStatusEnum.Approved},
+
 ]
 
 
