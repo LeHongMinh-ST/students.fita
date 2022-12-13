@@ -3,9 +3,8 @@
 namespace App\Http\Requests\Student;
 
 use App\Http\Requests\BaseRequest;
-use Illuminate\Foundation\Http\FormRequest;
 
-class StudentChangeUpdateTempMultiple extends BaseRequest
+class StudentTempChangeStatusRequest extends BaseRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -25,8 +24,7 @@ class StudentChangeUpdateTempMultiple extends BaseRequest
     public function rules()
     {
         return [
-            'request_id' => 'required',
-            'status' => 'required',
+            'status' => 'required'
         ];
     }
 }

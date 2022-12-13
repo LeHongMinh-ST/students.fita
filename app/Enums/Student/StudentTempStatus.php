@@ -17,4 +17,5 @@ final class StudentTempStatus extends Enum implements LocalizedEnum
     const ClassMonitorApproved = 2;
     const TeacherApproved = 3;
     const Approved = 4;
+    const Reject = 5;
 }

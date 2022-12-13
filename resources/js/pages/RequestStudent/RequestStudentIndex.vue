@@ -8,18 +8,40 @@
       <q-card class="filter-wrapper" v-if="isFilter">
         <div class="filter-wrapper-content">
           <div class="filter-header">
-            <div class="filter-header-text">Lọc dữ liệu</div>
+            <div class="filter-header-text text-bold">Lọc dữ liệu</div>
             <div class="filter-header-button">
               <q-btn round icon="fa-solid fa-xmark" @click="closeFilter" size="sm"/>
             </div>
           </div>
         </div>
         <q-card-section>
-          <q-btn color="primary" no-caps outline class="q-mr-sm">
-            Thêm bộ lọc
-          </q-btn>
-          <q-btn color="primary" no-caps class="q-mr-sm">
+          <div class="row">
+            <div class="col-4 q-mr-sm">
+              <div class="form-group">
+                <label class="text-bold">Trạng thái</label>
+                <q-select
+                    outlined
+                    dense
+                    v-model="filter.status"
+                    :options="reportStatusArray"
+                    option-label="label"
+                    option-value="value"
+                    map-options
+                    emit-value
+                />
+              </div>
+            </div>
+          </div>
+        </q-card-section>
+        <q-card-section>
+          <q-btn color="secondary" no-caps class="q-mr-sm" @click="getListReport()">
+            <q-icon class="fa-solid fa-check q-mr-sm" size="sm"></q-icon>
             Áp dụng
+          </q-btn>
+
+          <q-btn color="deep-orange-5" no-caps class="q-mr-sm" @click="clearFilter">
+            <q-icon class="fa-solid fa-redo q-mr-sm" size="sm"></q-icon>
+            Đặt lại
           </q-btn>
         </q-card-section>
       </q-card>
@@ -53,7 +75,8 @@
           </q-btn>
 
           <div class="table-wrapper-search">
-            <q-input bottom-slots v-model="search" name="search" id="search" label="Nhập từ khóa để tìm kiếm" outlined dense>
+            <q-input bottom-slots v-model="search" name="search" id="search" label="Nhập từ khóa để tìm kiếm" outlined
+                     dense>
               <template v-slot:append>
                 <q-icon v-if="search !== ''" name="close" @click="search = ''" class="cursor-pointer"/>
                 <q-icon name="search"/>
@@ -111,29 +134,35 @@
               </td>
               <td class="text-center">{{ handleFormatDate(getValueLodash(item, 'created_at', '')) }}</td>
               <td class="text-left">
-                <q-badge v-if="getValueLodash(item, 'status_approved', 0) == studentStatusTempEnum.Pending" align="middle"
+                <q-badge v-if="getValueLodash(item, 'status_approved', 0) == studentStatusTempEnum.Pending"
+                         align="middle"
                          color='deep-orange-5'>
-                  {{ getValueLodash(item, "status_approved_text", "Chưa cập nhật")}}
+                  {{ getValueLodash(item, "status_approved_text", "Chưa cập nhật") }}
 
                 </q-badge>
-                <q-badge v-if="getValueLodash(item, 'status_approved', 0) == studentStatusTempEnum.ClassMonitorApproved " align="middle"
-                         color='blue'>
-                  {{ getValueLodash(item, "status_approved_text", "Chưa cập nhật")}}
+                <q-badge
+                    v-if="getValueLodash(item, 'status_approved', 0) == studentStatusTempEnum.ClassMonitorApproved "
+                    align="middle"
+                    color='blue'>
+                  {{ getValueLodash(item, "status_approved_text", "Chưa cập nhật") }}
 
                 </q-badge>
-                <q-badge v-if="getValueLodash(item, 'status_approved', 0) == studentStatusTempEnum.TeacherApproved " align="middle"
+                <q-badge v-if="getValueLodash(item, 'status_approved', 0) == studentStatusTempEnum.TeacherApproved "
+                         align="middle"
                          color='teal'>
-                  {{ getValueLodash(item, "status_approved_text", "Chưa cập nhật")}}
+                  {{ getValueLodash(item, "status_approved_text", "Chưa cập nhật") }}
 
                 </q-badge>
-                <q-badge v-if="getValueLodash(item, 'status_approved', 0) == studentStatusTempEnum.Approved " align="middle"
+                <q-badge v-if="getValueLodash(item, 'status_approved', 0) == studentStatusTempEnum.Approved "
+                         align="middle"
                          color='green'>
-                  {{ getValueLodash(item, "status_approved_text", "Chưa cập nhật")}}
+                  {{ getValueLodash(item, "status_approved_text", "Chưa cập nhật") }}
 
                 </q-badge>
-                <q-badge v-if="getValueLodash(item, 'status_approved', 0) == studentStatusTempEnum.Reject " align="middle"
+                <q-badge v-if="getValueLodash(item, 'status_approved', 0) == studentStatusTempEnum.Reject "
+                         align="middle"
                          color='red'>
-                  {{ getValueLodash(item, "status_approved_text", "Chưa cập nhật")}}
+                  {{ getValueLodash(item, "status_approved_text", "Chưa cập nhật") }}
 
                 </q-badge>
               </td>
@@ -141,10 +170,10 @@
                 {{ getValueLodash(item, "student_approved.full_name", "Chưa có") }}
               </td>
               <td class="text-left">
-                {{ getValueLodash(item, "teacher_approved.full_name", "Chưa có")}}
+                {{ getValueLodash(item, "teacher_approved.full_name", "Chưa có") }}
               </td>
               <td class="text-left">
-                {{ getValueLodash(item, "admin_approved.full_name", "Chưa có")}}
+                {{ getValueLodash(item, "admin_approved.full_name", "Chưa có") }}
               </td>
               <td class="text-center">
                 <div class="inline cursor-pointer">
@@ -194,6 +223,19 @@
         <q-card-actions align="right">
           <q-btn flat label="Đóng" color="primary" v-close-popup/>
           <q-btn label="Đồng ý" color="red" v-close-popup/>
+        </q-card-actions>
+      </q-card>
+    </q-dialog>
+    <q-dialog v-model="dialogDeleteSelect" persistent>
+      <q-card>
+        <q-card-section class="row items-center">
+          <q-avatar icon="fa-solid fa-trash" color="red" text-color="white"/>
+          <span class="q-ml-sm">Bạn có chắc chắn muốn xóa {{ checkboxArray.length }} bản ghi! Dữ liệu không thể phục hồi!</span>
+        </q-card-section>
+
+        <q-card-actions align="right">
+          <q-btn flat label="Đóng" color="primary" @click="dialogDeleteSelect = false" v-close-popup/>
+          <q-btn label="Đồng ý" color="red" @click="handleDeleteSelect" v-close-popup/>
         </q-card-actions>
       </q-card>
     </q-dialog>
@@ -248,6 +290,7 @@ export default defineComponent({
     const checkboxArray = ref<string[]>([])
     const checkboxAll = ref<boolean | string>(false)
     const search = ref<string>('')
+    const dialogDeleteSelect = ref<boolean>(false)
 
     const toggleFilter = (): void => {
       isFilter.value = !isFilter.value;
@@ -291,6 +334,10 @@ export default defineComponent({
       })
     }
 
+    const filter = ref<object>({
+      status_approved: 0
+    })
+
     const handleAprove = (() => {
       eventBus.$emit('notify-success', 'Duyệt thành công');
     });
@@ -305,6 +352,10 @@ export default defineComponent({
       loading.value = true
       const payload = {
         page: 1,
+      }
+
+      if (filter.value.status_approved) {
+        payload.status_approved = filter.value.status_approved
       }
 
       if (search.value) {
@@ -333,6 +384,31 @@ export default defineComponent({
       } catch (error) {
         generateNotify('Không thể tải dữ liệu')
       }
+    }
+
+    const handleDeleteSelect = () => {
+      $q.loading.show()
+      const data = {
+        request_id: checkboxArray.value
+      }
+      api.deleteUserSelected(data).then(() => {
+        handleGetRequestStudentTemp()
+        dialogDeleteSelect.value = false
+        checkboxArray.value = []
+        $q.notify({
+          icon: 'check',
+          message: 'Xóa thành công yêu cầu',
+          color: 'positive',
+          position: 'top-right'
+        })
+      }).catch(() => {
+        $q.notify({
+          icon: 'report_problem',
+          message: 'Không xóa được yêu cầu',
+          color: 'negative',
+          position: 'top-right'
+        })
+      }).finally(() => $q.loading.hide())
     }
 
     onMounted(() => {
@@ -390,10 +466,12 @@ export default defineComponent({
       requestId,
       checkPermission,
       handleGetRequestStudentTemp,
-      studentStatusTempEnum
-    };
+      studentStatusTempEnum,
+      filter,
+      dialogDeleteSelect
+    }
   },
-});
+})
 
 </script>
 

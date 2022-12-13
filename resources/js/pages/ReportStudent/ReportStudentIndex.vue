@@ -48,8 +48,6 @@
             </div>
           </div>
         </q-card-section>
-
-
         <q-card-section>
           <q-btn color="secondary" no-caps class="q-mr-sm" @click="getListReport()">
             <q-icon class="fa-solid fa-check q-mr-sm" size="sm"></q-icon>

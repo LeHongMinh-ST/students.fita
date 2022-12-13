@@ -51,6 +51,7 @@ return [
         StudentTempStatus::ClassMonitorApproved => 'Cán bộ lớp duyệt',
         StudentTempStatus::TeacherApproved => 'Giáo viên chủ nhiệm đã duyệt',
         StudentTempStatus::Approved => 'Đã phê duyệt',
+        StudentTempStatus::Reject => 'Không đồng ý',
     ],
     ReportStatus::class => [
         ReportStatus::Pending => 'Chờ phê duyệt',

@@ -7,10 +7,12 @@ use App\Enums\Student\StudentTempStatus;
 use App\Exceptions\PermissionStatusException;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Profile\ResetMyPasswordRequest;
+use App\Http\Requests\Student\DeleteStudentTempRequest;
 use App\Http\Requests\Student\ImportStudentRequest;
 use App\Http\Requests\Student\ResetPasswordRequest;
 use App\Http\Requests\Student\StoretStudentRequest;
 use App\Http\Requests\Student\StudentChangeUpdateTempMultiple;
+use App\Http\Requests\Student\StudentTempChangeStatusRequest;
 use App\Http\Requests\Student\UpdateStudentRequest;
 use App\Http\Requests\Student\UpdateStudentTempRequest;
 use App\Imports\StudentImport;
@@ -26,6 +28,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Maatwebsite\Excel\Facades\Excel;
+use mysql_xdevapi\Exception;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 class StudentController extends Controller
@@ -193,10 +196,12 @@ class StudentController extends Controller
         }
     }
 
-    public function updateStudentByStudentTemp($id): JsonResponse
+    public function updateStudentByStudentTemp(StudentTempChangeStatusRequest $request, $id): JsonResponse
     {
         DB::beginTransaction();
         try {
+            $status = $request->get('status', 0);
+
             $studentTemp = $this->studentRepository->getFirstBy(['id' => $id]);
 
             $student = auth('students')->user();
@@ -205,7 +210,7 @@ class StudentController extends Controller
                 return $this->responseError('Bạn không có quyền truy cập', [], 403);
             }
 
-            $studentTemp = $this->handleUpdateStudentByStudentTemp($studentTemp);
+            $studentTemp = $this->handleUpdateStudentByStudentTemp($studentTemp, $status);
             $this->studentTempRepository->createOrUpdate($studentTemp);
             DB::commit();
             return $this->responseSuccess();
@@ -230,6 +235,7 @@ class StudentController extends Controller
         DB::beginTransaction();
         try {
             $ids = $request->get('request_id', []);
+            $status = $request->get('status', 0);
 
             $studentTemps = $this->studentRepository->getByWhereIn('id', $ids);
             $student = auth('students')->user();
@@ -239,7 +245,7 @@ class StudentController extends Controller
                     return $this->responseError('Bạn không có quyền truy cập', [], 403);
                 }
 
-                $studentTemp = $this->handleUpdateStudentByStudentTemp($studentTemp);
+                $studentTemp = $this->handleUpdateStudentByStudentTemp($studentTemp, $status);
                 $this->studentTempRepository->createOrUpdate($studentTemp);
             }
 
@@ -261,23 +267,90 @@ class StudentController extends Controller
         }
     }
 
+    public function deleteRequest($id): JsonResponse
+    {
+        try {
+            $studentTemp = $this->studentTempRepository->getFirstBy(['id' => $id], ['*'], ['student']);
+            if (auth('students')->check()) {
+                $student = auth('students')->user();
+                if ($student->role != StudentRole::ClassMonitor) {
+                    if ($studentTemp->student_id != $student->id) {
+                        return $this->responseError('Bạn không có quyền thực hiện chức năng này!', [], 403, 403);
+                    }
+                }
+            }
+
+            if (auth('api')->check()) {
+                $auth = auth('api')->user();
+                if (@$auth->teacher_id && !@$auth->is_super_admin) {
+                    $classIds = $auth?->generalClass?->pluck('id')?->toArray();
+                    if (!in_array($studentTemp->student->class_id, $classIds)) {
+                        return $this->responseError('Bạn không có quyền thực hiện chức năng này', [], 403);
+                    }
+                }
+            }
+
+            $this->studentTempRepository->deleteBy($id);
+
+            return $this->responseSuccess();
+        } catch (\Exception $exception) {
+            Log::error('Error delete request student', [
+                'method' => __METHOD__,
+                'message' => $exception->getMessage()
+            ]);
+            return $this->responseError();
+        }
+    }
+
+    public function deleteRequestSelected(DeleteStudentTempRequest $request): JsonResponse
+    {
+        try {
+            $requestIds = $request->get('request_ids', []);
+            $studentTemps = $this->studentTempRepository->getByWhereIn('id', $requestIds);
+            $studentTemps->load('student');
+            $arrayClass = $studentTemps->pluck('student.class_id')->toArray();
+
+            if (auth('api')->check()) {
+                $auth = auth('api')->user();
+                if (@$auth->teacher_id && !@$auth->is_super_admin) {
+                    $classIds = $auth?->generalClass?->pluck('id')?->toArray();
+                    if (!array_diff($arrayClass, $classIds)) {
+                        return $this->responseError('Bạn không có quyền thực hiện chức năng này', [], 403);
+                    }
+                }
+            }
+
+            $condition[] = ['id', 'in', $requestIds];
+            $this->studentTempRepository->deleteBy($condition);
+            return $this->responseSuccess();
+        } catch (\Exception $exception) {
+            Log::error('Error delete request student', [
+                'method' => __METHOD__,
+                'message' => $exception->getMessage()
+            ]);
+            return $this->responseError();
+        }
+    }
+
     /**
      * @throws PermissionStatusException
      */
-    private function handleUpdateStudentByStudentTemp($studentTemp)
+    private function handleUpdateStudentByStudentTemp($studentTemp, $status)
     {
         $auth = auth('api')->user();
         $student = auth('students')->user();
-        switch ($studentTemp->status_approved) {
-            case StudentTempStatus::Pending:
+        switch ($status) {
+            case StudentTempStatus::ClassMonitorApproved:
                 if (!$student) {
                     throw new PermissionStatusException('Bạn không có quyền thực hiện chức năng này');
                 }
 
                 $studentTemp->status_approved = StudentTempStatus::ClassMonitorApproved;
                 $studentTemp->student_approved = @auth('students')->id();
+
+
                 break;
-            case StudentTempStatus::ClassMonitorApproved:
+            case StudentTempStatus::TeacherApproved:
                 if (!$auth->is_teacher) {
                     throw new PermissionStatusException('Bạn không có quyền thực hiện chức năng này');
                 }
@@ -285,7 +358,7 @@ class StudentController extends Controller
                 $studentTemp->status_approved = StudentTempStatus::TeacherApproved;
                 $studentTemp->teacher_approved = @auth('api')->id();
                 break;
-            case StudentTempStatus::TeacherApproved:
+            case StudentTempStatus::Approved:
                 if ($auth->is_teacher) {
                     throw new PermissionStatusException('Bạn không có quyền thực hiện chức năng này');
                 }
@@ -305,7 +378,8 @@ class StudentController extends Controller
                     }
                 }
                 break;
-            case StudentTempStatus::Approved:
+            case StudentTempStatus::Reject:
+                $studentTemp->status_approved = StudentTempStatus::TeacherApproved;
                 break;
         }
 

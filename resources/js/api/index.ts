@@ -231,6 +231,13 @@ export default {
             url: `/users/${id}`,
         })
     },
+    deleteUserSelected<T>(data: any): AxiosPromise<IResult<T>> {
+        return apiAxios({
+            method: 'delete',
+            url: `/users/delete-selected`,
+            data: data
+        })
+    },
     resetPassword<T>(id: number, data: any): AxiosPromise<IResult<T>> {
         return apiAxios({
             method: 'put',
@@ -428,6 +435,13 @@ export default {
             method: 'get',
             url: '/students/request',
             params
+        })
+    },
+    deleteRequestSelected<T>(data: any): AxiosPromise<IResult<T>> {
+        return apiAxios({
+            method: 'delete',
+            url: `/students/request/delete-selected`,
+            data: data
         })
     },
 }
