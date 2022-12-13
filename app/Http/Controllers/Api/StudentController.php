@@ -336,7 +336,6 @@ class StudentController extends Controller
             $requestIds = $studentTemps->filter(function ($item) {
                return $item->status_approved != StudentTempStatus::Approved;
             })->pluck('id')->toArray();
-
             $condition[] = ['id', 'in', $requestIds];
             $this->studentTempRepository->deleteBy($condition);
             return $this->responseSuccess();

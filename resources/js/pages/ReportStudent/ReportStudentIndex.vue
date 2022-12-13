@@ -92,7 +92,7 @@
           <div class="table-wrapper-search">
             <q-input bottom-slots v-model="search" label="Nhập từ khóa để tìm kiếm" outlined dense>
               <template v-slot:append>
-                <q-icon v-if="text !== ''" name="close" @click="text = ''" class="cursor-pointer"/>
+                <q-icon v-if="search !== ''" name="close" @click="search = ''" class="cursor-pointer"/>
                 <q-icon name="search"/>
               </template>
             </q-input>
@@ -425,6 +425,9 @@ export default defineComponent({
 
       getListReport();
     });
+      watch(() => search.value, () => {
+          getListReport()
+      })
 
     const clearFilter = () => {
       filter.value = _.cloneDeep({

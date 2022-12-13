@@ -13,6 +13,11 @@ export function permissionHelper(): any {
         return permissions.some((item: IPermissionResult) => item.code === permission)
     }
 
+    const checkTeacher = (): boolean => {
+        const auth = store.getters["auth/getAuthUser"]
+        return auth.is_teacher
+    }
+
     const checkClassMonitor = (): boolean => {
         const student = store.getters["authStudent/getAuthUserStudent"]
         return student.role == StudentRoleEnum.ClassMonitor
@@ -20,6 +25,7 @@ export function permissionHelper(): any {
 
     return {
         checkPermission,
-        checkClassMonitor
+        checkClassMonitor,
+        checkTeacher
     }
 }
