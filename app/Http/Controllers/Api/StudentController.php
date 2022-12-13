@@ -273,7 +273,11 @@ class StudentController extends Controller
         try {
             $studentTemp = $this->studentTempRepository->getFirstBy(['id' => $id], ['*'], ['student']);
 
-            if ($studentTemp->status_approved == StudentTempStatus::Approved) {
+            if (!$studentTemp) {
+                return $this->responseError('Không tìm thấy bản ghi', [], 400, 400);
+            }
+
+            if (@$studentTemp->status_approved == StudentTempStatus::Approved) {
                 return $this->responseError('Yêu cầu đã được duyệt không thể xóa', [], 400, 400);
             }
 
@@ -295,7 +299,8 @@ class StudentController extends Controller
                     }
                 }
             }
-            $this->studentTempRepository->deleteBy($id);
+
+            $this->studentTempRepository->deleteById($id);
 
             return $this->responseSuccess();
         } catch (\Exception $exception) {

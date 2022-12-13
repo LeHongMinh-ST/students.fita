@@ -203,24 +203,24 @@
                                     <q-menu touch-position>
                                         <q-list style="min-width: 100px">
                                             <q-item v-if="checkPermission('student-update')" clickable v-close-popup
-                                                    @click="redirectRouter('RoleUpdate', {id: getValueLodash(role, 'id', 0)})">
+                                                    @click="redirectRouter('RoleUpdate', {id: getValueLodash(item, 'id', 0)})">
                                                 <q-item-section>
                                                     <span><q-icon name="fa-solid fa-eye" class="q-mr-sm"
                                                                   size="xs"></q-icon>Chi tiết</span>
                                                 </q-item-section>
                                             </q-item>
                                             <q-item v-if="checkPermission('student-update')" clickable v-close-popup
-                                                    @click="openDialogDelete(getValueLodash(role, 'id', 0))">
+                                                    @click="openDialogDelete(getValueLodash(item, 'id', 0))">
                                                 <span><q-icon name="fa-solid fa-check" class="q-mr-sm"
                                                               size="xs"></q-icon>Duyệt yêu cầu</span>
                                             </q-item>
                                             <q-item v-if="checkPermission('student-update')" clickable v-close-popup
-                                                    @click="openDialogDelete(getValueLodash(role, 'id', 0))">
+                                                    @click="openDialogDelete(getValueLodash(item, 'id', 0))">
                                                 <span><q-icon name="fa-solid fa-xmark" class="q-mr-sm"
                                                               size="xs"></q-icon>Từ chối yêu cầu</span>
                                             </q-item>
                                             <q-item v-if="checkPermission('student-update')" clickable v-close-popup
-                                                    @click="openDialogDelete(getValueLodash(role, 'id', 0))">
+                                                    @click="openDialogDelete(getValueLodash(item, 'id', 0))">
                                                 <span><q-icon name="fa-solid fa-trash" class="q-mr-sm"
                                                               size="xs"></q-icon>Xoá</span>
                                             </q-item>
