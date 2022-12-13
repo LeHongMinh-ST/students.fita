@@ -109,6 +109,12 @@ const routeAdmin: Array<RouteRecordRaw> = [
                 component: () => import('../pages/RequestStudent/RequestStudentIndex.vue'),
                 meta: {isAuthenticated: true, permission: 'student-update'},
             },
+            {
+                path: ':id',
+                name: 'RequestStudentDetail',
+                component: () => import('../pages/RequestStudent/RequestStudentDetail.vue'),
+                meta: {isAuthenticated: true, permission: 'student-update'},
+            },
         ]
     },
     {

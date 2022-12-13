@@ -465,6 +465,12 @@ export default {
             data: data
         })
     },
+    getRequestStudentDetail<T>(id: number): AxiosPromise<IResult<T>> {
+        return apiAxios({
+            method: 'get',
+            url: `/students/request/${id}`
+        })
+    },
     deleteRequest<T>(id: number): AxiosPromise<IResult<T>> {
         return apiAxios({
             method: 'delete',
@@ -478,7 +484,7 @@ export default {
             url: `/students/request/${id}`
         })
     },
-    changeStatusRequestSelect<T>(id: number, data: object): AxiosPromise<IResult<T>> {
+    changeStatusRequestSelect<T>(data: object): AxiosPromise<IResult<T>> {
         return apiAxios({
             method: 'put',
             data: data,

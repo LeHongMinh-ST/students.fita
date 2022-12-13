@@ -142,13 +142,13 @@
                             </td>
                             <td class="text-left">
                                 <span class="text-bold cursor-pointer text-link"
-                                      @click="redirectRouter('ReportStudentDetail', {id: getValueLodash(item, 'id', 0)})">
+                                      @click="redirectRouter('RequestStudentDetail', {id: getValueLodash(item, 'id', 0)})">
                                     {{ getValueLodash(item, "student.student_code", "") ?? "Chưa cập nhật" }}
                                 </span>
                             </td>
                             <td class="text-left">
                                 <span class="text-bold cursor-pointer text-link"
-                                      @click="redirectRouter('ReportStudentDetail', {id: getValueLodash(item, 'id', 0)})">
+                                      @click="redirectRouter('RequestStudentDetail', {id: getValueLodash(item, 'id', 0)})">
                                     {{ getValueLodash(item, "student.full_name", "") ?? "Chưa cập nhật" }}
                                 </span>
                             </td>
@@ -205,7 +205,7 @@
                                     <q-menu touch-position>
                                         <q-list style="min-width: 100px">
                                             <q-item v-if="checkPermission('student-update')" clickable v-close-popup
-                                                    @click="redirectRouter('RoleUpdate', {id: getValueLodash(item, 'id', 0)})">
+                                                    @click="redirectRouter('RequestStudentDetail', {id: getValueLodash(item, 'id', 0)})">
                                                 <q-item-section>
                                                     <span><q-icon name="fa-solid fa-eye" class="q-mr-sm"
                                                                   size="xs"></q-icon>Chi tiết</span>
@@ -219,7 +219,7 @@
                                                               size="xs"></q-icon>Duyệt yêu cầu</span>
                                             </q-item>
                                             <q-item
-                                                v-if="checkPermission('student-update') && item.status_approved != studentStatusTempEnum.Approved"
+                                                v-if="checkPermission('student-update') && checkStatusReject(item)"
                                                 clickable v-close-popup
                                                 @click="handleChangeStatus(getValueLodash(item, 'id', 0), studentStatusTempEnum.Reject)">
                                                 <span><q-icon name="fa-solid fa-xmark" class="q-mr-sm"
@@ -321,6 +321,21 @@ export default defineComponent({
             total: 0,
             perPage: 10,
         });
+
+        const checkStatusReject = (item) => {
+            const auth = store.getters["auth/getAuthUser"]
+            if (item.status_approved == studentStatusTempEnum.Approved) {
+                return false
+            }
+
+            if (auth.is_teacher && !auth.is_super_admin) {
+                if(item.status_approved == studentStatusTempEnum.TeacherApproved) {
+                    return false
+                }
+            }
+
+            return true
+        }
 
         const checkStatusApproved = (item) => {
             const auth = store.getters["auth/getAuthUser"]
@@ -663,7 +678,8 @@ export default defineComponent({
             checkStatusApproved,
             requestStatusArray,
             clearFilter,
-            handleFilter
+            handleFilter,
+            checkStatusReject
         }
     },
 })
