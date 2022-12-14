@@ -303,7 +303,6 @@ class StudentController extends Controller
                     }
                 }
             }
-
             $this->studentTempRepository->deleteById($id);
 
             return $this->responseSuccess();
@@ -314,6 +313,18 @@ class StudentController extends Controller
             ]);
             return $this->responseError();
         }
+    }
+
+    public function getUpdateRequestPending(): JsonResponse
+    {
+        $studentTemp = $this->studentTempRepository->getFirstBy([
+            'student_id' => auth('students')->id(),
+            'status_approved' => StudentTempStatus::Pending
+        ]);
+
+        return $this->responseSuccess([
+            'studentTemp' => $studentTemp
+        ]);
     }
 
     public function deleteRequestSelected(DeleteStudentTempRequest $request): JsonResponse

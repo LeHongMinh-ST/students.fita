@@ -384,13 +384,13 @@
                                             </td>
 
                                             <td class="text-left">
-                                                {{ getValueLodash(item, "student_approved.full_name", "Chưa có") }}
+                                                {{ getValueLodash(request, "student_approved.full_name", "Chưa có") }}
                                             </td>
                                             <td class="text-left">
-                                                {{ getValueLodash(item, "teacher_approved.full_name", "Chưa có") }}
+                                                {{ getValueLodash(request, "teacher_approved.full_name", "Chưa có") }}
                                             </td>
                                             <td class="text-left">
-                                                {{ getValueLodash(item, "admin_approved.full_name", "Chưa có") }}
+                                                {{ getValueLodash(request, "admin_approved.full_name", "Chưa có") }}
                                             </td>
 
                                             <td class="text-center">
@@ -398,14 +398,14 @@
                                                     <q-icon name="menu" size="sm"></q-icon>
                                                     <q-menu touch-position>
                                                         <q-list style="min-width: 100px">
-                                                            <q-item  clickable v-close-popup
-                                                                    @click="redirectRouter('RoleUpdate', {id: getValueLodash(role, 'id', 0)})">
+                                                            <q-item v-if="request.status_approved == studentStatusTempEnum.Pending"  clickable v-close-popup
+                                                                    @click="redirectRouter('StudentUpdateProfile')">
                                                                 <q-item-section>
                                                     <span><q-icon name="fa-solid fa-pen-to-square" class="q-mr-sm"
                                                                   size="xs"></q-icon>Chỉnh sửa</span>
                                                                 </q-item-section>
                                                             </q-item>
-                                                            <q-item  clickable v-close-popup
+                                                            <q-item v-if="request.status_approved != studentStatusTempEnum.Approved"  clickable v-close-popup
                                                                     @click="openDialogDelete(getValueLodash(request, 'id', 0))">
                                                 <span><q-icon name="fa-solid fa-trash" class="q-mr-sm"
                                                               size="xs"></q-icon>Xoá</span>
@@ -500,7 +500,7 @@
                 </q-card-actions>
             </q-card>
         </q-dialog>
-        <q-dialog v-model="dialogDelete" persistent>
+        <q-dialog v-model="dialogDeleteRequest" persistent>
             <q-card>
                 <q-card-section class="row items-center">
                     <q-avatar icon="fa-solid fa-trash" color="red" text-color="white"/>
@@ -508,8 +508,8 @@
                 </q-card-section>
 
                 <q-card-actions align="right">
-                    <q-btn flat label="Đóng" color="primary" @click="dialogDelete = false" v-close-popup/>
-                    <q-btn label="Đồng ý" color="red" @click="handleDelete" v-close-popup/>
+                    <q-btn flat label="Đóng" color="primary" @click="dialogDeleteRequest = false" v-close-popup/>
+                    <q-btn label="Đồng ý" color="red" @click="handleDeleteRequest" v-close-popup/>
                 </q-card-actions>
             </q-card>
         </q-dialog>
@@ -548,6 +548,13 @@ export default defineComponent({
         const password_confirm = ref<string>('')
         const myRequest = ref([])
         const {page} = usePage()
+        const requestId = ref<string>('')
+        const dialogDeleteRequest = ref<boolean>(false)
+
+        const openDialogDelete = (id) => {
+            dialogDeleteRequest.value = true
+            requestId.value = id
+        }
 
         const studentStatusTempEnum = StudentTempStatusEnum
 
@@ -597,6 +604,29 @@ export default defineComponent({
                 })
             }).finally(() => loading.value = false)
 
+        }
+
+        const handleDeleteRequest = async () => {
+            try {
+                const res = await apiStudent.deleteRequest(parseInt(requestId.value))
+                if (res) {
+                    await getMyRequest()
+                    dialogDeleteRequest.value = false
+                    $q.notify({
+                        icon: 'check',
+                        message: 'Xóa thành công bản ghi',
+                        color: 'positive',
+                        position: 'top-right'
+                    })
+                }
+            }catch (e) {
+                $q.notify({
+                    icon: 'report_problem',
+                    message: 'Không thể xóa bản ghi!',
+                    color: 'negative',
+                    position: 'top-right'
+                })
+            }
         }
 
         const redirectRouter = (nameRoute: string, params: {}): void => {
@@ -700,7 +730,10 @@ export default defineComponent({
             studentStatusTempEnum,
             page,
             getValueLodash,
-            handleFormatDate
+            handleFormatDate,
+            handleDeleteRequest,
+            openDialogDelete,
+            dialogDeleteRequest
         }
     }
 })
