@@ -189,7 +189,7 @@ export default defineComponent({
                 routeName: 'Department',
                 permission: 'department-index'
             },
-            {icon: 'fa-solid fa-users', text: 'Quản lý lớp học', routeName: 'Classes', permission: 'class-index'},
+            {icon: 'fa-solid fa-users', text: 'Quản lý lớp học', routeName: 'RequestStudent', permission: 'request-student'},
         ])
 
         const links2 = ref([
