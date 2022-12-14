@@ -41,13 +41,13 @@ class DashboardController extends Controller
 
         if (auth('api')->check()) {
             $user = auth('api')->user();
-            if (@$user->teacher_id && !@$user->is_super_admin) {
+            if ($user->is_teacher && !$user->is_super_admin) {
                 $classIds = $user?->generalClass?->pluck('id')?->toArray();
                 $queryReport->whereIn('class_id', $classIds);
                 $queryRequest->where('status_approved', StudentTempStatus::ClassMonitorApproved)->whereIn('class_id', $classIds);
             }
 
-            if (!@$user->teacher_id) {
+            if (!$user->is_teacher) {
                 $queryRequest->where('status_approved', StudentTempStatus::TeacherApproved);
             }
         }

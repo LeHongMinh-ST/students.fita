@@ -1,11 +1,10 @@
 <?php
 
-namespace App\Http\Requests\Student;
+namespace App\Http\Requests\Report;
 
 use App\Http\Requests\BaseRequest;
-use Illuminate\Foundation\Http\FormRequest;
 
-class StudentChangeUpdateTempMultiple extends BaseRequest
+class ChangeReportStatusMultipleRequest extends BaseRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -25,7 +24,7 @@ class StudentChangeUpdateTempMultiple extends BaseRequest
     public function rules()
     {
         return [
-            'request_ids' => 'required',
+            'report_ids' => 'required',
             'status' => 'required',
         ];
     }

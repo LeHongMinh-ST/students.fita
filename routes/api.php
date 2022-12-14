@@ -64,9 +64,9 @@ Route::group(['middleware' => ['jwt.auth', 'auth.admin']], function () {
         Route::get('/', [StudentController::class, 'index'])->middleware('permission:student-index');
         Route::get('/request/count', [StudentController::class, 'getCountRequest'])->middleware('permission:student-update');
         Route::get('/request', [StudentController::class, 'getRequestUpdateStudent'])->middleware('permission:student-update');
+        Route::put('/request/selected', [StudentController::class, 'updateStudentByStudentTempMultiple'])->middleware('permission:student-update');
         Route::put('/request/{id}', [StudentController::class, 'updateStudentByStudentTemp'])->middleware('permission:student-update');
         Route::get('/request/{id}', [StudentController::class, 'showRequestUpdateStudent'])->middleware('permission:student-update');
-        Route::put('/request/selected', [StudentController::class, 'updateStudentByStudentTempMultiple'])->middleware('permission:student-update');
         Route::post('/', [StudentController::class, 'store'])->middleware('permission:student-create');
         Route::put('/update-learning-outcome/{id}', [StudentController::class, 'updateDataLearningOutcome'])->middleware('permission:student-update');
         Route::get('/{id}', [StudentController::class, 'show'])->middleware('permission:student-index');
@@ -114,7 +114,10 @@ Route::group(['middleware' => ['jwt.auth', 'auth.admin']], function () {
         Route::get('/count-pending', [ReportController::class, 'getCountReportPending'])->middleware('permission:report-index');
         Route::post('/', [ReportController::class, 'store'])->middleware('permission:report-create');
         Route::get('/{id}', [ReportController::class, 'show'])->middleware('permission:report-index');
+        Route::put('/change-status-selected', [ReportController::class, 'changeStatusMultipleReport'])->middleware('permission:report-update');
         Route::put('/{id}', [ReportController::class, 'update'])->middleware('permission:report-update');
+        Route::put('/{id}/change-status', [ReportController::class, 'changeStatusReport'])->middleware('permission:report-update');
+        Route::delete('/delete-selected', [ReportController::class, 'deleteSelected'])->middleware('permission:report-delete');
         Route::delete('/{id}', [ReportController::class, 'destroy'])->middleware('permission:report-delete');
     });
 

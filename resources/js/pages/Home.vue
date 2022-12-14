@@ -98,13 +98,13 @@
                           <td class="text-left">
                                                 <span @click="redirectRouter('RequestStudentDetail', { id: request.id })"
                                                       class="text-bold cursor-pointer text-link">
-                                                    {{ getValueLodash(request, 'full_name', '') }}
+                                                    {{ getValueLodash(request, 'student.full_name', '') }}
                                                 </span>
                           </td>
                           <td class="text-left">
                                                   <span @click="redirectRouter('RequestStudentDetail', { id: request.id })"
                                                         class="text-bold cursor-pointer text-link">
-                                                      {{ getValueLodash(request, 'full_name', '') }}
+                                                      {{ getValueLodash(request, 'student_code', '') }}
                                                   </span>
                           </td>
                           <td class="text-center">
@@ -156,11 +156,10 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <template v-if="_.get(this.dataReports, 'data.data.reports', [])?.length ?? [].length > 0">
-                                        <tr v-for="(report, index) in  this._.get(this.dataReports, 'data.data.reports', [])" :key="index">
-                                            <td class="text-center">{{
-                                                    index + 1
-                                            }}
+                                    <template v-if="reports?.length ?? [].length > 0">
+                                        <tr v-for="(report, index) in reports" :key="index">
+
+                                            <td class="text-center">{{ index + 1 }}
                                             </td>
                                             <td class="text-left">
                                                 <span @click="redirectRouter('RoleUpdate', { id: report.title })"

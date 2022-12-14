@@ -121,6 +121,11 @@ class User extends Authenticatable implements JWTSubject
         return asset("/storage/{$this->thumbnail}");
     }
 
+    public function rejects()
+    {
+        return $this->morphMany(StudentTemp::class,'rejectable');
+    }
+
     protected $appends = [
         'thumbnail_url',
     ];
