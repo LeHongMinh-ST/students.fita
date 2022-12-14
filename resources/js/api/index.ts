@@ -334,11 +334,18 @@ export default {
         })
     },
 
-    updateStudentReportAddmin<T>(data: any, id: string): AxiosPromise<IResult<T>> {
+    changeStatusReport<T>(data: any, id: string): AxiosPromise<IResult<T>> {
         return apiAxios({
             method: 'put',
-            url: `/reports/${id}`,
+            url: `/reports/${id}/change-status`,
             data: data
+        })
+    },
+
+    deleteReport<T>(id: string): AxiosPromise<IResult<T>> {
+        return apiAxios({
+            method: 'delete',
+            url: `/reports/${id}`,
         })
     },
     

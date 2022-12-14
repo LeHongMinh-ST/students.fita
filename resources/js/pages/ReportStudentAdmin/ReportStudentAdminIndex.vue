@@ -68,7 +68,7 @@
                     </div>
                 </div>
                 <div class="table-wrapper-action">
-                    <q-btn no-caps  color="secondary" class="q-mr-sm">
+                    <q-btn no-caps  color="secondary" class="q-mr-sm" @click="getListReport">
                         <q-icon name="fa-solid fa-refresh" class="q-mr-sm" size="xs"></q-icon>
                         Tải lại
                     </q-btn>
@@ -79,9 +79,9 @@
                 <q-markup-table class="role-table">
                     <thead>
                         <tr>
-                            <th class="text-center" width="5%">
+                            <!-- <th class="text-center" width="5%">
                                     <q-checkbox v-model="checkboxAll"/>  
-                            </th>
+                            </th> -->
                             <th class="text-center" width="5%">STT</th>
                             <th class="text-left">Mã sinh viên</th>
                             <th class="text-left">Tên sinh viên</th>
@@ -94,9 +94,9 @@
                     <tbody>
                         <template v-if="reports && reports.length > 0">
                             <tr v-for="(item, index) in reports" :key="index">
-                                <td class="text-center">
+                                <!-- <td class="text-center">
                                     <q-checkbox v-model="checkboxArray" :val="getValueLodash(item, 'id', 0)"/>
-                                </td>
+                                </td> -->
                                 <td class="text-center">
                                     {{ index + +1 + +page.perPage * (page.currentPage - 1) }}
                                 </td>
@@ -139,14 +139,15 @@
                                                              size="xs" @click="redirectRouter('ReportStudentDetailAdmin', {id: getValueLodash(item, 'id', 0)})"></q-icon>Xem chi tiết</span>
                                            </q-item>
                                             <q-item
-                                               
+                                              
                                                 clickable v-close-popup
+                                                @click="handleChangeStatusReport(getValueLodash(item, 'id', 0))"
                                                >
                                                 <span><q-icon name="fa-solid fa-check" class="q-mr-sm"
                                                               size="xs"></q-icon>Duyệt</span>
                                             </q-item>
                                             <q-item
-                                               
+                                                @click="openDialogDelete(getValueLodash(item, 'id', 0))"
                                                 clickable v-close-popup
                                                >
                                                 <span><q-icon name="fa-solid fa-trash" class="q-mr-sm"
@@ -187,6 +188,11 @@
       </q-card>
     </q-dialog>
     </div>
+    <q-inner-loading
+              :showing="loadingClasses"
+              label-class="text-teal"
+              label-style="font-size: 1.1em"
+          />
 </template>
 
 <script lang="ts">
@@ -200,9 +206,7 @@
         ref,
         watch
     } from "vue";
-    import {
-        useRouter
-    } from "vue-router";
+    import {useRoute, useRouter} from "vue-router";
     import {
         useStore
     } from "vuex";
@@ -257,6 +261,7 @@
             const router = useRouter();
             const checkboxArray = ref < string[] > ([])
             const search = ref < string > ('')
+            const isRequest = ref<boolean>(false)
             const toggleFilter = (): void => {
                 isFilter.value = !isFilter.value;
             };
@@ -284,7 +289,7 @@
                 const data = {
                     id: checkboxArray.value
                 }
-                api.deleteStudentReport(reportId.value).then(() => {
+                api.deleteReport(reportId.value).then(() => {
                     getListReport()
                     closeDialog()
                     checkboxArray.value = []
@@ -304,6 +309,39 @@
                 }).finally(() => $q.loading.hide())
             }
 
+            const handleChangeStatusReport = async (id:string) => {
+                const data = {
+                    "status":reportStatusEnum.Approved
+                }
+                if (!isRequest.value) {
+                    $q.loading.show()
+                    isRequest.value = true
+
+                    api.changeStatusReport(data, id).then(res => {
+                    if (res) {
+                        eventBus.$emit('notify-success', 'Duyệt phản ánh thành công')
+                        getListReport()
+                    }
+                    }).catch(error => {
+                    let errors = _.get(error.response, 'data.error', {})
+                    if (Object.keys(errors).length === 0) {
+                        let message = _.get(error.response, 'data.message', '')
+                        $q.notify({
+                        icon: 'report_problem',
+                        message,
+                        color: 'negative',
+                        position: 'top-right'
+                        })
+                    }
+                    if (Object.keys(errors).length > 0) {
+                        setValidationErrors(errors)
+                    }
+                    }).finally(() => {
+                        isRequest.value = false
+                        $q.loading.hide()
+                    })
+                }
+            }
             const getValueLodash = (res: object, data: string, d: any = null) => {
                 return _.get(res, data, d);
             };
@@ -347,7 +385,7 @@
                 "1": "Nữ"
             }
 
-            const getListReport = (): void => {
+            const getListReport = async () => {
 
                 loadingClasses.value = true
                 const payload = {
@@ -360,7 +398,7 @@
 
                 payload.page = page?.value?.currentPage;
 
-                api.getAllReport<IPaginate<[]>>(payload).then(res => {
+                await api.getAllReport<IPaginate<[]>>(payload).then(res => {
                 reports.value = _.get(res, 'data.data.reports.data')
 
                 console.log("aaaaaaaaaaa "+reports);
@@ -377,7 +415,8 @@
                 }).finally(() => loadingClasses.value = false)
             }
 
-
+            watch(() => page.value.currentPage, () => getListReport())
+            watch(() => search.value, () => getListReport())
             onMounted(() => {
                 store.commit(`home/${HomeMutationTypes.SET_TITLE}`, "Phản ánh sinh viên");
                 eventBus.$on("notify-success", (message: string) => {
@@ -390,6 +429,8 @@
             
 
             return {
+                loadingClasses,
+                getListReport,
                 studentCode,
                 isFilter,
                 toggleFilter,
@@ -410,7 +451,7 @@
                 openDialogDelete,
                 dialogDelete,
                 reports,
-                reportStatusEnum,handleDelete,closeDialog,checkboxAll
+                reportStatusEnum,handleDelete,closeDialog,checkboxAll,handleChangeStatusReport
             };
         },
     });

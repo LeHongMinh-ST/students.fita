@@ -1,70 +1,109 @@
 <template>
-    <div class="student-wrapper">
-        <q-breadcrumbs>
-            <q-breadcrumbs-el label="Bảng điều khiển" icon="home" :to="{name: 'Home'}" />
-            <q-breadcrumbs-el label="Sinh viên" />
-            <q-breadcrumbs-el label="Thông tin sinh viên" />
-        </q-breadcrumbs>
-        <div class="main">
-            <div class="row">
-                <div class="col-12 q-pr-lg">
-                    <q-card class="main-form meta-boxes">
-                        <q-card-section>
-                            <div class="text-bold">Thông tin báo cáo</div>
-                        </q-card-section>
-                        <q-card-section class="table-wrapper-title" style="justify-content: center !important">
-                            <div class="q-px-md q-py-sm"
-                                style="border: 1px solid black; margin: 10px; border-radius: 10px; width: 60%">
-                                <div style="gap: 20px;">
-                                    <div style="line-height:30px; width: 90%">
-                                        <span style="font-weight: bold;" class="">Tiêu đề</span>
-                                        <p style="border: 1px solid grey; padding: 2px 10px 0px; border-radius: 3px;">
-                                            BC1</p>
-                                    </div>
-                                    <div style="line-height:30px; width: 90%">
-                                        <span style="font-weight: bold;" class="">Chủ đề</span>
-                                        <p style="border: 1px solid grey; padding: 2px 10px 0px; border-radius: 3px;">
-                                            BC1</p>
-                                    </div>
-                                    <div style="line-height:30px; width: 90%">
-                                        <span style="font-weight: bold;" class="">Nội dung</span>
-                                        <p style="border: 1px solid grey; padding: 2px 10px 0px; border-radius: 3px;">
-                                            Các học viên cao học có tên trong danh sách tốt nghiệp thạc sĩ đợt 3 năm 2022 kiểm tra chính xác thông tin cá nhân, nếu phát hiện có sai sót cần liên hệ với Ban Quản lý đào tạo để đính chính thông tin.
-
-Thời hạn đính chính đến 17h00 ngày 11 tháng 11 năm 2022.
-
-Thông tin đính chính gửi về Ban Quản lý đào tạo - P121 Bàn 7 (C/v Nguyễn Anh Tuấn: 024.6261.7520; Email: natuan.qldt@vnua.edu.vn). Quá thời hạn đính chính trên học viên hoàn toàn chịu trách nhiệm. </p>
-                                    </div>
-                                    <div style="line-height:30px; width: 90%">
-                                        <span style="font-weight: bold;" class="">Trạng thái báo cáo</span>
-                                        <p style="border: 1px solid grey; padding: 2px 10px 0px; border-radius: 3px;">
-                                            Chờ duyệt</p>
-                                    </div>
-                                    <div style="line-height:30px; width: 90%">
-                                        <span style="font-weight: bold;" class="">Trạng thái duyệt</span>
-                                        <p style="border: 1px solid grey; padding: 2px 10px 0px; border-radius: 3px;">
-                                            Chưa duyệt</p>
-                                    </div>
-                                    <div style="line-height:30px; width: 90%">
-                                        <span style="font-weight: bold;" class="">Người tạo</span>
-                                        <p style="border: 1px solid grey; padding: 2px 10px 0px; border-radius: 3px;">
-                                            Lê Hồng Minh</p>
-                                    </div>
-                                    <div style="line-height:30px; width: 90%">
-                                        <span style="font-weight: bold;" class="">Người duyệt</span>
-                                        <p style="border: 1px solid grey; padding: 2px 10px 0px; border-radius: 3px;">
-                                            Chưa có dữ liệu</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </q-card-section>
-                    </q-card>
+    <div class="report-wrapper">
+      <q-breadcrumbs>
+        <q-breadcrumbs-el label="Bảng điều khiển" icon="home" :to="{name: 'Home'}"/>
+        <q-breadcrumbs-el label="Báo cáo sinh viên" :to="{name: 'ReportStudentIndex'}"/>
+        <q-breadcrumbs-el label="Tạo mới"/>
+      </q-breadcrumbs>
+      <div class="main">
+        <div class="row">
+          <div class="col-9 q-pr-lg">
+            <q-card class="main-form  meta-boxes">
+              <q-card-section>
+                <div class="widget-title text-bold">Tạo mới báo cáo</div>
+              </q-card-section>
+              <q-separator/>
+              <q-card-section>
+                <div class="row">
+                  <div class="col-9">
+                    <div class="form-group">
+                      <label class="text-bold">Tiêu đề<span class="required">*</span></label>
+                      <q-input
+                          outlined
+                          dense
+                          :disable="true"
+                          v-model="title"
+                          :error-message="getValidationErrors('title')"
+                          :error="hasValidationErrors('title')"
+                          @update:model-value="() => resetValidateErrors('title')"
+                      />
+                    </div>
+                    <div class="form-group">
+                      <label class="text-bold">Chủ đề <span class="required">*</span></label>
+                      <q-select
+                          outlined
+                          dense
+                          fill-input
+                          :options="subjectList"
+                          :disable="true"
+                          label="Chọn chủ đề"
+                          v-model="subjects"
+                          emit-value
+                          map-options
+                          option-value="value"
+                          option-label="label"
+                          :error-message="getValidationErrors('subjects')"
+                          :error="hasValidationErrors('subjects')"
+                          @update:model-value="() => resetValidateErrors('subjects')"
+                      />
+                    </div>
+  
+                    <div class="form-group">
+                      <label class="text-bold">Sinh viên <span class="required">*</span></label>
+                      <q-select
+                          outlined
+                          dense
+                          fill-input
+                          :disable="true"
+                          :options="students"
+                          option-label="full_name"
+                          option-value="id"
+                          label="Chọn sinh viên"
+                          v-model="student_id"
+                          emit-value
+                          map-options
+                          :error-message="getValidationErrors('student_id')"
+                          :error="hasValidationErrors('student_id')"
+                          @update:model-value="() => resetValidateErrors('student_id')"
+                      />
+                    </div>
+                    <div class="form-group">
+                      <label class="text-bold">Nội dung</label>
+                      <q-input type="textarea" outlined dense id="description" v-model="content"
+                               :error-message="getValidationErrors('content')"
+                               :error="hasValidationErrors('content')"
+                               :disable="true"
+                               @update:model-value="() => resetValidateErrors('content')"
+                      ></q-input>
+                    </div>
+                  </div>
                 </div>
-            </div>
+              </q-card-section>
+            </q-card>
+          </div>
+          <div class="col-3 right-sidebar">
+            <q-card class="widget meta-boxes action-horizontal q-mb-md">
+              <q-card-section>
+                <div class="widget-title text-bold">Tác vụ</div>
+              </q-card-section>
+              <q-separator/>
+              <q-card-section>
+                <q-btn :disable="isRequest" @click="handleChangeStatusReport" no-caps color="secondary" class="q-mr-sm">
+                  <q-icon name="fa-solid fa-save" class="q-mr-sm" size="xs"></q-icon>
+                  Duyệt
+                </q-btn>
+                <q-btn @click="redirectRouter('ReportStudentAdmin')" no-caps color="warning" class="q-mr-sm">
+                  <q-icon name="fa-solid fa-rotate-left" class="q-mr-sm" size="xs"></q-icon>
+                  Quay lại
+                </q-btn>
+              </q-card-section>
+            </q-card>
+          </div>
         </div>
-
+      </div>
     </div>
-</template>
+  </template>
+  
 
 <script lang="ts">
    
@@ -76,7 +115,7 @@ Thông tin đính chính gửi về Ban Quản lý đào tạo - P121 Bàn 7 (C/
     } from "vue";
     import useStudent from "../../uses/useStudent";
     import {
-        useRoute
+        useRoute, useRouter
     } from "vue-router";
     import api from '../../api'
     import {
@@ -88,20 +127,21 @@ Thông tin đính chính gửi về Ban Quản lý đào tạo - P121 Bàn 7 (C/
     import eventBus from "../../utils/eventBus"
 import _ from "lodash"
 import {ReportStatusEnum} from "../../enums/reportStatus.enum";
+import {validationHelper} from "../../utils/validationHelper";
+import { SUBJECTS } from "../../utils/constants";
 
 
     export default defineComponent({
         name: "ReportStudentAdminDetail",
         setup() {
             const route = useRoute()
-            
-            
             const tab = ref < string > ('home')
+            const subjectList = SUBJECTS
             const $q = useQuasar()
             const idReport = ref("")
             const reportStatusEnum = ReportStatusEnum;
-       
-           
+            const router = useRouter()
+            const isRequest = ref<boolean>(false)
             const student_id = ref<number | null>(null)
             const title = ref<string | null>("")
             const content = ref<string | null>("")
@@ -109,7 +149,8 @@ import {ReportStatusEnum} from "../../enums/reportStatus.enum";
             const status_approve = ref(1)
             const subjects = ref(1)
             const class_id = ref(1)
-            
+            const {students, getStudentClasses} = useStudent()
+            const {setValidationErrors, getValidationErrors, hasValidationErrors, resetValidateErrors} = validationHelper()
             const report: any = {
                 student_id: student_id,
                 title: title,
@@ -119,32 +160,76 @@ import {ReportStatusEnum} from "../../enums/reportStatus.enum";
                 status_approve: status_approve,
                 class_id: class_id,
             }
-
-           
             
-            
-            onMounted(() => {
+            onMounted (async() => {
+                
                 idReport.value = < string > route.params.id
-                handleUpdateStatusReport();
+                await getStudentClasses()
+                await getReport (parseInt(idReport.value));
+                if(report['status'].value == reportStatusEnum.Pending){
+                    await handleUpdateStatusReport(reportStatusEnum.Seen);
+                }
             })
-            const loading = ref < boolean > (false)
 
-            const handleUpdateStatusReport = () => {
-       
-                api.getReport<{}>(parseInt(idReport.value)).then((res) => {
-                    report.value = _.get(res, 'data.data.report', {})
-                    
-                    console.log("aaaa"+report.value);
+            const loading = ref < boolean > (false)
+            const redirectRouter = (nameRoute: string): void => {
+                router.push({name: nameRoute})
+            }
+
+            const handleChangeStatusReport = () => {
+                const data = {
+                    "status":reportStatusEnum.Approved
+                }
+                if (!isRequest.value) {
+                    $q.loading.show()
+                    isRequest.value = true
+
+                    api.changeStatusReport(data, idReport.value).then(res => {
+                    if (res) {
+                        eventBus.$emit('notify-success', 'Duyệt phản ánh thành công')
+                        redirectRouter('ReportStudentAdmin')
+                    }
+                    }).catch(error => {
+                    let errors = _.get(error.response, 'data.error', {})
+                    if (Object.keys(errors).length === 0) {
+                        let message = _.get(error.response, 'data.message', '')
+                        $q.notify({
+                        icon: 'report_problem',
+                        message,
+                        color: 'negative',
+                        position: 'top-right'
+                        })
+                    }
+                    if (Object.keys(errors).length > 0) {
+                        setValidationErrors(errors)
+                    }
+                    }).finally(() => {
+                        isRequest.value = false
+                        $q.loading.hide()
+                    })
+                }
+            }
+
+            const getReport= async (id:number)=>{
+                await api.getReport<{}>(parseInt(idReport.value)).then((res) => {
+                    const data = _.get(res, 'data.data.report', {})
+                    for(const key in report){
+                        report[key].value = data[key]
+                    }
                 }).catch(() => {
                  
                 }).finally(()=> {
 
                 })
-                const payload = reactive({...report})
-                const data = _.cloneDeep(payload);
-                api.updateStudentReportAddmin(data, idReport.value).then(res => {
+            }
+            const handleUpdateStatusReport = (status:number) => {
+                
+                const data = {
+                    "status":status
+                }
+                api.changeStatusReport(data, idReport.value).then(res => {
                 if (res) {
-                    eventBus.$emit('notify-success', 'Cập nhật báo cáo thành công')
+                    
                 }
                 }).catch(error => {
                     let errors = _.get(error.response, 'data.error', {})
@@ -165,7 +250,19 @@ import {ReportStatusEnum} from "../../enums/reportStatus.enum";
             return {
                 tab,
                 handleUpdateStatusReport,
-                loading
+                loading,
+                isRequest,
+                getValidationErrors,
+                hasValidationErrors,
+                resetValidateErrors,
+                handleChangeStatusReport,
+                student_id,
+                title,
+                content,
+                subjects,
+                redirectRouter,
+                subjectList,
+                students
             }
         }
     })
