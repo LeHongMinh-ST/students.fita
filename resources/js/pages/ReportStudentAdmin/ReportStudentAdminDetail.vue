@@ -67,9 +67,11 @@ Thông tin đính chính gửi về Ban Quản lý đào tạo - P121 Bàn 7 (C/
 </template>
 
 <script lang="ts">
+   
     import {
         defineComponent,
         onMounted,
+        reactive,
         ref
     } from "vue";
     import useStudent from "../../uses/useStudent";
@@ -83,43 +85,86 @@ Thông tin đính chính gửi về Ban Quản lý đào tạo - P121 Bàn 7 (C/
     import {
         useQuasar
     } from "quasar";
+    import eventBus from "../../utils/eventBus"
+import _ from "lodash"
+import {ReportStatusEnum} from "../../enums/reportStatus.enum";
+
 
     export default defineComponent({
         name: "ReportStudentAdminDetail",
         setup() {
             const route = useRoute()
-            const {
-                student,
-                getStudent
-            } = useStudent()
-            const userId = ref < string > ('')
+            
+            
             const tab = ref < string > ('home')
             const $q = useQuasar()
+            const idReport = ref("")
+            const reportStatusEnum = ReportStatusEnum;
+       
+           
+            const student_id = ref<number | null>(null)
+            const title = ref<string | null>("")
+            const content = ref<string | null>("")
+            const status = ref(reportStatusEnum.Pending)
+            const status_approve = ref(1)
+            const subjects = ref(1)
+            const class_id = ref(1)
+            
+            const report: any = {
+                student_id: student_id,
+                title: title,
+                subjects: subjects,
+                content: content,
+                status: status,
+                status_approve: status_approve,
+                class_id: class_id,
+            }
+
+           
+            
+            
             onMounted(() => {
-                userId.value = < string > route.params.id
-                getStudent(parseInt(userId.value))
+                idReport.value = < string > route.params.id
+                handleUpdateStatusReport();
             })
             const loading = ref < boolean > (false)
-            const handleUpdateLearningOutcome = () => {
-                loading.value = true
-                api.updateLearningOutcome < IStudentResult > (student.value.id).then(res => {
-                    student.value = _.get(res, 'data.data.student', {})
+
+            const handleUpdateStatusReport = () => {
+       
+                api.getReport<{}>(parseInt(idReport.value)).then((res) => {
+                    report.value = _.get(res, 'data.data.report', {})
+                    
+                    console.log("aaaa"+report.value);
                 }).catch(() => {
-                    $q.notify({
+                 
+                }).finally(()=> {
+
+                })
+                const payload = reactive({...report})
+                const data = _.cloneDeep(payload);
+                api.updateStudentReportAddmin(data, idReport.value).then(res => {
+                if (res) {
+                    eventBus.$emit('notify-success', 'Cập nhật báo cáo thành công')
+                }
+                }).catch(error => {
+                    let errors = _.get(error.response, 'data.error', {})
+                    if (Object.keys(errors).length === 0) {
+                        let message = _.get(error.response, 'data.message', '')
+                        $q.notify({
                         icon: 'report_problem',
-                        message: 'Không thể cập nhật dữ liệu',
+                        message,
                         color: 'negative',
                         position: 'top-right'
-                    })
+                        })
+                    }
                 }).finally(() => {
-                    loading.value = false
+                    $q.loading.hide()
                 })
             }
 
             return {
-                student,
                 tab,
-                handleUpdateLearningOutcome,
+                handleUpdateStatusReport,
                 loading
             }
         }

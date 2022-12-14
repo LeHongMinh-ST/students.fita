@@ -68,10 +68,6 @@
                     </div>
                 </div>
                 <div class="table-wrapper-action">
-                    <q-btn no-caps @click="redirectRouter('ReportStudentCreate')" color="secondary" class="q-mr-sm">
-                        <q-icon name="fa-solid fa-plus" class="q-mr-sm" size="xs"></q-icon>
-                        Duyệt
-                    </q-btn>
                     <q-btn no-caps  color="secondary" class="q-mr-sm">
                         <q-icon name="fa-solid fa-refresh" class="q-mr-sm" size="xs"></q-icon>
                         Tải lại
@@ -134,28 +130,32 @@
                                 </td>
                                 
                                 <td class="text-center">
-                                    <div class="inline cursor-pointer">
-                                        <q-icon name="menu" size="sm"></q-icon>
-                                        <q-menu touch-position>
-                                            <q-list style="min-width: 100px">
-                                                <q-item clickable v-close-popup
-                                                    @click="redirectRouter('ReportStudentUpdate', {id: getValueLodash(item, 'id', 0) })">
-                                                    <q-item-section>
-                                                        <span>
-                                                            <q-icon name="fa-solid fa-pen-to-square" class="q-mr-sm"
-                                                                size="xs"></q-icon>Chỉnh sửa
-                                                        </span>
-                                                    </q-item-section>
-                                                </q-item>
-                                                <q-item clickable v-close-popup
-                              @click="openDialogDelete(getValueLodash(item, 'id', 0))">
+                                <div class="inline cursor-pointer">
+                                    <q-icon name="menu" size="sm"></q-icon>
+                                    <q-menu touch-position>
+                                        <q-list style="min-width: 100px">
+                                            <q-item clickable v-close-popup @click="redirectRouter('ReportStudentDetailAdmin', {id: getValueLodash(item, 'id', 0)})">
+                                               <span><q-icon name="fa-solid fa-eye" class="q-mr-sm"
+                                                             size="xs" @click="redirectRouter('ReportStudentDetailAdmin', {id: getValueLodash(item, 'id', 0)})"></q-icon>Xem chi tiết</span>
+                                           </q-item>
+                                            <q-item
+                                               
+                                                clickable v-close-popup
+                                               >
+                                                <span><q-icon name="fa-solid fa-check" class="q-mr-sm"
+                                                              size="xs"></q-icon>Duyệt</span>
+                                            </q-item>
+                                            <q-item
+                                               
+                                                clickable v-close-popup
+                                               >
                                                 <span><q-icon name="fa-solid fa-trash" class="q-mr-sm"
-                                                              size="xs"></q-icon>Xoá</span>
-                      </q-item>
-                                            </q-list>
-                                        </q-menu>
-                                    </div>
-                                </td>
+                                                              size="xs"></q-icon>Xóa</span>
+                                            </q-item>
+                                        </q-list>
+                                    </q-menu>
+                                </div>
+                            </td>
                             </tr>
                         </template>
                         <template v-else>
