@@ -165,6 +165,7 @@ Route::group(['prefix' => 'student'], function () {
         Route::prefix('/requests')->group(function () {
             Route::get('/', [StudentController::class, 'getRequestUpdateStudent']);
             Route::get('/my-request', [StudentController::class, 'getMyRequestUpdateStudent']);
+            Route::get('/{id}', [StudentController::class, 'showRequestUpdateStudent']);
             Route::post('/', [StudentController::class, 'createStudentTemp']);
             Route::put('/selected', [StudentController::class, 'updateStudentByStudentTempMultiple']);
             Route::put('/{id}', [StudentController::class, 'updateStudentByStudentTemp']);
