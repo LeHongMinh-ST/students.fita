@@ -379,7 +379,7 @@ export default defineComponent({
 
 
     watch(
-        () => page?.value?.currentPage,
+        () => page.value.currentPage,
         () => getListDepartment()
     );
     watch(

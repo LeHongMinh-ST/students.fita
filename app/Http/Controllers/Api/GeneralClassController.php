@@ -42,12 +42,12 @@ class GeneralClassController extends Controller
         }
 
         if (isset($data['class_code'])) {
-            $condition[] = ['class_code' => $data['class_code']];
+            $condition[] = ['class_code', '=', $data['class_code']];
         }
         $user = auth()->user();
 
-        if (@$user->is_teacher && !@$user->is_super_admin) {
-            $condition[] = ['teacher_id' => $user->is_teacher];
+        if ($user->is_teacher && !@$user->is_super_admin) {
+            $condition[] = ['teacher_id', '=', $user->id];
         }
 
         $sort = $data['sort'] ?? 'DESC';

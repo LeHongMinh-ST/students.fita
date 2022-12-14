@@ -205,6 +205,18 @@ const routeStudent: Array<RouteRecordRaw> = [
         meta: {isAuthenticatedStudent: false},
     },
     {
+        path: 'request-student',
+        name: 'RequestStudent',
+        component: () => import('../pages/StudentPage/RequestStudent.vue'),
+        meta: {isAuthenticatedStudent: true},
+    },
+    {
+        path: 'request-student-detail/:id',
+        name: 'RequestDetail',
+        component: () => import('../pages/StudentPage/RequestStudentDetail.vue'),
+        meta: {isAuthenticatedStudent: true},
+    },
+        {
         path: 'report',
         meta: {isAuthenticatedStudent: true},
         children: [
@@ -285,16 +297,6 @@ const routes: Array<RouteRecordRaw> = [
         path: '/admin/test',
         name: 'Register',
         component: () => import('../pages/Register.vue')
-    },
-    {
-        path: '/stu/login',
-        name: 'StuLogin',
-        component: () => import('../pages/SVLogin.vue')
-    },
-    {
-        path: '/stu/view',
-        name: 'StuView',
-        component: () => import('../pages/TraCuuThongTinSV.vue')
     },
 ]
 const router = createRouter({

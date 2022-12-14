@@ -153,10 +153,46 @@ export default {
             url: '/student/requests/my-request-pending',
         })
     },
-    deleteRequest(id: number): AxiosPromise<IResult<T>> {
+    getRequestStudent<T>(params: {} = {}): AxiosPromise<IResult<T>> {
+        return apiAxios({
+            method: 'get',
+            url: '/student/requests',
+            params
+        })
+    },
+
+    deleteRequestSelected<T>(data: any): AxiosPromise<IResult<T>> {
+        return apiAxios({
+            method: 'delete',
+            url: `/student/requests/delete-selected`,
+            data: data
+        })
+    },
+    getRequestStudentDetail<T>(id: number): AxiosPromise<IResult<T>> {
+        return apiAxios({
+            method: 'get',
+            url: `/student/requests/${id}`
+        })
+    },
+    deleteRequest<T>(id: number): AxiosPromise<IResult<T>> {
         return apiAxios({
             method: 'delete',
             url: `/student/requests/${id}`,
         })
-    }
+    },
+    changeStatusRequest<T>(id: number, data: object): AxiosPromise<IResult<T>> {
+        return apiAxios({
+            method: 'put',
+            data: data,
+            url: `/student/requests/${id}`
+        })
+    },
+    changeStatusRequestSelect<T>(data: object): AxiosPromise<IResult<T>> {
+        return apiAxios({
+            method: 'put',
+            data: data,
+            url: `/student/requests/selected`
+        })
+    },
+
 }

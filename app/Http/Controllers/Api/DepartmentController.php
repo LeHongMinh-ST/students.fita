@@ -37,7 +37,7 @@ class DepartmentController extends Controller
         }
 
         if (isset($data['department_code'])) {
-            $condition[] = ['department_code' => $data['department_code']];
+            $condition[] = ['department_code' ,'=', $data['department_code']];
         }
 
         $sort = $data['sort'] ?? 'DESC';
