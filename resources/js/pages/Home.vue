@@ -159,7 +159,7 @@
                                     <template v-if="reports?.length ?? [].length > 0">
                                         <tr v-for="(report, index) in reports" :key="index">
 
-                                            <td class="text-center">{{ index }}
+                                            <td class="text-center">{{ index + 1 }}
                                             </td>
                                             <td class="text-left">
                                                 <span @click="redirectRouter('RoleUpdate', { id: report.id })"
