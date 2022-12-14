@@ -1,7 +1,7 @@
 <template>
     <div class="dashboard-wrapper">
         <q-breadcrumbs>
-               <q-breadcrumbs-el label="Bảng điều khiển" icon="home"  />
+            <q-breadcrumbs-el label="Bảng điều khiển" icon="home"  />
         </q-breadcrumbs>
         <div class="main">
             <div class="row">
@@ -162,37 +162,25 @@
                                             <td class="text-center">{{ index + 1 }}
                                             </td>
                                             <td class="text-left">
-                                                <span @click="redirectRouter('RoleUpdate', { id: report.title })"
+                                                <span @click="redirectRouter('RoleUpdate', { id: report.id })"
                                                     class="text-bold cursor-pointer text-link">
-                                                    {{ getValueLodash(report, 'content', '') }}
+                                                    {{ getValueLodash(report, 'titile', '') }}
                                                 </span>
                                             </td>
+                                            <td class="text-left"> {{ getValueLodash(report, 'subject_text', '') }}</td>
+                                            <td class="text-left"> {{ getValueLodash(report, 'student.full_name', '') }}</td>
                                             <td class="text-center">
                                                 {{ this.handleFormatDate(getValueLodash(report, 'created_at', '')) }}
                                             </td>
-                                            <td class="text-left">{{ getValueLodash(report, 'create_by', '') }}
+                                            <td class="text-left">{{ getValueLodash(report, 'create_by.full_name', '') }}
+                                            </td>
+                                            <td class="text-left">{{ getValueLodash(report, 'status_text', '') }}
                                             </td>
                                             <td class="text-center">
-                                                <div class="inline cursor-pointer">
-                                                    <q-icon name="menu" size="sm"></q-icon>
-                                                    <q-menu touch-position>
-                                                        <q-list style="min-width: 100px">
-                                                            <q-item clickable v-close-popup
-                                                                @click="redirectRouter('RoleUpdate', { id: getValueLodash(report, 'id', 0) })">
-                                                                <q-item-section>
-                                                                    <span><q-icon name="fa-solid fa-pen-to-square"
-                                                                            class="q-mr-sm" size="xs"></q-icon>Chỉnh
-                                                                        sửa</span>
-                                                                </q-item-section>
-                                                            </q-item>
-                                                            <q-item clickable v-close-popup
-                                                                @click="this.openDialogDelete(getValueLodash(report, 'id', 0))">
-                                                                <span><q-icon name="fa-solid fa-trash" class="q-mr-sm"
-                                                                        size="xs"></q-icon>Xoá</span>
-                                                            </q-item>
-                                                        </q-list>
-                                                    </q-menu>
-                                                </div>
+                                                <span @click="redirectRouter('ReportStudent', { id: report.id })"
+                                                      class="text-bold cursor-pointer text-link">
+                                                      Chi tiết
+                                                </span>
                                             </td>
                                         </tr>
                                     </template>
@@ -249,8 +237,6 @@ export default defineComponent({
         })
 
 
-        const dataReports = ref<any>([]);
-
 
         const getDataDashBoard = (): void => {
             loading.value = true;
@@ -274,28 +260,9 @@ export default defineComponent({
 
         }
 
-        const getDataReports = (): void => {
-            loading.value = true;
-
-            api.getReports().then((res: any) => {
-                dataReports.value = res.data.data.reports;
-                console.log(dataReports.value);
-            }).catch((err: any) => {
-                console.log(err);
-                $q.notify({
-                    icon: 'report_problem',
-                    message: 'Không tải được dữ liệu reports!',
-                    color: 'negative',
-                    position: 'top-right'
-                })
-            }).finally(() => loading.value = false)
-
-        }
-
         onMounted(() => {
             store.commit(`home/${HomeMutationTypes.SET_TITLE}`, 'Bảng điều khiển');
             getDataDashBoard();
-            getDataReports();
         })
 
         const redirectRouter = (nameRoute: string, params: any | [] = null): void => {
@@ -342,3 +309,4 @@ export default defineComponent({
         }
     }
 }
+</style>
