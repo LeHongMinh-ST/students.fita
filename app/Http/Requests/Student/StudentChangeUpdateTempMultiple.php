@@ -25,7 +25,7 @@ class StudentChangeUpdateTempMultiple extends BaseRequest
     public function rules()
     {
         return [
-            'request_id' => 'required',
+            'request_ids' => 'required',
             'status' => 'required',
         ];
     }

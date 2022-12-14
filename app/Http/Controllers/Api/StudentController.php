@@ -238,16 +238,18 @@ class StudentController extends Controller
     {
         DB::beginTransaction();
         try {
-            $ids = $request->get('request_id', []);
+            $ids = $request->get('request_ids', []);
             $status = $request->get('status', 0);
 
-            $studentTemps = $this->studentRepository->getByWhereIn('id', $ids);
-            $student = auth('students')->user();
-
+            $studentTemps = $this->studentTempRepository->getByWhereIn('id', $ids);
             foreach ($studentTemps as $studentTemp) {
-                if ($studentTemp->student_id != @$student->id) {
-                    return $this->responseError('Bạn không có quyền truy cập', [], 403);
+                if (auth('students')->check()) {
+                    $student = auth('students')->user();
+                    if ($student->role != StudentRole::ClassMonitor && $studentTemp->student_id != @$student->id) {
+                        return $this->responseError('Bạn không có quyền truy cập', [], 403);
+                    }
                 }
+
 
                 $studentTemp = $this->handleUpdateStudentByStudentTemp($studentTemp, $status);
                 $this->studentTempRepository->createOrUpdate($studentTemp);
@@ -275,7 +277,6 @@ class StudentController extends Controller
     {
         try {
             $studentTemp = $this->studentTempRepository->getFirstBy(['id' => $id], ['*'], ['student']);
-
             if (!$studentTemp) {
                 return $this->responseError('Không tìm thấy bản ghi', [], 400, 400);
             }
@@ -295,7 +296,7 @@ class StudentController extends Controller
 
             if (auth('api')->check()) {
                 $auth = auth('api')->user();
-                if (@$auth->teacher_id && !@$auth->is_super_admin) {
+                if (@$auth->is_teacher && !@$auth->is_super_admin) {
                     $classIds = $auth?->generalClass?->pluck('id')?->toArray();
                     if (!in_array($studentTemp->student->class_id, $classIds)) {
                         return $this->responseError('Bạn không có quyền thực hiện chức năng này', [], 403);
@@ -328,7 +329,7 @@ class StudentController extends Controller
 
             if (auth('api')->check()) {
                 $auth = auth('api')->user();
-                if (@$auth->teacher_id && !@$auth->is_super_admin) {
+                if (@$auth->is_teacher && !@$auth->is_super_admin) {
                     $classIds = $auth?->generalClass?->pluck('id')?->toArray();
                     if (!array_diff($arrayClass, $classIds)) {
                         return $this->responseError('Bạn không có quyền thực hiện chức năng này', [], 403);
@@ -599,7 +600,7 @@ class StudentController extends Controller
 
         if (auth('api')->check()) {
             $auth = auth('api')->user();
-            if (@$auth->teacher_id && !@$auth->is_super_admin) {
+            if (@$auth->is_teacher && !@$auth->is_super_admin) {
                 $classIds = $auth->generalClass->pluck('id')->toArray();
                 $query->whereIn('class_id', $classIds);
             }

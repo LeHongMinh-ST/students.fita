@@ -73,7 +73,7 @@ class ReportController extends Controller
 
             if (auth('api')->check()) {
                 $auth= auth('api')->user();
-                if (@$auth->teacher_id && !@$auth->is_super_admin) {
+                if (@$auth->is_teacher && !@$auth->is_super_admin) {
 
                     $classIds = $auth?->generalClass?->pluck('id')?->toArray();
 
@@ -115,7 +115,7 @@ class ReportController extends Controller
             if (auth('api')->check()) {
                 $auth= auth('api')->user();
 
-                if (@$auth->teacher_id && !@$auth->is_super_admin) {
+                if (@$auth->is_teacher && !@$auth->is_super_admin) {
 
                     $classIds = $auth?->generalClass?->pluck('id')?->toArray();
 
