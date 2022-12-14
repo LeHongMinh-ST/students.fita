@@ -41,7 +41,7 @@ Route::group(['prefix' => 'auth'], function () {
 
 Route::group(['middleware' => ['jwt.auth', 'auth.admin']], function () {
     Route::prefix('dashboard')->group(function () {
-        Route::get('/', [DashboardController::class, 'index'])->middleware('permission:dashboard-index');
+        Route::get('/', [DashboardController::class, 'index']);
     });
 
     Route::prefix('users')->group(function () {
@@ -111,7 +111,7 @@ Route::group(['middleware' => ['jwt.auth', 'auth.admin']], function () {
 
     Route::prefix('reports')->group(function () {
         Route::get('/', [ReportController::class, 'index'])->middleware('permission:report-index');
-        Route::get('/count-pending', [ReportController::class, 'getCountReportPending'])->middleware('permission:report-index');
+        Route::get('/count-pending', [ReportController::class, 'getCountReportPending']);
         Route::post('/', [ReportController::class, 'store'])->middleware('permission:report-create');
         Route::get('/{id}', [ReportController::class, 'show'])->middleware('permission:report-index');
         Route::put('/change-status-selected', [ReportController::class, 'changeStatusMultipleReport'])->middleware('permission:report-update');

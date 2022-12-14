@@ -213,12 +213,19 @@ class ReportController extends Controller
             if ($report->status == ReportStatus::Approved) {
                 return $this->responseError('Không thể cập nhật trạng thái', [], 400);
             }
-
-            $data['status'] = $status;
-
-            if ($status == ReportStatus::Approved) {
-                $data['approved'] = auth('api')->id();
+            $data = [];
+            switch ($status){
+                case ReportStatus::Seen:
+                    if ($report->status == ReportStatus::Pending) {
+                        $data['status'] = $status;
+                    }
+                    break;
+                case ReportStatus::Approved:
+                    $data['status'] = $status;
+                    $data['approved'] = auth('api')->id();
+                    break;
             }
+
             $report?->fill($data);
             $this->reportRepository->createOrUpdate($report);
 
