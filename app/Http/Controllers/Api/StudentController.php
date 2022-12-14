@@ -205,7 +205,6 @@ class StudentController extends Controller
 
             $studentTemp = $this->studentTempRepository->getFirstBy(['id' => $id]);
 
-
             if (auth('students')->check()) {
                 $student = auth('students')->user();
                 if ($student->role != StudentRole::ClassMonitor && $studentTemp->student_id != @$student->id) {
@@ -213,12 +212,13 @@ class StudentController extends Controller
                 }
             }
 
-
             $studentTemp = $this->handleUpdateStudentByStudentTemp($studentTemp, $status);
             $this->studentTempRepository->createOrUpdate($studentTemp);
+
             DB::commit();
             return $this->responseSuccess();
         } catch (PermissionStatusException $exception) {
+            DB::rollBack();
             Log::error('Error change status student', [
                 'method' => __METHOD__,
                 'message' => $exception->getMessage()
@@ -250,7 +250,6 @@ class StudentController extends Controller
                     }
                 }
 
-
                 $studentTemp = $this->handleUpdateStudentByStudentTemp($studentTemp, $status);
                 $this->studentTempRepository->createOrUpdate($studentTemp);
             }
@@ -258,6 +257,7 @@ class StudentController extends Controller
             DB::commit();
             return $this->responseSuccess();
         } catch (PermissionStatusException $exception) {
+            DB::rollBack();
             Log::error('Error change status student multiple', [
                 'method' => __METHOD__,
                 'message' => $exception->getMessage()
@@ -340,6 +340,7 @@ class StudentController extends Controller
             $requestIds = $studentTemps->filter(function ($item) {
                 return $item->status_approved != StudentTempStatus::Approved;
             })->pluck('id')->toArray();
+
             $condition[] = ['id', 'in', $requestIds];
             $this->studentTempRepository->deleteBy($condition);
             return $this->responseSuccess();

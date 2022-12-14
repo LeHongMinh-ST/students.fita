@@ -114,7 +114,10 @@ Route::group(['middleware' => ['jwt.auth', 'auth.admin']], function () {
         Route::get('/count-pending', [ReportController::class, 'getCountReportPending'])->middleware('permission:report-index');
         Route::post('/', [ReportController::class, 'store'])->middleware('permission:report-create');
         Route::get('/{id}', [ReportController::class, 'show'])->middleware('permission:report-index');
+        Route::put('/change-status-selected', [ReportController::class, 'changeStatusMultipleReport'])->middleware('permission:report-update');
         Route::put('/{id}', [ReportController::class, 'update'])->middleware('permission:report-update');
+        Route::put('/{id}/change-status', [ReportController::class, 'changeStatusReport'])->middleware('permission:report-update');
+        Route::delete('/delete-selected', [ReportController::class, 'deleteSelected'])->middleware('permission:report-delete');
         Route::delete('/{id}', [ReportController::class, 'destroy'])->middleware('permission:report-delete');
     });
 
