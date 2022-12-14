@@ -382,13 +382,6 @@ export default {
         })
     },
 
-    getMyRequest<T>(): AxiosPromise<IResult<T>> {
-        return apiAxios({
-            method: 'get',
-            url: '/my-request'
-        })
-    },
-
     // Api dashboard - TruongTN
     getDashboard<T>(): AxiosPromise<IResult<T>> {
         return apiAxios({

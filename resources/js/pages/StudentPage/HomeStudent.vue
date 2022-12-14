@@ -476,33 +476,31 @@
                                                     </tr>
                                                 </thead>
                                                 <tbody>
-                                                    <template v-if="[].length ?? [].length > 0">
-                                                        <tr v-for="(request, index) in []" :key="index">
+                                                    <template v-if="myRequest.length > 0">
+                                                        <tr v-for="(request, index) in myRequest" :key="index">
                                                             <td class="text-center">{{ index }}
                                                             </td>
                                                             <td class="text-left">
                                                                 <span
-                                                                    @click="redirectRouter('RoleUpdate', { id: request.id })"
+                                                                    @click="redirectRouter('RoleUpdate', { id: request['id'] ?? 0 })"
                                                                     class="text-bold cursor-pointer text-link">
-                                                                    {{ getValueLodash(request, 'full_name', '') }}
+                                                                    {{ request['fullName'] ?? "" }}
                                                                 </span>
                                                             </td>
                                                             <td class="text-left">
                                                                 <span
-                                                                    @click="redirectRouter('RoleUpdate', { id: request.id })"
+                                                                    @click="redirectRouter('RoleUpdate', { id: request['id'] ?? 0 })"
                                                                     class="text-bold cursor-pointer text-link">
-                                                                    {{ getValueLodash(request, 'full_name', '') }}
+                                                                    {{ request['fullName'] ?? "" }}
                                                                 </span>
                                                             </td>
                                                             <td class="text-center">
-                                                                {{ this.handleFormatDate(getValueLodash(request,
-                                                                        'created_at', ''))
-                                                                }}
+                                                                {{ request['created_at'] ?? "" }}
                                                             </td>
 
                                                             <td class="text-center">
                                                                 <span
-                                                                    @click="redirectRouter('RoleUpdate', { id: request.id })"
+                                                                    @click="redirectRouter('RoleUpdate', { id: request['id'] ?? 0 })"
                                                                     class="text-bold cursor-pointer text-link">
                                                                     Chi tiết
                                                                 </span>
@@ -524,7 +522,6 @@
                                     </q-card>
                                 </q-scroll-area>
                             </q-tab-panel>
-
 
                         </q-tab-panels>
                     </q-card>
@@ -633,6 +630,7 @@ export default defineComponent({
         const password = ref<string>('')
         const password_old = ref<string>('')
         const password_confirm = ref<string>('')
+        let myRequest: any[] = [];
         const handleUpdateLearningOutcome = () => {
             loading.value = true
             apiStudent.updateLearningOutcome<IStudentResult>(auth.id).then(res => {
@@ -657,15 +655,14 @@ export default defineComponent({
             })
             return auth
         }
-
         const getMyRequest = (): void => {
             loading.value = true;
-
-            api.getMyRequest().then((res: any) => {
-                console.log(res);
-
+            apiStudent.getMyRequest().then((res: any) => {
+                if(res.hasOwnProperty('data') && res.data.hasOwnProperty('data') && res.data.data.hasOwnProperty('reports'))
+                myRequest = res.data.data.reports;
             }).catch((err: any) => {
                 console.log(err);
+
                 $q.notify({
                     icon: 'report_problem',
                     message: 'Không tải được dữ liệu!',
@@ -709,7 +706,6 @@ export default defineComponent({
         const isRequest = ref<boolean>(false)
 
         const handleResetPassword = () => {
-
             if (!isRequest.value) {
                 isRequest.value = true
                 $q.loading.show()
@@ -764,7 +760,8 @@ export default defineComponent({
             getValidationErrors, isPwd,
             handleOpenResetPassword,
             isShowDialogResetPassword,
-            resetValidateErrors
+            resetValidateErrors,
+            myRequest
         }
     }
 })
