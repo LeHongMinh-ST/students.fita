@@ -298,16 +298,6 @@ const routes: Array<RouteRecordRaw> = [
         name: 'Register',
         component: () => import('../pages/Register.vue')
     },
-    {
-        path: '/stu/login',
-        name: 'StuLogin',
-        component: () => import('../pages/SVLogin.vue')
-    },
-    {
-        path: '/stu/view',
-        name: 'StuView',
-        component: () => import('../pages/TraCuuThongTinSV.vue')
-    },
 ]
 const router = createRouter({
     history: createWebHistory(),
