@@ -147,7 +147,7 @@ class ReportController extends Controller
 
         if (auth('api')->check()) {
             $user = auth('api')->user();
-            if (@$user->teacher_id && !@$user->is_super_admin) {
+            if (@$user->is_teacher && !@$user->is_super_admin) {
                 $classIds = $user?->generalClass?->pluck('id')?->toArray();
                 $queryReport->whereIn('class_id', $classIds);
             }

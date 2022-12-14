@@ -46,8 +46,8 @@ class GeneralClassController extends Controller
         }
         $user = auth()->user();
 
-        if (@$user->teacher_id && !@$user->is_super_admin) {
-            $condition[] = ['teacher_id' => $user->teacher_id];
+        if (@$user->is_teacher && !@$user->is_super_admin) {
+            $condition[] = ['teacher_id' => $user->is_teacher];
         }
 
         $sort = $data['sort'] ?? 'DESC';

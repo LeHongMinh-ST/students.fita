@@ -74,7 +74,10 @@
                     <span class="text-bold">Ban chủ nhiệm duyệt:</span>
                     {{ student?.admin_approved?.full_name ?? "Chưa duyệt" }}
                   </div>
-
+                  <div v-if="student?.status_approved == studentStatusTempEnum.Reject" class="item q-mt-md">
+                    <span class="text-bold">Người từ chối:</span>
+                    {{ `${student?.rejectable?.full_name} (${student.reject_role_text})`  }}
+                  </div>
                 </div>
                 <q-separator/>
                 <div class="main-action q-mt-md text-center">
@@ -330,6 +333,10 @@ export default defineComponent({
         return false
       }
 
+      if (item.status_approved == studentStatusTempEnum.Reject) {
+        return false
+      }
+
       if (auth.is_teacher && !auth.is_super_admin) {
         if (item.status_approved == studentStatusTempEnum.TeacherApproved) {
           return false
@@ -341,6 +348,9 @@ export default defineComponent({
 
     const checkStatusApproved = (item) => {
       const auth = store.getters["auth/getAuthUser"]
+
+      if (item.status_approved == studentStatusTempEnum.Approved) return false
+
       if (auth.is_teacher && !auth.is_super_admin) {
         return item.status_approved == studentStatusTempEnum.ClassMonitorApproved
       }
@@ -395,6 +405,7 @@ export default defineComponent({
           }
           const res = await api.changeStatusRequest(parseInt(userId.value), data)
           if (res) {
+            await getStudentTemp(parseInt(userId.value))
             generateNotify('Cập nhật thành công', true)
           }
         } catch (error) {

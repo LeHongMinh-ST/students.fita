@@ -98,13 +98,13 @@
                           <td class="text-left">
                                                 <span @click="redirectRouter('RequestStudentDetail', { id: request.id })"
                                                       class="text-bold cursor-pointer text-link">
-                                                    {{ getValueLodash(request, 'full_name', '') }}
+                                                    {{ getValueLodash(request, 'student.full_name', '') }}
                                                 </span>
                           </td>
                           <td class="text-left">
                                                   <span @click="redirectRouter('RequestStudentDetail', { id: request.id })"
                                                         class="text-bold cursor-pointer text-link">
-                                                      {{ getValueLodash(request, 'full_name', '') }}
+                                                      {{ getValueLodash(request, 'student_code', '') }}
                                                   </span>
                           </td>
                           <td class="text-center">

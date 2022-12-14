@@ -203,13 +203,16 @@ class StudentController extends Controller
         try {
             $status = $request->get('status', 0);
 
-            $studentTemp = $this->studentRepository->getFirstBy(['id' => $id]);
+            $studentTemp = $this->studentTempRepository->getFirstBy(['id' => $id]);
 
-            $student = auth('students')->user();
 
-            if ($studentTemp->student_id != @$student->id) {
-                return $this->responseError('Bạn không có quyền truy cập', [], 403);
+            if (auth('students')->check()) {
+                $student = auth('students')->user();
+                if ($student->role != StudentRole::ClassMonitor && $studentTemp->student_id != @$student->id) {
+                    return $this->responseError('Bạn không có quyền truy cập', [], 403);
+                }
             }
+
 
             $studentTemp = $this->handleUpdateStudentByStudentTemp($studentTemp, $status);
             $this->studentTempRepository->createOrUpdate($studentTemp);
@@ -334,7 +337,7 @@ class StudentController extends Controller
             }
 
             $requestIds = $studentTemps->filter(function ($item) {
-               return $item->status_approved != StudentTempStatus::Approved;
+                return $item->status_approved != StudentTempStatus::Approved;
             })->pluck('id')->toArray();
             $condition[] = ['id', 'in', $requestIds];
             $this->studentTempRepository->deleteBy($condition);
@@ -410,7 +413,7 @@ class StudentController extends Controller
                     }
 
                     if (auth('api')->check()) {
-                        if ($auth->is_teacher && !$auth->is_super_admin){
+                        if ($auth->is_teacher && !$auth->is_super_admin) {
                             if ($studentTemp->status_approved == StudentTempStatus::ClassMonitorApproved) {
                                 $studentTemp->status_approved = StudentTempStatus::Reject;
                                 $studentTemp->rejectable_type = User::class;
@@ -634,7 +637,7 @@ class StudentController extends Controller
     public function showRequestUpdateStudent($id): JsonResponse
     {
         $relationship = ['studentApproved', 'teacherApproved', 'adminApproved', 'student', 'rejectable'];
-        $request = $this->studentTempRepository->getFirstBy(['id'=>$id], ['*'], $relationship);
+        $request = $this->studentTempRepository->getFirstBy(['id' => $id], ['*'], $relationship);
 
         return $this->responseSuccess([
             'request' => $request
@@ -670,12 +673,12 @@ class StudentController extends Controller
 
         if (auth('api')->check()) {
             $user = auth('api')->user();
-            if (@$user->teacher_id && !@$user->is_super_admin) {
+            if (@$user->is_teacher && !@$user->is_super_admin) {
                 $classIds = $user?->generalClass?->pluck('id')?->toArray();
                 $queryRequest->where('status_approved', StudentTempStatus::ClassMonitorApproved)->whereIn('class_id', $classIds);
             }
 
-            if (!@$user->teacher_id || @$user->is_super_admin) {
+            if (!@$user->is_teacher || @$user->is_super_admin) {
                 $queryRequest->where('status_approved', StudentTempStatus::TeacherApproved);
             }
         }
