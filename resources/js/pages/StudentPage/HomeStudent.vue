@@ -66,7 +66,6 @@
                             align="justify" narrow-indicator>
                             <q-tab name="home" label="Thông tin chung" />
                             <q-tab name="learning_outcome" label="Kết quả học tập" />
-                            <q-tab name="report" label="Báo cáo phản án" />
                             <q-tab name="request" label="Danh sách yêu cầu" />
                         </q-tabs>
                         <q-separator />
@@ -326,201 +325,116 @@
                                 <q-inner-loading :showing="loading" label-class="text-teal"
                                     label-style="font-size: 1.1em" />
                             </q-tab-panel>
-                            <q-tab-panel name="report">
-                                <div class="text-h6">Báo cáo phản án</div>
-                                <q-scroll-area class="q-px-lg q-pb-md" style="height: 100vh">
-                                    <q-timeline class="q-pa-sm" color="secondary">
-
-
-                                        <q-timeline-entry title="Event Title" subtitle="February 22, 1986">
-                                            <div>
-                                                Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
-                                                tempor
-                                                incididunt ut
-                                                labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud
-                                                exercitation
-                                                ullamco
-                                                laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor
-                                                in
-                                                reprehenderit in
-                                                voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur
-                                                sint
-                                                occaecat cupidatat
-                                                non proident, sunt in culpa qui officia deserunt mollit anim id est
-                                                laborum.
-                                            </div>
-                                        </q-timeline-entry>
-
-                                        <q-timeline-entry title="Event Title" subtitle="February 21, 1986"
-                                            icon="delete">
-                                            <div>
-                                                Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
-                                                tempor
-                                                incididunt ut
-                                                labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud
-                                                exercitation
-                                                ullamco
-                                                laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor
-                                                in
-                                                reprehenderit in
-                                                voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur
-                                                sint
-                                                occaecat cupidatat
-                                                non proident, sunt in culpa qui officia deserunt mollit anim id est
-                                                laborum.
-                                            </div>
-                                        </q-timeline-entry>
-
-
-                                        <q-timeline-entry title="Event Title" subtitle="February 22, 1986"
-                                            avatar="https://cdn.quasar.dev/img/avatar2.jpg">
-                                            <div>
-                                                Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
-                                                tempor incididunt ut
-                                                labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud
-                                                exercitation ullamco
-                                                laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor
-                                                in
-                                                reprehenderit in
-                                                voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur
-                                                sint
-                                                occaecat cupidatat
-                                                non proident, sunt in culpa qui officia deserunt mollit anim id est
-                                                laborum.
-                                            </div>
-                                        </q-timeline-entry>
-
-                                        <q-timeline-entry title="Event Title" subtitle="February 22, 1986">
-                                            <div>
-                                                Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
-                                                tempor incididunt ut
-                                                labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud
-                                                exercitation ullamco
-                                                laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor
-                                                in
-                                                reprehenderit in
-                                                voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur
-                                                sint
-                                                occaecat cupidatat
-                                                non proident, sunt in culpa qui officia deserunt mollit anim id est
-                                                laborum.
-                                            </div>
-                                        </q-timeline-entry>
-
-                                        <q-timeline-entry title="Event Title" subtitle="February 22, 1986"
-                                            color="orange" icon="done_all">
-                                            <div>
-                                                Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
-                                                tempor incididunt ut
-                                                labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud
-                                                exercitation ullamco
-                                                laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor
-                                                in
-                                                reprehenderit in
-                                                voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur
-                                                sint
-                                                occaecat cupidatat
-                                                non proident, sunt in culpa qui officia deserunt mollit anim id est
-                                                laborum.
-                                            </div>
-                                        </q-timeline-entry>
-
-                                        <q-timeline-entry title="Event Title" subtitle="February 22, 1986">
-                                            <div>
-                                                Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
-                                                tempor incididunt ut
-                                                labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud
-                                                exercitation ullamco
-                                                laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor
-                                                in
-                                                reprehenderit in
-                                                voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur
-                                                sint
-                                                occaecat cupidatat
-                                                non proident, sunt in culpa qui officia deserunt mollit anim id est
-                                                laborum.
-                                            </div>
-                                        </q-timeline-entry>
-
-                                        <q-timeline-entry title="Event Title" subtitle="February 22, 1986">
-                                            <div>
-                                                Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
-                                                tempor incididunt ut
-                                                labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud
-                                                exercitation ullamco
-                                                laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor
-                                                in reprehenderit in
-                                                voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur
-                                                sint occaecat cupidatat
-                                                non proident, sunt in culpa qui officia deserunt mollit anim id est
-                                                laborum.
-                                            </div>
-                                        </q-timeline-entry>
-                                    </q-timeline>
-                                </q-scroll-area>
-                            </q-tab-panel>
                             <q-tab-panel name="request">
+                                <q-markup-table class="request-table">
+                                    <thead>
+                                    <tr>
+                                        <th class="text-center" width="5%">STT</th>
+                                        <th class="text-center">Ngày tạo</th>
+                                        <th class="text-left">Trạng thái</th>
+                                        <th class="text-left">Lớp trưởng duyệt</th>
+                                        <th class="text-left">Giáo viên duyệt</th>
+                                        <th class="text-left">Ban chủ nhiệm duyệt</th>
+                                        <th class="text-center">Tác vụ</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <template v-if="myRequest.length > 0">
+                                        <tr v-for="(request, index) in myRequest" :key="index">
+                                            <td class="text-center">{{ index + 1 }}
+                                            </td>
+                                            <td class="text-center">{{ handleFormatDate(getValueLodash(request, 'created_at', '')) }}</td>
 
-                                <q-scroll-area class="q-px-lg q-pb-md" style="height: 100vh">
-                                    <q-card>
+                                            <td class="text-left">
+                                                <q-badge
+                                                    v-if="getValueLodash(request, 'status_approved', 0) == studentStatusTempEnum.Pending"
+                                                    align="middle"
+                                                    color='deep-orange-5'>
+                                                    {{ getValueLodash(request, "status_approved_text", "Chưa cập nhật") }}
 
-                                        <q-card-section>
-                                            <q-markup-table class="request-table">
-                                                <thead>
-                                                    <tr>
-                                                        <th class="text-center" width="5%">STT</th>
-                                                        <th class="text-left">Họ và tên</th>
-                                                        <th class="text-left">Mã sinh viên</th>
-                                                        <th class="text-center">Ngày tạo</th>
-                                                        <th class="text-center">Tác vụ</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    <template v-if="myRequest.length > 0">
-                                                        <tr v-for="(request, index) in myRequest" :key="index">
-                                                            <td class="text-center">{{ index }}
-                                                            </td>
-                                                            <td class="text-left">
-                                                                <span
-                                                                    @click="redirectRouter('RoleUpdate', { id: request['id'] ?? 0 })"
-                                                                    class="text-bold cursor-pointer text-link">
-                                                                    {{ request['fullName'] ?? "" }}
-                                                                </span>
-                                                            </td>
-                                                            <td class="text-left">
-                                                                <span
-                                                                    @click="redirectRouter('RoleUpdate', { id: request['id'] ?? 0 })"
-                                                                    class="text-bold cursor-pointer text-link">
-                                                                    {{ request['fullName'] ?? "" }}
-                                                                </span>
-                                                            </td>
-                                                            <td class="text-center">
-                                                                {{ request['created_at'] ?? "" }}
-                                                            </td>
+                                                </q-badge>
+                                                <q-badge
+                                                    v-if="getValueLodash(request, 'status_approved', 0) == studentStatusTempEnum.ClassMonitorApproved "
+                                                    align="middle"
+                                                    color='blue'>
+                                                    {{ getValueLodash(request, "status_approved_text", "Chưa cập nhật") }}
 
-                                                            <td class="text-center">
-                                                                <span
-                                                                    @click="redirectRouter('RoleUpdate', { id: request['id'] ?? 0 })"
-                                                                    class="text-bold cursor-pointer text-link">
-                                                                    Chi tiết
-                                                                </span>
-                                                            </td>
-                                                        </tr>
-                                                    </template>
-                                                    <template v-else>
-                                                        <tr>
-                                                            <td colspan="7" class="text-center">
-                                                                <img class="imgEmpty" src="/images/empty2.png" alt="">
-                                                            </td>
-                                                        </tr>
-                                                    </template>
-                                                </tbody>
+                                                </q-badge>
+                                                <q-badge
+                                                    v-if="getValueLodash(request, 'status_approved', 0) == studentStatusTempEnum.TeacherApproved "
+                                                    align="middle"
+                                                    color='teal'>
+                                                    {{ getValueLodash(request, "status_approved_text", "Chưa cập nhật") }}
 
-                                            </q-markup-table>
+                                                </q-badge>
+                                                <q-badge
+                                                    v-if="getValueLodash(request, 'status_approved', 0) == studentStatusTempEnum.Approved "
+                                                    align="middle"
+                                                    color='green'>
+                                                    {{ getValueLodash(request, "status_approved_text", "Chưa cập nhật") }}
 
-                                        </q-card-section>
-                                    </q-card>
-                                </q-scroll-area>
+                                                </q-badge>
+                                                <q-badge
+                                                    v-if="getValueLodash(request, 'status_approved', 0) == studentStatusTempEnum.Reject "
+                                                    align="middle"
+                                                    color='red'>
+                                                    {{ getValueLodash(request, "status_approved_text", "Chưa cập nhật") }}
+
+                                                </q-badge>
+                                            </td>
+
+                                            <td class="text-left">
+                                                {{ getValueLodash(item, "student_approved.full_name", "Chưa có") }}
+                                            </td>
+                                            <td class="text-left">
+                                                {{ getValueLodash(item, "teacher_approved.full_name", "Chưa có") }}
+                                            </td>
+                                            <td class="text-left">
+                                                {{ getValueLodash(item, "admin_approved.full_name", "Chưa có") }}
+                                            </td>
+
+                                            <td class="text-center">
+                                                <div class="inline cursor-pointer">
+                                                    <q-icon name="menu" size="sm"></q-icon>
+                                                    <q-menu touch-position>
+                                                        <q-list style="min-width: 100px">
+                                                            <q-item  clickable v-close-popup
+                                                                    @click="redirectRouter('RoleUpdate', {id: getValueLodash(role, 'id', 0)})">
+                                                                <q-item-section>
+                                                    <span><q-icon name="fa-solid fa-pen-to-square" class="q-mr-sm"
+                                                                  size="xs"></q-icon>Chỉnh sửa</span>
+                                                                </q-item-section>
+                                                            </q-item>
+                                                            <q-item  clickable v-close-popup
+                                                                    @click="openDialogDelete(getValueLodash(request, 'id', 0))">
+                                                <span><q-icon name="fa-solid fa-trash" class="q-mr-sm"
+                                                              size="xs"></q-icon>Xoá</span>
+                                                            </q-item>
+                                                        </q-list>
+                                                    </q-menu>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </template>
+                                    <template v-else>
+                                        <tr>
+                                            <td colspan="7" class="text-center">
+                                                <img class="imgEmpty" src="/images/empty2.png" alt="">
+                                            </td>
+                                        </tr>
+                                    </template>
+                                    </tbody>
+
+                                </q-markup-table>
+                                <div v-if="page.total > 1" class="q-pt-lg flex flex-center">
+                                    <q-pagination
+                                        v-model="page.currentPage"
+                                        :max="page.total"
+                                        direction-links
+                                        :max-pages="10"
+                                    />
+                                </div>
+
                             </q-tab-panel>
 
                         </q-tab-panels>
@@ -586,7 +500,7 @@
                 </q-card-actions>
             </q-card>
         </q-dialog>
-        <!-- <q-dialog v-model="dialogDelete" persistent>
+        <q-dialog v-model="dialogDelete" persistent>
             <q-card>
                 <q-card-section class="row items-center">
                     <q-avatar icon="fa-solid fa-trash" color="red" text-color="white"/>
@@ -598,25 +512,27 @@
                     <q-btn label="Đồng ý" color="red" @click="handleDelete" v-close-popup/>
                 </q-card-actions>
             </q-card>
-        </q-dialog> -->
+        </q-dialog>
     </div>
 </template>
 
 
 <script lang="ts">
-import { defineComponent, onMounted, ref } from "vue";
-import { HomeMutationTypes } from "../../store/modules/home/mutation-types";
-import { useStore } from "vuex"
-import { useRouter } from "vue-router";
-import { useQuasar } from "quasar";
+import {defineComponent, onMounted, ref, watch} from "vue";
+import {HomeMutationTypes} from "../../store/modules/home/mutation-types";
+import {useStore} from "vuex"
+import {useRouter} from "vue-router";
+import {useQuasar} from "quasar";
 import apiStudent from "../../apiStudent";
-import { IStudentResult } from "../../models/IStudentResult";
+import {IStudentResult} from "../../models/IStudentResult";
 import _ from "lodash";
 import IUserResult from "../../models/IUserResult";
-import { AuthStudentMutationTypes } from "../../store/modules/auth_student/mutation-types";
-import api from "../../api";
-import { validationHelper } from "../../utils/validationHelper";
+import {AuthStudentMutationTypes} from "../../store/modules/auth_student/mutation-types";
+import {validationHelper} from "../../utils/validationHelper";
 import eventBus from "../../utils/eventBus";
+import usePage from "../../uses/usePage";
+import {StudentTempStatusEnum} from "../../enums/studentTempStatus.enum";
+import {formatDate} from "../../utils/helpers";
 
 export default defineComponent({
     name: "HomeStudent",
@@ -630,7 +546,11 @@ export default defineComponent({
         const password = ref<string>('')
         const password_old = ref<string>('')
         const password_confirm = ref<string>('')
-        let myRequest: any[] = [];
+        const myRequest = ref([])
+        const {page} = usePage()
+
+        const studentStatusTempEnum = StudentTempStatusEnum
+
         const handleUpdateLearningOutcome = () => {
             loading.value = true
             apiStudent.updateLearningOutcome<IStudentResult>(auth.id).then(res => {
@@ -656,12 +576,18 @@ export default defineComponent({
             return auth
         }
         const getMyRequest = (): void => {
-            loading.value = true;
-            apiStudent.getMyRequest().then((res: any) => {
-                if(res.hasOwnProperty('data') && res.data.hasOwnProperty('data') && res.data.data.hasOwnProperty('reports'))
-                myRequest = res.data.data.reports;
+            loading.value = true
+            const payload = {
+                page: 1
+            }
+            payload.page = page.value.currentPage
+
+            apiStudent.getMyRequest(payload).then((res: any) => {
+                myRequest.value = _.get(res, 'data.data.requests.data', [])
+                page.value.currentPage = _.get(res, 'data.data.requests.current_page', 1)
+                page.value.total = _.get(res, 'data.data.requests.last_page', 0)
+                page.value.perPage = _.get(res, 'data.data.requests.per_page', 0)
             }).catch((err: any) => {
-                console.log(err);
 
                 $q.notify({
                     icon: 'report_problem',
@@ -690,6 +616,9 @@ export default defineComponent({
             getMyRequest();
 
         })
+
+        watch(() => page.value.currentPage, () => getMyRequest())
+
         const isPwd = ref<boolean>(true);
 
         const handleOpenResetPassword = () => {
@@ -745,7 +674,13 @@ export default defineComponent({
             }
 
         }
+        const getValueLodash = (res: object, data: string, d: any = null) => {
+            return _.get(res, data, d);
+        };
 
+        const handleFormatDate = (value: string): string => {
+            return formatDate(value);
+        }
         return {
             auth,
             loading,
@@ -761,7 +696,11 @@ export default defineComponent({
             handleOpenResetPassword,
             isShowDialogResetPassword,
             resetValidateErrors,
-            myRequest
+            myRequest,
+            studentStatusTempEnum,
+            page,
+            getValueLodash,
+            handleFormatDate
         }
     }
 })

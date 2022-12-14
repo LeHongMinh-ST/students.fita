@@ -140,10 +140,11 @@ export default {
         })
     },
 
-    getMyRequest<T>(): AxiosPromise<IResult<T>> {
+    getMyRequest<T>(params = {}): AxiosPromise<IResult<T>> {
         return apiAxios({
             method: 'get',
-            url: '/student/requests/my-request'
+            url: '/student/requests/my-request',
+            params:params
         })
     },
 }

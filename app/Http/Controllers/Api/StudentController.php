@@ -658,10 +658,11 @@ class StudentController extends Controller
             $query->where('student_id', $student->id);
         }
 
+        $relationships = ['studentApproved', 'teacherApproved', 'adminApproved', 'student'];
 
-        $requests = $query->with(['studentApproved', 'teacherApproved', 'adminApproved', 'student'])->get();
+        $requests = $query->with($relationships)->orderBy('created_at','desc')->get();
         if (@$data['page'])
-            $requests = $query->with(['studentApproved', 'teacherApproved', 'adminApproved', 'student'])->paginate($paginate);
+            $requests = $query->with($relationships)->orderBy('created_at','desc') ->paginate($paginate);
 
         return $this->responseSuccess([
             'requests' => $requests
