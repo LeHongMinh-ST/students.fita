@@ -181,6 +181,7 @@ class StudentController extends Controller
                 foreach ($data['families'] as $family) {
                     $studentTemp->families()->updateOrCreate([
                         'family_id' => @$family['id'],
+                        'student_id' => $studentTemp->student_id,
                     ], array_merge($family));
                 }
             }
@@ -410,7 +411,7 @@ class StudentController extends Controller
                     $this->studentRepository->createOrUpdate($student);
                     if (!empty($familyTemp)) {
                         foreach ($familyTemp as $family) {
-                            $student->families()->updateOrCreate(['id' => $family['family_id']], $family);
+                            $student->families()->updateOrCreate(['id' => $family->family_id], $family->toArray());
                         }
                     }
                 }
@@ -638,9 +639,9 @@ class StudentController extends Controller
             $query->where('admin_approved', $data['admin_approved']);
         }
 
-        $requests = $query->with($relationship)->get();
+        $requests = $query->with($relationship)->orderByDesc('created_at')->get();
         if (@$data['page'])
-            $requests = $query->with($relationship)->paginate($paginate);
+            $requests = $query->with($relationship)->orderByDesc('created_at')->paginate($paginate);
 
         return $this->responseSuccess([
             'requests' => $requests

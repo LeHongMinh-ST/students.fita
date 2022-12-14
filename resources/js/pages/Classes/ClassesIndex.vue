@@ -272,7 +272,7 @@ export default defineComponent({
       }).catch(() => {
         $q.notify({
           icon: 'report_problem',
-          message: 'Không tải được danh sách nhóm vai trò!',
+          message: 'Không tải được danh sách lớp học!',
           color: 'negative',
           position: 'top-right'
         })
