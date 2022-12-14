@@ -327,12 +327,28 @@ export default {
             params: params
         })
     },
-    getReport<T>(id: string): AxiosPromise<IResult<T>> {
+    getReport<T>(id: number): AxiosPromise<IResult<T>> {
         return apiAxios({
             method: 'get',
             url: `/reports/${id}`
         })
     },
+
+    changeStatusReport<T>(data: any, id: string): AxiosPromise<IResult<T>> {
+        return apiAxios({
+            method: 'put',
+            url: `/reports/${id}/change-status`,
+            data: data
+        })
+    },
+
+    deleteReport<T>(id: string): AxiosPromise<IResult<T>> {
+        return apiAxios({
+            method: 'delete',
+            url: `/reports/${id}`,
+        })
+    },
+    
     //AUTHOR: TRUONGTN
     /*begin */
 
