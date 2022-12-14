@@ -389,6 +389,20 @@ export default {
             url: '/dashboard'
         })
     },
+
+    getReports<T>(): AxiosPromise<IResult<T>> {
+        return apiAxios({
+            method: 'get',
+            url: '/reports'
+        })
+    },
+
+    getRequest<T>(): AxiosPromise<IResult<T>> {
+        return apiAxios({
+            method: 'get',
+            url: '/request'
+        })
+    },
     /*end */
 
     updateLearningOutcome<T>(id: number): AxiosPromise<IResult<T>> {

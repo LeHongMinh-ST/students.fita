@@ -138,4 +138,12 @@ export default {
             method: 'delete',
             url: `/student/report/${id}`,
         })
-    },}
+    },
+
+    getMyRequest<T>(): AxiosPromise<IResult<T>> {
+        return apiAxios({
+            method: 'get',
+            url: '/student/requests/my-request'
+        })
+    },
+}
