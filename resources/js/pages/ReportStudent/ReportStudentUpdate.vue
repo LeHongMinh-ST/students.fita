@@ -40,9 +40,9 @@
                         map-options
                         option-value="value"
                         option-label="label"
-                        :error-message="getValidationErrors('report.subjects')"
-                        :error="hasValidationErrors('report.subjects')"
-                        @update:model-value="() => resetValidateErrors('report.subjects')"
+                        :error-message="getValidationErrors('subjects')"
+                        :error="hasValidationErrors('subjects')"
+                        @update:model-value="() => resetValidateErrors('subjects')"
                     />
                   </div>
 
@@ -66,7 +66,11 @@
                   </div>
                   <div class="form-group">
                     <label class="text-bold">Nội dung</label>
-                    <q-input type="textarea" outlined dense id="description" v-model="content"></q-input>
+                    <q-input type="textarea" outlined dense id="description" v-model="content"
+                             :error-message="getValidationErrors('content')"
+                             :error="hasValidationErrors('content')"
+                             @update:model-value="() => resetValidateErrors('content')"
+                    ></q-input>
                   </div>
                 </div>
               </div>

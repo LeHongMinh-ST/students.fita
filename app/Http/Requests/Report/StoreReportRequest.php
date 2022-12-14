@@ -26,6 +26,7 @@ class StoreReportRequest extends BaseRequest
         return [
             'title' => 'required',
             'content' => 'required',
+            'student_id' => 'required',
         ];
     }
 
@@ -33,6 +34,7 @@ class StoreReportRequest extends BaseRequest
     {
         return [
             'title' => 'tiêu đề',
+            'student_id' => 'sinh viên',
             'content' => 'nội dung',
         ];
     }

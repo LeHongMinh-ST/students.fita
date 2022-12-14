@@ -12,6 +12,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\MorphTo;
 
 class StudentTemp extends Model
 {
@@ -90,18 +91,19 @@ class StudentTemp extends Model
 
     public function teacherApproved(): BelongsTo
     {
-        return $this->belongsTo(Student::class, 'teacher_approved');
+        return $this->belongsTo(User::class, 'teacher_approved');
     }
 
     public function adminApproved(): BelongsTo
     {
-        return $this->belongsTo(Student::class, 'admin_approved');
+        return $this->belongsTo(User::class, 'admin_approved');
     }
 
-    public function rejectable()
+    public function rejectable(): MorphTo
     {
-        return $this->morphTo(__FUNCTION__, 'reject_type','reject_id');
+        return $this->morphTo(__FUNCTION__, 'rejectable_type','rejectable_id');
     }
+
 
     protected static function boot()
     {
@@ -147,6 +149,18 @@ class StudentTemp extends Model
         return @$this->status_approved ? StudentTempStatus::getDescription($this->status_approved) : '';
     }
 
+    public function getRejectRoleTextAttribute(): string
+    {
+        if ($this->rejectable_type == User::class) {
+            if ($this->rejectable->is_teacher) {
+                return 'Giảng viên';
+            }
+            return 'Ban chủ nhiệm';
+        }
+
+        return 'Lớp trưởng';
+    }
+
     protected $appends = [
         'status_approved_text',
         'thumbnail_url',
@@ -155,5 +169,6 @@ class StudentTemp extends Model
         'social_policy_object_text',
         'gender_text',
         'training_text',
+        'reject_role_text'
     ];
 }

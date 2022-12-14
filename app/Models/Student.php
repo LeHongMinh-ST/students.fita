@@ -154,6 +154,12 @@ class Student extends Authenticatable implements JWTSubject
         return StudentTrainingType::getDescription($this->training_type);
     }
 
+    public function rejects()
+    {
+        return $this->morphMany(StudentTemp::class,'rejectable');
+    }
+
+
     protected $appends = [
         'thumbnail_url',
         'role_text',

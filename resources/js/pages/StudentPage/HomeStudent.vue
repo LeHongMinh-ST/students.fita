@@ -1,7 +1,7 @@
 <template>
     <div class="student-wrapper">
         <q-breadcrumbs>
-            <q-breadcrumbs-el label="Hồ sơ sinh viên" icon="home" :to="{name: 'HomeStudent'}"/>
+            <q-breadcrumbs-el label="Hồ sơ sinh viên" icon="home" :to="{ name: 'HomeStudent' }" />
         </q-breadcrumbs>
         <div class="main">
             <div class="row">
@@ -46,15 +46,12 @@
                                 <q-separator />
                                 <div class="main-action q-mt-md text-center">
                                     <q-btn color="secondary" class="q-mr-sm q-mb-sm"
-                                           @click="redirectRouter('StudentUpdateProfile')"
-                                    >
-                                        <q-icon name="fa-solid fa-pen-to-square" class="q-mr-sm"
-                                                size="xs"></q-icon>
+                                        @click="redirectRouter('StudentUpdateProfile')">
+                                        <q-icon name="fa-solid fa-pen-to-square" class="q-mr-sm" size="xs"></q-icon>
                                         Chỉnh sửa
                                     </q-btn>
 
-                                    <q-btn color="green" class="q-mr-sm q-mb-sm"
-                                        @click="handleOpenResetPassword">
+                                    <q-btn color="green" class="q-mr-sm q-mb-sm" @click="handleOpenResetPassword">
                                         <q-icon name="fa-solid fa-lock" class="q-mr-sm" size="xs"></q-icon>
                                         Đặt lại mật khẩu
                                     </q-btn>
@@ -69,7 +66,7 @@
                             align="justify" narrow-indicator>
                             <q-tab name="home" label="Thông tin chung" />
                             <q-tab name="learning_outcome" label="Kết quả học tập" />
-                            <q-tab name="report" label="Báo cáo phản án" />
+                            <q-tab name="request" label="Danh sách yêu cầu" />
                         </q-tabs>
                         <q-separator />
 
@@ -216,20 +213,18 @@
                                     </div>
                                 </div>
                             </q-tab-panel>
-
                             <q-tab-panel name="learning_outcome">
                                 <div class="learning_outcome-header text-right">
                                     <q-btn no-caps @click="handleUpdateLearningOutcome" color="secondary"
-                                           class="q-mr-sm">
+                                        class="q-mr-sm">
                                         <q-icon name="fa-solid fa-refresh" class="q-mr-sm" size="xs"></q-icon>
                                         Cập nhật dữ liệu
                                     </q-btn>
                                 </div>
                                 <q-scroll-area v-if="auth?.learning_outcomes.length > 0" style="height: 100vh">
                                     <div class="learning_outcome-content q-pl-sm q-pr-sm">
-                                        <div class="item row"
-                                             v-for="(learningOutcome) in auth?.learning_outcomes ?? []"
-                                             :key="learningOutcome.id">
+                                        <div class="item row" v-for="(learningOutcome) in auth?.learning_outcomes ?? []"
+                                            :key="learningOutcome.id">
                                             <div class="col">
                                                 <div class="item-header q-mb-md">
                                                     <strong>Học kỳ {{ learningOutcome.semester }} - Năm học
@@ -253,18 +248,20 @@
                                                             </tr>
                                                         </thead>
                                                         <tbody>
-                                                        <tr v-for="(item) in learningOutcome.detail ?? []"
-                                                            :key="item.id">
-                                                            <td class="text-center">{{ item.order }}</td>
-                                                            <td class="text-left">{{ item.subject_code }}</td>
-                                                            <td class="text-left">{{ item.subject_name }}</td>
-                                                            <td class="text-left">{{ item.credits }}</td>
-                                                            <td class="text-center">{{ item.diligence_point }}</td>
-                                                            <td class="text-center">{{ item.progress_point }}</td>
-                                                            <td class="text-center">{{ item.exam_point }}</td>
-                                                            <td class="text-center">{{ item.total_point_number }}</td>
-                                                            <td class="text-center">{{ item.total_point_string }}</td>
-                                                        </tr>
+                                                            <tr v-for="(item) in learningOutcome.detail ?? []"
+                                                                :key="item.id">
+                                                                <td class="text-center">{{ item.order }}</td>
+                                                                <td class="text-left">{{ item.subject_code }}</td>
+                                                                <td class="text-left">{{ item.subject_name }}</td>
+                                                                <td class="text-left">{{ item.credits }}</td>
+                                                                <td class="text-center">{{ item.diligence_point }}</td>
+                                                                <td class="text-center">{{ item.progress_point }}</td>
+                                                                <td class="text-center">{{ item.exam_point }}</td>
+                                                                <td class="text-center">{{ item.total_point_number }}
+                                                                </td>
+                                                                <td class="text-center">{{ item.total_point_string }}
+                                                                </td>
+                                                            </tr>
                                                         </tbody>
                                                     </q-markup-table>
                                                 </div>
@@ -328,138 +325,116 @@
                                 <q-inner-loading :showing="loading" label-class="text-teal"
                                     label-style="font-size: 1.1em" />
                             </q-tab-panel>
-                            <q-tab-panel name="report">
-                                <div class="text-h6">Báo cáo phản án</div>
-                                <q-scroll-area class="q-px-lg q-pb-md" style="height: 100vh">
-                                    <q-timeline class="q-pa-sm" color="secondary">
+                            <q-tab-panel name="request">
+                                <q-markup-table class="request-table">
+                                    <thead>
+                                    <tr>
+                                        <th class="text-center" width="5%">STT</th>
+                                        <th class="text-center">Ngày tạo</th>
+                                        <th class="text-left">Trạng thái</th>
+                                        <th class="text-left">Lớp trưởng duyệt</th>
+                                        <th class="text-left">Giáo viên duyệt</th>
+                                        <th class="text-left">Ban chủ nhiệm duyệt</th>
+                                        <th class="text-center">Tác vụ</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <template v-if="myRequest.length > 0">
+                                        <tr v-for="(request, index) in myRequest" :key="index">
+                                            <td class="text-center">{{ index + 1 }}
+                                            </td>
+                                            <td class="text-center">{{ handleFormatDate(getValueLodash(request, 'created_at', '')) }}</td>
 
+                                            <td class="text-left">
+                                                <q-badge
+                                                    v-if="getValueLodash(request, 'status_approved', 0) == studentStatusTempEnum.Pending"
+                                                    align="middle"
+                                                    color='deep-orange-5'>
+                                                    {{ getValueLodash(request, "status_approved_text", "Chưa cập nhật") }}
 
-                                        <q-timeline-entry title="Event Title" subtitle="February 22, 1986">
-                                            <div>
-                                                Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
-                                                tempor
-                                                incididunt ut
-                                                labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud
-                                                exercitation
-                                                ullamco
-                                                laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor
-                                                in
-                                                reprehenderit in
-                                                voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur
-                                                sint
-                                                occaecat cupidatat
-                                                non proident, sunt in culpa qui officia deserunt mollit anim id est
-                                                laborum.
-                                            </div>
-                                        </q-timeline-entry>
+                                                </q-badge>
+                                                <q-badge
+                                                    v-if="getValueLodash(request, 'status_approved', 0) == studentStatusTempEnum.ClassMonitorApproved "
+                                                    align="middle"
+                                                    color='blue'>
+                                                    {{ getValueLodash(request, "status_approved_text", "Chưa cập nhật") }}
 
-                                        <q-timeline-entry title="Event Title" subtitle="February 21, 1986"
-                                            icon="delete">
-                                            <div>
-                                                Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
-                                                tempor
-                                                incididunt ut
-                                                labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud
-                                                exercitation
-                                                ullamco
-                                                laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor
-                                                in
-                                                reprehenderit in
-                                                voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur
-                                                sint
-                                                occaecat cupidatat
-                                                non proident, sunt in culpa qui officia deserunt mollit anim id est
-                                                laborum.
-                                            </div>
-                                        </q-timeline-entry>
+                                                </q-badge>
+                                                <q-badge
+                                                    v-if="getValueLodash(request, 'status_approved', 0) == studentStatusTempEnum.TeacherApproved "
+                                                    align="middle"
+                                                    color='teal'>
+                                                    {{ getValueLodash(request, "status_approved_text", "Chưa cập nhật") }}
 
+                                                </q-badge>
+                                                <q-badge
+                                                    v-if="getValueLodash(request, 'status_approved', 0) == studentStatusTempEnum.Approved "
+                                                    align="middle"
+                                                    color='green'>
+                                                    {{ getValueLodash(request, "status_approved_text", "Chưa cập nhật") }}
 
-                                        <q-timeline-entry title="Event Title" subtitle="February 22, 1986"
-                                            avatar="https://cdn.quasar.dev/img/avatar2.jpg">
-                                            <div>
-                                                Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
-                                                tempor incididunt ut
-                                                labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud
-                                                exercitation ullamco
-                                                laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor
-                                                in
-                                                reprehenderit in
-                                                voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur
-                                                sint
-                                                occaecat cupidatat
-                                                non proident, sunt in culpa qui officia deserunt mollit anim id est
-                                                laborum.
-                                            </div>
-                                        </q-timeline-entry>
+                                                </q-badge>
+                                                <q-badge
+                                                    v-if="getValueLodash(request, 'status_approved', 0) == studentStatusTempEnum.Reject "
+                                                    align="middle"
+                                                    color='red'>
+                                                    {{ getValueLodash(request, "status_approved_text", "Chưa cập nhật") }}
 
-                                        <q-timeline-entry title="Event Title" subtitle="February 22, 1986">
-                                            <div>
-                                                Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
-                                                tempor incididunt ut
-                                                labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud
-                                                exercitation ullamco
-                                                laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor
-                                                in
-                                                reprehenderit in
-                                                voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur
-                                                sint
-                                                occaecat cupidatat
-                                                non proident, sunt in culpa qui officia deserunt mollit anim id est
-                                                laborum.
-                                            </div>
-                                        </q-timeline-entry>
+                                                </q-badge>
+                                            </td>
 
-                                        <q-timeline-entry title="Event Title" subtitle="February 22, 1986"
-                                            color="orange" icon="done_all">
-                                            <div>
-                                                Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
-                                                tempor incididunt ut
-                                                labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud
-                                                exercitation ullamco
-                                                laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor
-                                                in
-                                                reprehenderit in
-                                                voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur
-                                                sint
-                                                occaecat cupidatat
-                                                non proident, sunt in culpa qui officia deserunt mollit anim id est
-                                                laborum.
-                                            </div>
-                                        </q-timeline-entry>
+                                            <td class="text-left">
+                                                {{ getValueLodash(request, "student_approved.full_name", "Chưa có") }}
+                                            </td>
+                                            <td class="text-left">
+                                                {{ getValueLodash(request, "teacher_approved.full_name", "Chưa có") }}
+                                            </td>
+                                            <td class="text-left">
+                                                {{ getValueLodash(request, "admin_approved.full_name", "Chưa có") }}
+                                            </td>
 
-                                        <q-timeline-entry title="Event Title" subtitle="February 22, 1986">
-                                            <div>
-                                                Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
-                                                tempor incididunt ut
-                                                labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud
-                                                exercitation ullamco
-                                                laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor
-                                                in
-                                                reprehenderit in
-                                                voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur
-                                                sint
-                                                occaecat cupidatat
-                                                non proident, sunt in culpa qui officia deserunt mollit anim id est
-                                                laborum.
-                                            </div>
-                                        </q-timeline-entry>
+                                            <td class="text-center">
+                                                <div class="inline cursor-pointer">
+                                                    <q-icon name="menu" size="sm"></q-icon>
+                                                    <q-menu touch-position>
+                                                        <q-list style="min-width: 100px">
+                                                            <q-item v-if="request.status_approved == studentStatusTempEnum.Pending"  clickable v-close-popup
+                                                                    @click="redirectRouter('StudentUpdateProfile')">
+                                                                <q-item-section>
+                                                    <span><q-icon name="fa-solid fa-pen-to-square" class="q-mr-sm"
+                                                                  size="xs"></q-icon>Chỉnh sửa</span>
+                                                                </q-item-section>
+                                                            </q-item>
+                                                            <q-item v-if="request.status_approved != studentStatusTempEnum.Approved"  clickable v-close-popup
+                                                                    @click="openDialogDelete(getValueLodash(request, 'id', 0))">
+                                                <span><q-icon name="fa-solid fa-trash" class="q-mr-sm"
+                                                              size="xs"></q-icon>Xoá</span>
+                                                            </q-item>
+                                                        </q-list>
+                                                    </q-menu>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </template>
+                                    <template v-else>
+                                        <tr>
+                                            <td colspan="7" class="text-center">
+                                                <img class="imgEmpty" src="/images/empty2.png" alt="">
+                                            </td>
+                                        </tr>
+                                    </template>
+                                    </tbody>
 
-                                        <q-timeline-entry title="Event Title" subtitle="February 22, 1986">
-                                            <div>
-                                                Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
-                                                tempor incididunt ut
-                                                labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud
-                                                exercitation ullamco
-                                                laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor
-                                                in reprehenderit in
-                                                voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur
-                                                sint occaecat cupidatat
-                                                non proident, sunt in culpa qui officia deserunt mollit anim id est
-                                                laborum.
-                                            </div>
-                                        </q-timeline-entry>
-                                    </q-timeline>
-                                </q-scroll-area>
+                                </q-markup-table>
+                                <div v-if="page.total > 1" class="q-pt-lg flex flex-center">
+                                    <q-pagination
+                                        v-model="page.currentPage"
+                                        :max="page.total"
+                                        direction-links
+                                        :max-pages="10"
+                                    />
+                                </div>
+
                             </q-tab-panel>
 
                         </q-tab-panels>
@@ -476,70 +451,42 @@
                     <div class="row">
                         <div class="col-12 q-pr-sm">
                             <div class="form-group">
-                                <label class="text-bold">Mật khẩu cũ <span
-                                    class="required">*</span></label>
-                                <q-input
-                                    :type="isPwd ? 'password' : 'text'"
-                                    outlined
-                                    dense
-                                    v-model="password_old"
+                                <label class="text-bold">Mật khẩu cũ <span class="required">*</span></label>
+                                <q-input :type="isPwd ? 'password' : 'text'" outlined dense v-model="password_old"
                                     :error-message="getValidationErrors('password_old')"
                                     :error="hasValidationErrors('password_old')"
-                                    @update:model-value="() => resetValidateErrors('password_old')"
-                                >
+                                    @update:model-value="() => resetValidateErrors('password_old')">
                                     <template v-slot:append>
-                                        <q-icon
-                                            :name="isPwd ? 'visibility_off' : 'visibility'"
-                                            class="cursor-pointer"
-                                            @click="isPwd = !isPwd"
-                                        />
+                                        <q-icon :name="isPwd ? 'visibility_off' : 'visibility'" class="cursor-pointer"
+                                            @click="isPwd = !isPwd" />
                                     </template>
                                 </q-input>
                             </div>
                         </div>
                         <div class="col-6 q-pr-sm">
                             <div class="form-group">
-                                <label class="text-bold">Mật khẩu mới <span
-                                    class="required">*</span></label>
-                                <q-input
-                                    :type="isPwd ? 'password' : 'text'"
-
-                                    outlined
-                                    dense
-                                    v-model="password"
+                                <label class="text-bold">Mật khẩu mới <span class="required">*</span></label>
+                                <q-input :type="isPwd ? 'password' : 'text'" outlined dense v-model="password"
                                     :error-message="getValidationErrors('password')"
                                     :error="hasValidationErrors('password')"
-                                    @update:model-value="() => resetValidateErrors('password')"
-                                >
+                                    @update:model-value="() => resetValidateErrors('password')">
                                     <template v-slot:append>
-                                        <q-icon
-                                            :name="isPwd ? 'visibility_off' : 'visibility'"
-                                            class="cursor-pointer"
-                                            @click="isPwd = !isPwd"
-                                        />
+                                        <q-icon :name="isPwd ? 'visibility_off' : 'visibility'" class="cursor-pointer"
+                                            @click="isPwd = !isPwd" />
                                     </template>
                                 </q-input>
                             </div>
                         </div>
                         <div class="col-6 q-pr-sm">
                             <div class="form-group">
-                                <label class="text-bold">Xác nhận mật khẩu <span
-                                    class="required">*</span></label>
-                                <q-input
-                                    :type="isPwd ? 'password' : 'text'"
-                                    outlined
-                                    dense
-                                    v-model="password_confirm"
+                                <label class="text-bold">Xác nhận mật khẩu <span class="required">*</span></label>
+                                <q-input :type="isPwd ? 'password' : 'text'" outlined dense v-model="password_confirm"
                                     :error-message="getValidationErrors('password_confirm')"
                                     :error="hasValidationErrors('password_confirm')"
-                                    @update:model-value="() => resetValidateErrors('password_confirm')"
-                                >
+                                    @update:model-value="() => resetValidateErrors('password_confirm')">
                                     <template v-slot:append>
-                                        <q-icon
-                                            :name="isPwd ? 'visibility_off' : 'visibility'"
-                                            class="cursor-pointer"
-                                            @click="isPwd = !isPwd"
-                                        />
+                                        <q-icon :name="isPwd ? 'visibility_off' : 'visibility'" class="cursor-pointer"
+                                            @click="isPwd = !isPwd" />
                                     </template>
                                 </q-input>
                             </div>
@@ -547,22 +494,13 @@
                     </div>
                 </q-card-section>
                 <q-card-actions align="right" class="row">
-                    <q-btn
-                        flat
-                        label="Đóng"
-                        color="primary"
-                        @click="() => isShowDialogResetPassword = false"
-                        v-close-popup
-                    />
-                    <q-btn
-                        label="Lưu"
-                        color="blue"
-                        @click="handleResetPassword"
-                    />
+                    <q-btn flat label="Đóng" color="primary" @click="() => isShowDialogResetPassword = false"
+                        v-close-popup />
+                    <q-btn label="Lưu" color="blue" @click="handleResetPassword" />
                 </q-card-actions>
             </q-card>
         </q-dialog>
-        <!-- <q-dialog v-model="dialogDelete" persistent>
+        <q-dialog v-model="dialogDeleteRequest" persistent>
             <q-card>
                 <q-card-section class="row items-center">
                     <q-avatar icon="fa-solid fa-trash" color="red" text-color="white"/>
@@ -570,17 +508,17 @@
                 </q-card-section>
 
                 <q-card-actions align="right">
-                    <q-btn flat label="Đóng" color="primary" @click="dialogDelete = false" v-close-popup/>
-                    <q-btn label="Đồng ý" color="red" @click="handleDelete" v-close-popup/>
+                    <q-btn flat label="Đóng" color="primary" @click="dialogDeleteRequest = false" v-close-popup/>
+                    <q-btn label="Đồng ý" color="red" @click="handleDeleteRequest" v-close-popup/>
                 </q-card-actions>
             </q-card>
-        </q-dialog> -->
+        </q-dialog>
     </div>
 </template>
 
 
 <script lang="ts">
-import {defineComponent, onMounted, ref} from "vue";
+import {defineComponent, onMounted, ref, watch} from "vue";
 import {HomeMutationTypes} from "../../store/modules/home/mutation-types";
 import {useStore} from "vuex"
 import {useRouter} from "vue-router";
@@ -590,9 +528,11 @@ import {IStudentResult} from "../../models/IStudentResult";
 import _ from "lodash";
 import IUserResult from "../../models/IUserResult";
 import {AuthStudentMutationTypes} from "../../store/modules/auth_student/mutation-types";
-import api from "../../api";
 import {validationHelper} from "../../utils/validationHelper";
 import eventBus from "../../utils/eventBus";
+import usePage from "../../uses/usePage";
+import {StudentTempStatusEnum} from "../../enums/studentTempStatus.enum";
+import {formatDate} from "../../utils/helpers";
 
 export default defineComponent({
     name: "HomeStudent",
@@ -606,6 +546,18 @@ export default defineComponent({
         const password = ref<string>('')
         const password_old = ref<string>('')
         const password_confirm = ref<string>('')
+        const myRequest = ref([])
+        const {page} = usePage()
+        const requestId = ref<string>('')
+        const dialogDeleteRequest = ref<boolean>(false)
+
+        const openDialogDelete = (id) => {
+            dialogDeleteRequest.value = true
+            requestId.value = id
+        }
+
+        const studentStatusTempEnum = StudentTempStatusEnum
+
         const handleUpdateLearningOutcome = () => {
             loading.value = true
             apiStudent.updateLearningOutcome<IStudentResult>(auth.id).then(res => {
@@ -621,7 +573,7 @@ export default defineComponent({
                 loading.value = false
             })
         }
-        const {setValidationErrors, getValidationErrors, hasValidationErrors, resetValidateErrors} = validationHelper()
+        const { setValidationErrors, getValidationErrors, hasValidationErrors, resetValidateErrors } = validationHelper()
 
         const getAuthUser = async (): Promise<any> => {
             await apiStudent.getAuthUserStudent<IUserResult>().then((res) => {
@@ -630,10 +582,55 @@ export default defineComponent({
             })
             return auth
         }
+        const getMyRequest = (): void => {
+            loading.value = true
+            const payload = {
+                page: 1
+            }
+            payload.page = page.value.currentPage
 
+            apiStudent.getMyRequest(payload).then((res: any) => {
+                myRequest.value = _.get(res, 'data.data.requests.data', [])
+                page.value.currentPage = _.get(res, 'data.data.requests.current_page', 1)
+                page.value.total = _.get(res, 'data.data.requests.last_page', 0)
+                page.value.perPage = _.get(res, 'data.data.requests.per_page', 0)
+            }).catch((err: any) => {
+
+                $q.notify({
+                    icon: 'report_problem',
+                    message: 'Không tải được dữ liệu!',
+                    color: 'negative',
+                    position: 'top-right'
+                })
+            }).finally(() => loading.value = false)
+
+        }
+
+        const handleDeleteRequest = async () => {
+            try {
+                const res = await apiStudent.deleteRequest(parseInt(requestId.value))
+                if (res) {
+                    await getMyRequest()
+                    dialogDeleteRequest.value = false
+                    $q.notify({
+                        icon: 'check',
+                        message: 'Xóa thành công bản ghi',
+                        color: 'positive',
+                        position: 'top-right'
+                    })
+                }
+            }catch (e) {
+                $q.notify({
+                    icon: 'report_problem',
+                    message: 'Không thể xóa bản ghi!',
+                    color: 'negative',
+                    position: 'top-right'
+                })
+            }
+        }
 
         const redirectRouter = (nameRoute: string, params: {}): void => {
-            router.push({name: nameRoute, params: params})
+            router.push({ name: nameRoute, params: params })
         }
 
         onMounted(() => {
@@ -646,7 +643,12 @@ export default defineComponent({
                     position: 'top-right'
                 })
             })
+            getMyRequest();
+
         })
+
+        watch(() => page.value.currentPage, () => getMyRequest())
+
         const isPwd = ref<boolean>(true);
 
         const handleOpenResetPassword = () => {
@@ -663,7 +665,6 @@ export default defineComponent({
         const isRequest = ref<boolean>(false)
 
         const handleResetPassword = () => {
-
             if (!isRequest.value) {
                 isRequest.value = true
                 $q.loading.show()
@@ -698,13 +699,18 @@ export default defineComponent({
                     }
                 }).finally(() => {
                     $q.loading.hide()
-
                     isRequest.value = false
                 })
             }
 
         }
+        const getValueLodash = (res: object, data: string, d: any = null) => {
+            return _.get(res, data, d);
+        };
 
+        const handleFormatDate = (value: string): string => {
+            return formatDate(value);
+        }
         return {
             auth,
             loading,
@@ -716,10 +722,18 @@ export default defineComponent({
             password_old,
             handleResetPassword,
             hasValidationErrors,
-            getValidationErrors,isPwd,
+            getValidationErrors, isPwd,
             handleOpenResetPassword,
             isShowDialogResetPassword,
-            resetValidateErrors
+            resetValidateErrors,
+            myRequest,
+            studentStatusTempEnum,
+            page,
+            getValueLodash,
+            handleFormatDate,
+            handleDeleteRequest,
+            openDialogDelete,
+            dialogDeleteRequest
         }
     }
 })

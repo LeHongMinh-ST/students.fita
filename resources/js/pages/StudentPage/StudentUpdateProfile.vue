@@ -417,7 +417,7 @@ import {
 } from "../../utils/constants";
 import {IStudentResult} from "../../models/IStudentResult";
 import _ from "lodash";
-import api from "../../apiStudent"
+import apiStudent from "../../apiStudent"
 import {TrainingTypeEnum} from "../../enums/trainingType.enum";
 import {StudentSocialPolicyObjectEnum} from "../../enums/studentSocialPolicyObject.enum";
 import eventBus from "../../utils/eventBus";
@@ -458,6 +458,27 @@ export default defineComponent({
         const image = ref<any | null>(null);
         const imageUrl = ref<string>('/images/User-Default.jpg');
 
+        const handleGetUpdateRequestPending = () => {
+            apiStudent.getMyRequestPending().then(res => {
+                const studentTemp = _.get(res, 'data.data.studentTemp', null)
+                if (studentTemp) {
+                    student.value = studentTemp
+                } else {
+                    student.value = _.cloneDeep(store.getters["authStudent/getAuthUserStudent"])
+                }
+                class_code.value = student.value?.general_class?.class_code || "";
+                training_text.value = student.value?.training_text;
+                school_year.value = student.value?.school_year;
+                student_code.value = student.value?.student_code
+
+                if (student.value.thumbnail) {
+                    imageUrl.value = student.value.thumbnail_url
+                }
+            }).catch(e => {
+                console.log(e)
+            })
+        }
+
         const handleUpload = () => {
             if (image.value) {
                 imageUrl.value = URL.createObjectURL(image.value);
@@ -468,16 +489,7 @@ export default defineComponent({
 
         onMounted(() => {
             store.commit(`home/${HomeMutationTypes.SET_TITLE}`, 'Quản lý sinh viên')
-            student.value = _.cloneDeep(store.getters["authStudent/getAuthUserStudent"])
-            class_code.value = student.value?.general_class?.class_code || "";
-            training_text.value = student.value?.training_text;
-            school_year.value = student.value?.school_year;
-            student_code.value = student.value?.student_code
-
-            if (student.value.thumbnail) {
-                imageUrl.value = student.value.thumbnail_url
-            }
-
+            handleGetUpdateRequestPending()
         })
 
 
@@ -517,7 +529,7 @@ export default defineComponent({
                 });
 
                 formData.append('image', JSON.stringify(image.value))
-                api.createStudentTemp<IStudentResult>(formData).then(res => {
+                apiStudent.createStudentTemp<IStudentResult>(formData).then(res => {
                     if (res) {
                         eventBus.$emit('notify-success', 'Gửi yêu cầu nhật thông tin thành công')
                         redirectRouter('HomeStudent')

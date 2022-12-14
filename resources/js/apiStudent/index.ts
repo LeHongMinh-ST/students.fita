@@ -138,4 +138,25 @@ export default {
             method: 'delete',
             url: `/student/report/${id}`,
         })
-    },}
+    },
+
+    getMyRequest<T>(params = {}): AxiosPromise<IResult<T>> {
+        return apiAxios({
+            method: 'get',
+            url: '/student/requests/my-request',
+            params:params
+        })
+    },
+    getMyRequestPending<T>(): AxiosPromise<IResult<T>> {
+        return apiAxios({
+            method: 'get',
+            url: '/student/requests/my-request-pending',
+        })
+    },
+    deleteRequest(id: number): AxiosPromise<IResult<T>> {
+        return apiAxios({
+            method: 'delete',
+            url: `/student/requests/${id}`,
+        })
+    }
+}

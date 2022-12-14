@@ -328,8 +328,12 @@ export default defineComponent({
                 return false
             }
 
+            if (item.status_approved == studentStatusTempEnum.Reject) {
+                return false
+            }
+
             if (auth.is_teacher && !auth.is_super_admin) {
-                if(item.status_approved == studentStatusTempEnum.TeacherApproved) {
+                if (item.status_approved == studentStatusTempEnum.TeacherApproved) {
                     return false
                 }
             }
@@ -339,6 +343,10 @@ export default defineComponent({
 
         const checkStatusApproved = (item) => {
             const auth = store.getters["auth/getAuthUser"]
+            if (item.status_approved == studentStatusTempEnum.Approved) {
+                return false
+            }
+
             if (auth.is_teacher && !auth.is_super_admin) {
                 return item.status_approved == studentStatusTempEnum.ClassMonitorApproved
             }
@@ -436,7 +444,7 @@ export default defineComponent({
             handleGetRequestStudentTemp()
             handleGetRequestId()
         })
-
+        watch(() => page.value.currentPage, () => handleGetRequestStudentTemp())
         const handleGetRequestStudentTemp = async (): Promise<void> => {
             loading.value = true
             const payload = {
@@ -556,6 +564,7 @@ export default defineComponent({
                     }
                     const res = await api.changeStatusRequest(id, data)
                     if (res) {
+                        await handleGetRequestStudentTemp()
                         generateNotify('Cập nhật thành công', true)
                     }
                 } catch (error) {
@@ -589,6 +598,7 @@ export default defineComponent({
                     }
                     const res = await api.changeStatusRequestSelect(data)
                     if (res) {
+                        await handleGetRequestStudentTemp()
                         generateNotify('Cập nhật thành công', true)
                     }
                 } catch (error) {
