@@ -71,7 +71,7 @@ class GeneralClassController extends Controller
 
     public function show($id): JsonResponse
     {
-        $relationships = ['students', 'department'];
+        $relationships = ['students', 'department', 'teacher'];
         $columns = ['*'];
 
         return $this->responseSuccess([

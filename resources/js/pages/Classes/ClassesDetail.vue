@@ -147,12 +147,12 @@
                     <span style="position: absolute; top: 0; background-color: white; font-weight: bold;"
                           class="q-px-sm">Thông tin lớp học</span>
                     <div style="display: flex; padding-top: 10px; gap: 20px;">
-                        <div style="line-height:30px; width: 20%">
+                        <div style="line-height:30px; width: 15%">
                             <span style="font-weight: bold;" class="">Mã lớp</span>
                             <p style="border: 1px solid grey; padding: 2px 10px 0px; border-radius: 3px;">
                                 {{ class_code ?? 'Đang cập nhật' }}</p>
                         </div>
-                        <div style="line-height:30px; width: 20%">
+                        <div style="line-height:30px; width: 35%">
                             <span style="font-weight: bold;" class="">Tên lớp</span>
                             <p style="border: 1px solid grey; padding: 2px 10px 0px; border-radius: 3px;">
                                 {{ class_name ?? 'Đang cập nhật' }}</p>
@@ -162,8 +162,8 @@
                             <p style="border: 1px solid grey; padding: 2px 10px 0px; border-radius: 3px;">
                                 {{ department_id ?? 'Đang cập nhật' }}</p>
                         </div>
-                        <div style="line-height:30px; width: 30%">
-                            <span style="font-weight: bold;" class="">Giáo viên</span>
+                        <div style="line-height:30px; width: 20%">
+                            <span style="font-weight: bold;" class="">Giảng viên chủ nhiệm</span>
                             <p style="border: 1px solid grey; padding: 2px 10px 0px; border-radius: 3px;">
                                 {{ teacher_id ?? 'Đang cập nhật' }}</p>
                         </div>
@@ -280,7 +280,7 @@
                     </template>
                     <template v-else>
                         <tr>
-                            <td colspan="8" class="text-center">
+                            <td colspan="9" class="text-center">
                                 <img class="imgEmpty" src="/images/empty.png" alt=""/>
                             </td>
                         </tr>
@@ -329,10 +329,10 @@ export default defineComponent({
         const route = useRoute()
         const idClass = ref("")
         const studentFocuse = ref<IStudentResult>()
-        const class_code = ref<string>()
-        const class_name = ref<string>()
-        const teacher_id = ref<string>()
-        const department_id = ref<string>()
+        const class_code = ref<string>('')
+        const class_name = ref<string>('')
+        const teacher_id = ref<string>('')
+        const department_id = ref<string>('')
         const optionSelectStudentActive = ref<[]>([]);
         const optionSelectStudent = ref<IStudentResult[]>([])
         const students = ref<IStudentResult[]>([])
@@ -381,10 +381,8 @@ export default defineComponent({
                 const data = await api.getClass(id)
                 class_code.value = _.get(data, 'data.data.class.class_code', '')
                 class_name.value = _.get(data, 'data.data.class.name', '')
-                const teacherId = _.get(data, 'data.data.class.teacher_id', '')
                 department_id.value = _.get(data, 'data.data.class.department.name', '')
-                const user = store.getters["auth/getAuthUser"]
-                teacher_id.value = _.get(user, 'full_name', '')
+                teacher_id.value = _.get(data, 'data.data.class.teacher.full_name', '')
             } catch (error) {
                 generateNotify("Không tải được dữ liệu lớp học !")
             }
