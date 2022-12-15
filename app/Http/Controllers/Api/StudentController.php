@@ -169,22 +169,33 @@ class StudentController extends Controller
                 $studentTemp->fill(array_merge($data, [
                     'updated_by' => auth()->id(),
                 ]));
+                $this->studentTempRepository->createOrUpdate($studentTemp);
+                if (!empty($data['families'])) {
+                    foreach ($data['families'] as $family) {
+                        $studentTemp->families()->updateOrCreate([
+                            'id' => @$family['id'],
+                        ], $family);
+                    }
+                }
             } else {
                 $dataStudent = array_merge($student->toArray(), [
                     'student_id' => $auth->id,
                     'status_approved' => StudentTempStatus::Pending
                 ]);
-                $studentTemp = $this->studentTempRepository->create($dataStudent);
-            }
 
-            if (!empty($data['families'])) {
-                foreach ($data['families'] as $family) {
-                    $studentTemp->families()->updateOrCreate([
-                        'family_id' => @$family['id'],
-                        'student_id' => $studentTemp->student_id,
-                    ], array_merge($family));
+                $studentTemp = $this->studentTempRepository->create($dataStudent);
+
+                if (!empty($data['families'])) {
+                    foreach ($data['families'] as $family) {
+                        $studentTemp->families()->updateOrCreate([
+                            'family_id' => @$family['id'],
+                            'student_id' => $studentTemp->student_id,
+                        ], $family);
+                    }
                 }
             }
+
+
 
             DB::commit();
             return $this->responseSuccess();
