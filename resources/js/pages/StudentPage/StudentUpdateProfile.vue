@@ -522,7 +522,7 @@ export default defineComponent({
                 Object.keys(student.value).map(function (objectKey) {
                     const value = student?.value[objectKey];
                     if (value == null) {
-                        formData.append(objectKey, JSON.stringify(""))
+                        formData.append(objectKey, null)
                     } else {
                         formData.append(objectKey, JSON.stringify(value))
                     }

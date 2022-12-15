@@ -83,7 +83,7 @@
                 <div class="main-action q-mt-md text-center">
                   <q-btn v-if="checkPermission('student-update') && checkStatusApproved(student)"
                          color="secondary" class="q-mr-sm q-mb-sm"
-                         @click="handleChangeStatus(checkTeacher() ? studentStatusTempEnum.TeacherApproved : studentStatusTempEnum.Approved)">
+                         @click="handleChangeStatus(studentStatusTempEnum.ClassMonitorApproved )">
                     <q-icon name="fa-solid fa-check" class="q-mr-sm"
                             size="xs"></q-icon>
                     Duyệt
@@ -274,6 +274,7 @@ import _ from "lodash";
 import {permissionHelper} from "../../utils/permissionHelper";
 import {StudentTempStatusEnum} from "../../enums/studentTempStatus.enum";
 import {useStore} from "vuex";
+import {StudentRoleEnum} from "../../enums/studentRole.enum";
 
 export default defineComponent({
   name: "RequestDetail",
@@ -328,7 +329,6 @@ export default defineComponent({
 
     const checkStatusReject = (item) => {
       const auth = store.getters["authStudent/getAuthUserStudent"]
-
       if (item.status_approved == studentStatusTempEnum.Approved) {
         return false
       }
@@ -337,29 +337,25 @@ export default defineComponent({
         return false
       }
 
-      if (auth.is_teacher && !auth.is_super_admin) {
-        if (item.status_approved == studentStatusTempEnum.TeacherApproved) {
-          return false
+      if (auth.role == StudentRoleEnum.ClassMonitor) {
+        if (item.status_approved == studentStatusTempEnum.Pending) {
+          return true
         }
       }
 
-      return true
+      return false
     }
 
     const checkStatusApproved = (item) => {
       const auth = store.getters["authStudent/getAuthUserStudent"]
-
-      if (item.status_approved == studentStatusTempEnum.Approved) return false
-
-      if (auth.is_teacher && !auth.is_super_admin) {
-        return item.status_approved == studentStatusTempEnum.ClassMonitorApproved
+      if (item.status_approved == studentStatusTempEnum.Approved) {
+        return false
       }
 
-      if (!auth.is_teacher) {
-        return item.status_approved == studentStatusTempEnum.TeacherApproved
-      }
-      if (auth.is_super_admin) {
-        return true
+      if (auth.role == StudentRoleEnum.ClassMonitor) {
+        if (item.status_approved == studentStatusTempEnum.Pending) {
+          return true
+        }
       }
       return false
     }

@@ -212,14 +212,14 @@
                                                 </q-item-section>
                                             </q-item>
                                             <q-item
-                                                v-if="checkClassMonitor() && getValueLodash(item, 'status_approved', 0)==studentStatusTempEnum.Pending"
+                                                v-if="checkStatusApproved(item) && getValueLodash(item, 'status_approved', 0)==studentStatusTempEnum.Pending"
                                                 clickable v-close-popup
                                                 @click="handleChangeStatus(getValueLodash(item, 'id', 0), studentStatusTempEnum.ClassMonitorApproved)">
                                                 <span><q-icon name="fa-solid fa-check" class="q-mr-sm"
                                                               size="xs"></q-icon>Duyệt yêu cầu</span>
                                             </q-item>
                                             <q-item
-                                                v-if="checkClassMonitor() && getValueLodash(item, 'status_approved', 0)==studentStatusTempEnum.Pending"
+                                                v-if="checkStatusReject(item) && getValueLodash(item, 'status_approved', 0)==studentStatusTempEnum.Pending"
                                                 clickable v-close-popup
                                                 @click="handleChangeStatus(getValueLodash(item, 'id', 0), studentStatusTempEnum.Reject)">
                                                 <span><q-icon name="fa-solid fa-xmark" class="q-mr-sm"
@@ -297,6 +297,7 @@ import api from "../../apiStudent";
 import {permissionHelper} from "../../utils/permissionHelper";
 import {StudentTempStatusEnum} from "../../enums/studentTempStatus.enum";
 import {REQUEST_STATUS} from "../../utils/constants";
+import {StudentRoleEnum} from "../../enums/studentRole.enum";
 
 export default defineComponent({
     name: "RequestStudent",
@@ -334,13 +335,13 @@ export default defineComponent({
                 return false
             }
 
-            if (auth.is_teacher && !auth.is_super_admin) {
-                if (item.status_approved == studentStatusTempEnum.TeacherApproved) {
-                    return false
+            if (auth.role == StudentRoleEnum.ClassMonitor) {
+                if (item.status_approved == studentStatusTempEnum.Pending) {
+                    return true
                 }
             }
 
-            return true
+            return false
         }
 
         const checkStatusApproved = (item) => {
@@ -349,15 +350,10 @@ export default defineComponent({
                 return false
             }
 
-            if (auth.is_teacher && !auth.is_super_admin) {
-                return item.status_approved == studentStatusTempEnum.ClassMonitorApproved
-            }
-
-            if (!auth.is_teacher) {
-                return item.status_approved == studentStatusTempEnum.TeacherApproved
-            }
-            if (auth.is_super_admin) {
-                return true
+            if (auth.role == StudentRoleEnum.ClassMonitor) {
+                if (item.status_approved == studentStatusTempEnum.Pending) {
+                    return true
+                }
             }
             return false
         }
@@ -717,7 +713,8 @@ export default defineComponent({
             requestStatusArray,
             clearFilter,
             handleFilter,
-            checkStatusReject
+            checkStatusReject,
+
         }
     },
 })

@@ -172,6 +172,7 @@ class StudentController extends Controller
                 $this->studentTempRepository->createOrUpdate($studentTemp);
                 if (!empty($data['families'])) {
                     foreach ($data['families'] as $family) {
+                        $family['student_id'] = $studentTemp->student_id;
                         $studentTemp->families()->updateOrCreate([
                             'id' => @$family['id'],
                         ], $family);
@@ -187,6 +188,7 @@ class StudentController extends Controller
 
                 if (!empty($data['families'])) {
                     foreach ($data['families'] as $family) {
+                        $family['student_id'] = $studentTemp->student_id;
                         $studentTemp->families()->updateOrCreate([
                             'family_id' => @$family['id'],
                             'student_id' => $studentTemp->student_id,
@@ -194,8 +196,6 @@ class StudentController extends Controller
                     }
                 }
             }
-
-
 
             DB::commit();
             return $this->responseSuccess();
@@ -421,6 +421,7 @@ class StudentController extends Controller
 
                     $this->studentRepository->createOrUpdate($student);
                     if (!empty($familyTemp)) {
+                        $student->families()->delete();
                         foreach ($familyTemp as $family) {
                             $student->families()->updateOrCreate(['id' => $family->family_id], $family->toArray());
                         }
@@ -470,6 +471,7 @@ class StudentController extends Controller
     private function extractedStudentRelationship(array $data, $student): void
     {
         if (!empty($data['families'])) {
+            $student->families()->delete();
             foreach ($data['families'] as $family) {
                 $student->families()->updateOrCreate(['id' => $family['id'] ?? 0], $family);
             }
@@ -661,7 +663,7 @@ class StudentController extends Controller
 
     public function showRequestUpdateStudent($id): JsonResponse
     {
-        $relationship = ['studentApproved', 'teacherApproved', 'adminApproved', 'student', 'rejectable'];
+        $relationship = ['studentApproved', 'teacherApproved', 'adminApproved', 'student', 'rejectable', 'families'];
         $request = $this->studentTempRepository->getFirstBy(['id' => $id], ['*'], $relationship);
 
         return $this->responseSuccess([
