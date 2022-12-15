@@ -19,10 +19,10 @@
                         <q-avatar size="26px">
                             <img :src="auth.thumbnail ? auth.thumbnail_url : 'https://cdn.quasar.dev/img/avatar4.jpg'">
                         </q-avatar>
-                        <q-menu>
-                            <div class="row no-wrap q-pa-md">
+                        <q-menu max-width="200px">
+                            <div class="row no-wrap q-pa-md" >
 
-                                <div class="column items-center">
+                                <div class="column items-center" style="min-width: 120px">
 
                                     <q-avatar size="72px">
                                         <img

@@ -645,7 +645,7 @@ export default defineComponent({
                     position: 'top-right'
                 })
             })
-          getAuthUser()
+            getAuthUser()
             getMyRequest();
 
         })
