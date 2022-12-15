@@ -171,11 +171,11 @@ class StudentController extends Controller
                 ]));
                 $this->studentTempRepository->createOrUpdate($studentTemp);
                 if (!empty($data['families'])) {
+                    $studentTemp->families()->delete();
+
                     foreach ($data['families'] as $family) {
                         $family['student_id'] = $studentTemp->student_id;
-                        $studentTemp->families()->updateOrCreate([
-                            'id' => @$family['id'],
-                        ], $family);
+                        $studentTemp->families()->create($family);
                     }
                 }
             } else {
@@ -187,12 +187,10 @@ class StudentController extends Controller
                 $studentTemp = $this->studentTempRepository->create($dataStudent);
 
                 if (!empty($data['families'])) {
+                    $studentTemp->families()->delete();
                     foreach ($data['families'] as $family) {
                         $family['student_id'] = $studentTemp->student_id;
-                        $studentTemp->families()->updateOrCreate([
-                            'family_id' => @$family['id'],
-                            'student_id' => $studentTemp->student_id,
-                        ], $family);
+                        $studentTemp->families()->create($family);
                     }
                 }
             }
@@ -333,9 +331,10 @@ class StudentController extends Controller
             'student_id' => auth('students')->id(),
             'status_approved' => StudentTempStatus::Pending
         ]);
+        $relationships = ['studentApproved', 'teacherApproved', 'adminApproved', 'student', 'rejectable', 'families'];
 
         return $this->responseSuccess([
-            'studentTemp' => $studentTemp
+            'studentTemp' => $studentTemp?->load($relationships)
         ]);
     }
 
@@ -612,7 +611,7 @@ class StudentController extends Controller
     public function getRequestUpdateStudent(Request $request): JsonResponse
     {
         $data = $request->all();
-        $relationship = ['studentApproved', 'teacherApproved', 'adminApproved', 'student', 'rejectable'];
+        $relationship = ['studentApproved', 'teacherApproved', 'adminApproved', 'student', 'rejectable', 'families'];
         $paginate = $data['limit'] ?? config('constants.limit_of_paginate', 10);
         $model = $this->studentTempRepository->getModel();
         $query = $model->query();
@@ -683,7 +682,7 @@ class StudentController extends Controller
             $query->where('student_id', $student->id);
         }
 
-        $relationships = ['studentApproved', 'teacherApproved', 'adminApproved', 'student'];
+        $relationships = ['studentApproved', 'teacherApproved', 'adminApproved', 'student', 'rejectable', 'families'];
 
         $requests = $query->with($relationships)->orderBy('created_at','desc')->get();
         if (@$data['page'])
