@@ -556,6 +556,8 @@ export default defineComponent({
             requestId.value = id
         }
 
+
+
         const studentStatusTempEnum = StudentTempStatusEnum
 
         const handleUpdateLearningOutcome = () => {
@@ -643,6 +645,7 @@ export default defineComponent({
                     position: 'top-right'
                 })
             })
+          getAuthUser()
             getMyRequest();
 
         })
