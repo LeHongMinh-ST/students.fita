@@ -52,6 +52,9 @@ class StudentTemp extends Model
         'student_id',
         'reject_type',
         'reject_id',
+        'reject_note',
+        'change_column',
+        'email_edu',
     ];
 
     const ONLY_KEY_UPDATE = [
@@ -170,5 +173,9 @@ class StudentTemp extends Model
         'gender_text',
         'training_text',
         'reject_role_text'
+    ];
+
+    protected $casts = [
+        'change_column' => 'array',
     ];
 }

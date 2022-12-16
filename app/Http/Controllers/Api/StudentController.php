@@ -23,6 +23,7 @@ use App\Repositories\Student\StudentRepositoryInterface;
 use App\Repositories\Student\StudentTempRepositoryInterface;
 use App\Services\CrawlDataLearningOutcomeService;
 use App\Traits\ResponseTrait;
+use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -156,9 +157,9 @@ class StudentController extends Controller
                 $data['thumbnail'] = $path;
             }
 
-            $student?->fill(array_merge($data, [
-                'updated_by' => auth()->id(),
-            ]));
+//            $student?->fill(array_merge($data, [
+//                'updated_by' => auth()->id(),
+//            ]));
 
             $studentTemp = $this->studentTempRepository->getFirstBy([
                 'student_id' => $auth->id,
@@ -170,28 +171,25 @@ class StudentController extends Controller
                     'updated_by' => auth()->id(),
                 ]));
                 $this->studentTempRepository->createOrUpdate($studentTemp);
-                if (!empty($data['families'])) {
-                    $studentTemp->families()->delete();
-
-                    foreach ($data['families'] as $family) {
-                        $family['student_id'] = $studentTemp->student_id;
-                        $studentTemp->families()->create($family);
-                    }
-                }
             } else {
-                $dataStudent = array_merge($student->toArray(), [
+                $dataStudent = array_merge($data, [
                     'student_id' => $auth->id,
                     'status_approved' => StudentTempStatus::Pending
                 ]);
 
                 $studentTemp = $this->studentTempRepository->create($dataStudent);
 
-                if (!empty($data['families'])) {
-                    $studentTemp->families()->delete();
-                    foreach ($data['families'] as $family) {
-                        $family['student_id'] = $studentTemp->student_id;
-                        $studentTemp->families()->create($family);
-                    }
+            }
+
+            $studentTemp = $this->handleChangeColumnRequest($studentTemp, $student);
+            $this->studentTempRepository->createOrUpdate($studentTemp);
+
+            if (!empty($data['families'])) {
+                $studentTemp->families()->delete();
+
+                foreach ($data['families'] as $family) {
+                    $family['student_id'] = $studentTemp->student_id;
+                    $studentTemp->families()->create($family);
                 }
             }
 
@@ -250,6 +248,7 @@ class StudentController extends Controller
         try {
             $ids = $request->get('request_ids', []);
             $status = $request->get('status', 0);
+            $rejectNote = $request->get('reject_note', '');
 
             $studentTemps = $this->studentTempRepository->getByWhereIn('id', $ids);
             foreach ($studentTemps as $studentTemp) {
@@ -260,7 +259,7 @@ class StudentController extends Controller
                     }
                 }
 
-                $studentTemp = $this->handleUpdateStudentByStudentTemp($studentTemp, $status);
+                $studentTemp = $this->handleUpdateStudentByStudentTemp($studentTemp, $status, $rejectNote);
                 $this->studentTempRepository->createOrUpdate($studentTemp);
             }
 
@@ -378,7 +377,7 @@ class StudentController extends Controller
     /**
      * @throws PermissionStatusException
      */
-    private function handleUpdateStudentByStudentTemp($studentTemp, $status)
+    private function handleUpdateStudentByStudentTemp($studentTemp, $status, $rejectNote = '')
     {
         $auth = auth('api')->user();
         $student = auth('students')->user();
@@ -390,8 +389,7 @@ class StudentController extends Controller
                 }
 
                 if ($studentTemp->status_approved == StudentTempStatus::Pending) {
-                    $studentTemp->status_approved = StudentTempStatus::ClassMonitorApproved;
-                    $studentTemp->student_approved = @auth('students')->id();
+                    $studentTemp = $this->extractedApprovedData($studentTemp, @auth('students')->id(), StudentTempStatus::ClassMonitorApproved);
                 }
                 break;
             case StudentTempStatus::TeacherApproved:
@@ -400,8 +398,7 @@ class StudentController extends Controller
                 }
 
                 if ($studentTemp->status_approved == StudentTempStatus::ClassMonitorApproved) {
-                    $studentTemp->status_approved = StudentTempStatus::TeacherApproved;
-                    $studentTemp->teacher_approved = @auth('api')->id();
+                    $studentTemp = $this->extractedApprovedData($studentTemp, @auth('api')->id(), StudentTempStatus::TeacherApproved);
                 }
                 break;
             case StudentTempStatus::Approved:
@@ -410,8 +407,7 @@ class StudentController extends Controller
                 }
 
                 if ($studentTemp->status_approved == StudentTempStatus::TeacherApproved) {
-                    $studentTemp->status_approved = StudentTempStatus::Approved;
-                    $studentTemp->admin_approved = @auth('api')->id();
+                    $studentTemp = $this->extractedApprovedData($studentTemp, @auth('api')->id(), StudentTempStatus::Approved);
 
                     $familyTemp = $studentTemp->families;
                     $student = $this->studentRepository->getFirstBy(['id' => $studentTemp->student_id]);
@@ -431,26 +427,20 @@ class StudentController extends Controller
                 if ($studentTemp->status_approved != StudentTempStatus::Approved) {
                     if (auth('students')->check()) {
                         if ($studentTemp->status_approved == StudentTempStatus::Pending) {
-                            $studentTemp->status_approved = StudentTempStatus::Reject;
-                            $studentTemp->rejectable_type = Student::class;
-                            $studentTemp->rejectable_id = $student->id;
+                            $studentTemp = $this->extractedRejectData($studentTemp, $student, Student::class, $rejectNote);
                         }
                     }
 
                     if (auth('api')->check()) {
                         if ($auth->is_teacher && !$auth->is_super_admin) {
                             if ($studentTemp->status_approved == StudentTempStatus::ClassMonitorApproved) {
-                                $studentTemp->status_approved = StudentTempStatus::Reject;
-                                $studentTemp->rejectable_type = User::class;
-                                $studentTemp->rejectable_id = $auth->id;
+                                $studentTemp = $this->extractedRejectData($studentTemp, $auth, User::class, $rejectNote);
                             }
                         }
 
                         if (!$auth->is_teacher || $auth->is_super_admin) {
                             if ($studentTemp->status_approved != StudentTempStatus::Approved) {
-                                $studentTemp->status_approved = StudentTempStatus::Reject;
-                                $studentTemp->rejectable_type = User::class;
-                                $studentTemp->rejectable_id = $auth->id;
+                                $studentTemp = $this->extractedRejectData($studentTemp, $auth, User::class, $rejectNote);
                             }
                         }
 
@@ -726,5 +716,46 @@ class StudentController extends Controller
 
         $students = $this->studentRepository->allBy(['class_id' => $classId]);
         return $this->responseSuccess(['students' => $students]);
+    }
+
+    /**
+     * @param $studentTemp
+     * @param \Illuminate\Contracts\Auth\Authenticatable|null $auth
+     * @param $type
+     * @param mixed $rejectNote
+     */
+    private function extractedRejectData($studentTemp, ?Authenticatable $auth, $type, mixed $rejectNote)
+    {
+        $studentTemp->status_approved = StudentTempStatus::Reject;
+        $studentTemp->rejectable_type = $type;
+        $studentTemp->rejectable_id = $auth->id;
+        $studentTemp->reject_note = $rejectNote;
+        return $studentTemp;
+    }
+
+    /**
+     * @param $studentTemp
+     * @param $idApproved
+     * @param $status
+     */
+    private function extractedApprovedData($studentTemp, $idApproved, $status)
+    {
+        $studentTemp->status_approved = $status;
+        $studentTemp->admin_approved = $idApproved;
+        return $studentTemp;
+    }
+
+    private function handleChangeColumnRequest($studentTemp, $student)
+    {
+        $arrayChangeColumn = [];
+
+        foreach ($student->toArray() as $key => $value) {
+            if ($key == 'id' || $key == 'created_at' || $key == 'updated_at') continue;
+            if ($studentTemp->$key != $value) {
+                $arrayChangeColumn[] = $key;
+            }
+        }
+        $studentTemp->change_column = $arrayChangeColumn;
+        return $studentTemp;
     }
 }
