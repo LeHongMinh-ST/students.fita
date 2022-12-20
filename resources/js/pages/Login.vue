@@ -41,7 +41,7 @@
 <!--                </div>-->
                 <div class="separator">hoặc</div>
                 <div class="social-card">
-                  <div class="microsoft social-btn q-btn text-white">
+                  <div class="microsoft social-btn q-btn text-white"  @click="getUrlSocial('azure')">
                     <span><q-icon class="social-icon" name="fa-brands fa-windows" size="md"/><span class="social-text">Đăng nhập với tài khoản Microsoft</span></span>
                   </div>
 

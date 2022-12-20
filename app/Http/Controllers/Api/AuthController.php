@@ -51,7 +51,7 @@ class AuthController extends Controller
             return response()->json(['error' => 'Unauthorized'], 401);
         };
 
-        return response()->json($user->load(['role' => function($role) {
+        return response()->json($user->load(['role' => function ($role) {
             return $role->with(['permissions']);
         }, 'socials']));
     }
@@ -89,7 +89,6 @@ class AuthController extends Controller
     {
         try {
             $userProvider = Socialite::driver($provider)->stateless()->user();
-
         } catch (\Exception $e) {
             Log::error('Error handle login social', [
                 'method' => __METHOD__,
@@ -121,9 +120,11 @@ class AuthController extends Controller
             'social_provider' => $provider,
             'socialable_type' => User::class
         ]);
+
         if (!$social && !auth('api')->check()) {
             return $this->responseError('Bạn chưa liên kết với tài khoản nào !');
         }
+
         if (!$social && auth('api')->check()) {
             $returnBack = true;
             $user = auth('api')->user();
@@ -151,7 +152,8 @@ class AuthController extends Controller
             return $this->responseError('Không tìm thấy tài khoản!');
         }
 
-        if (!$token = auth()->attempt(['user_name' => $user->user_name])) {
+        auth('api')->login($user);
+        if (!$token = auth()->refresh()) {
             return response()->json(['error' => 'Unauthorized'], 401);
         }
 

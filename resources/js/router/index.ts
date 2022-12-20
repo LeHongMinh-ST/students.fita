@@ -282,7 +282,11 @@ const routes: Array<RouteRecordRaw> = [
         name: 'LoginGoogle',
         component: () => import('../pages/LoginGoogle.vue')
     },
-
+    {
+        path: '/authorize/azure/callback',
+        name: 'LoginMicrosoft',
+        component: () => import('../pages/LoginMicrosoft.vue')
+    },
     {
         path: '/error-403',
         name: 'Error403',
