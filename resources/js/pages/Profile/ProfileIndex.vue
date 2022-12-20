@@ -148,8 +148,11 @@
                         <q-separator/>
                         <q-card-section>
                             <div class="social-card">
-                                <div class="microsoft social-btn q-btn text-white">
+                                <div  v-if="socialAzure?.id === null" class="microsoft social-btn q-btn text-white"  @click="getUrlSocial('azure')">
                                     <span><q-icon class="social-icon" name="fa-brands fa-windows" size="md"/><span class="social-text">Liên kết với tài khoản Microsoft</span></span>
+                                </div>
+                                <div v-else class="microsoft social-btn q-btn text-white" >
+                                  <span><q-icon class="social-icon" name="fa-brands fa-windows" size="md"/><span class="social-text">{{ socialAzure?.email ?? 'Liên kết với tài khoản Microsoft'}}</span></span>
                                 </div>
 
                                 <div v-if="socialGoogle?.id === null" class="google social-btn q-btn text-white" @click="getUrlSocial('google')">
@@ -324,6 +327,15 @@ export default defineComponent({
             socialable_type: ""
         })
 
+        const socialAzure = ref<ISocialResult>({
+          id: null,
+          email: "",
+          social_id: "",
+          social_provider: "",
+          socialable_id: 0,
+          socialable_type: ""
+        })
+
         onMounted(() => {
             store.commit(`home/${HomeMutationTypes.SET_TITLE}`, 'Thông tin tài khoản')
             profile.value = store.getters['auth/getAuthUser']
@@ -332,8 +344,13 @@ export default defineComponent({
             }
 
             const social = profile.value.socials.find(item => item.social_provider === 'google')
+            const azure = profile.value.socials.find(item => item.social_provider === 'azure')
             if (social) {
               socialGoogle.value = social
+            }
+
+            if (azure) {
+              socialAzure.value = azure
             }
         })
 
@@ -440,7 +457,6 @@ export default defineComponent({
                     isRequest.value = false
                 })
             }
-
         }
 
         const getUrlSocial = (provider: string): void => {
@@ -478,7 +494,8 @@ export default defineComponent({
             isPwd,
             handleUpdateProfile,
             getUrlSocial,
-            socialGoogle
+            socialGoogle,
+            socialAzure
         }
     }
 })

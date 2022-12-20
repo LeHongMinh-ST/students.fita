@@ -439,9 +439,7 @@ class StudentController extends Controller
                         }
 
                         if (!$auth->is_teacher || $auth->is_super_admin) {
-                            if ($studentTemp->status_approved != StudentTempStatus::Approved) {
-                                $studentTemp = $this->extractedRejectData($studentTemp, $auth, User::class, $rejectNote);
-                            }
+                            $studentTemp = $this->extractedRejectData($studentTemp, $auth, User::class, $rejectNote);
                         }
 
                     }
