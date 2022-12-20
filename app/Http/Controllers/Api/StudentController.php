@@ -157,10 +157,6 @@ class StudentController extends Controller
                 $data['thumbnail'] = $path;
             }
 
-//            $student?->fill(array_merge($data, [
-//                'updated_by' => auth()->id(),
-//            ]));
-
             $studentTemp = $this->studentTempRepository->getFirstBy([
                 'student_id' => $auth->id,
                 'status_approved' => StudentTempStatus::Pending
@@ -178,11 +174,9 @@ class StudentController extends Controller
                 ]);
 
                 $studentTemp = $this->studentTempRepository->create($dataStudent);
-
             }
 
             $studentTemp = $this->handleChangeColumnRequest($studentTemp, $student);
-            $this->studentTempRepository->createOrUpdate($studentTemp);
 
             if (!empty($data['families'])) {
                 $studentTemp->families()->delete();
@@ -191,7 +185,13 @@ class StudentController extends Controller
                     $family['student_id'] = $studentTemp->student_id;
                     $studentTemp->families()->create($family);
                 }
+
+                if ($this->isChangeFamily($student->families, $studentTemp->families)) {
+                    $studentTemp->change_column[] = 'family';
+                }
             }
+
+            $this->studentTempRepository->createOrUpdate($studentTemp);
 
             DB::commit();
             return $this->responseSuccess();
@@ -674,9 +674,9 @@ class StudentController extends Controller
 
         $relationships = ['studentApproved', 'teacherApproved', 'adminApproved', 'student', 'rejectable', 'families'];
 
-        $requests = $query->with($relationships)->orderBy('created_at','desc')->get();
+        $requests = $query->with($relationships)->orderBy('created_at', 'desc')->get();
         if (@$data['page'])
-            $requests = $query->with($relationships)->orderBy('created_at','desc') ->paginate($paginate);
+            $requests = $query->with($relationships)->orderBy('created_at', 'desc')->paginate($paginate);
 
         return $this->responseSuccess([
             'requests' => $requests
@@ -757,5 +757,38 @@ class StudentController extends Controller
         }
         $studentTemp->change_column = $arrayChangeColumn;
         return $studentTemp;
+    }
+
+    private function isChangeFamily($oldFamily, $newFamily): int|array
+    {
+        $oldFamily = $oldFamily->map(function ($item) {
+            return collect($item)->except(['id', 'created_at', 'updated_at'])->toArray();
+        })->toArray();
+
+        $newFamily = $newFamily->map(function ($item) {
+            return collect($item)->except(['id', 'created_at', 'updated_at', 'student_temp_id'])->toArray();
+        })->toArray();
+
+        foreach ($oldFamily as $key => $value) {
+            if (is_array($value)) {
+
+                if (!isset($newFamily[$key])) {
+                    $difference[$key] = $value;
+
+                } elseif (!is_array($newFamily[$key])) {
+                    $difference[$key] = $value;
+
+                } else {
+                    $new_diff = $this->isChangeFamily($value, $newFamily[$key]);
+                    if ($new_diff != FALSE) {
+                        $difference[$key] = $new_diff;
+                    }
+                }
+
+            } elseif (!isset($newFamily[$key]) || $newFamily[$key] != $value) {
+                $difference[$key] = $value;
+            }
+        }
+        return !empty($difference);
     }
 }
