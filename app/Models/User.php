@@ -96,6 +96,11 @@ class User extends Authenticatable implements JWTSubject
         return $this->belongsTo(Department::class);
     }
 
+    public function generalClass(): hasMany
+    {
+        return $this->hasMany(GeneralClass::class, 'teacher_id');
+    }
+
     public function createBy(): BelongsTo
     {
         return $this->belongsTo(self::class, 'created_by');
@@ -114,6 +119,11 @@ class User extends Authenticatable implements JWTSubject
     public function getThumbnailUrlAttribute(): string
     {
         return asset("/storage/{$this->thumbnail}");
+    }
+
+    public function rejects()
+    {
+        return $this->morphMany(StudentTemp::class,'rejectable');
     }
 
     protected $appends = [

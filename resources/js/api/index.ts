@@ -231,8 +231,21 @@ export default {
             url: `/users/${id}`,
         })
     },
-
-	getClasses<T>(params: object = {}): AxiosPromise<IResult<T>> {
+    deleteUserSelected<T>(data: any): AxiosPromise<IResult<T>> {
+        return apiAxios({
+            method: 'delete',
+            url: `/users/delete-selected`,
+            data: data
+        })
+    },
+    resetPassword<T>(id: number, data: any): AxiosPromise<IResult<T>> {
+        return apiAxios({
+            method: 'put',
+            data: data,
+            url: `/users/${id}/reset-password`
+        })
+    },
+    getClasses<T>(params: object = {}): AxiosPromise<IResult<T>> {
         return apiAxios({
             method: 'get',
             url: '/classes',
@@ -277,6 +290,20 @@ export default {
             url: `/classes/${id}`,
         })
     },
+    importStudentClass<T>(id: number, data: any): AxiosPromise<IResult<T>> {
+        return apiAxios({
+            method: 'post',
+            data: data,
+            url: `/classes/${id}/import-student`,
+        })
+    },
+    addStudent<T>(data: any, id: any): AxiosPromise<IResult<T>> {
+        return apiAxios({
+            method: 'put',
+            url: `/classes/${id}/add-student`,
+            data: data
+        })
+    },
 
     deleteSelectedClass<T>(data: any): AxiosPromise<IResult<T>> {
         return apiAxios({
@@ -292,7 +319,36 @@ export default {
             url: '/class/get-all-class-id',
         })
     },
+    //
+    getAllReport<T>(params: object = {}): AxiosPromise<IResult<T>> {
+        return apiAxios({
+            method: 'get',
+            url: '/reports',
+            params: params
+        })
+    },
+    getReport<T>(id: number): AxiosPromise<IResult<T>> {
+        return apiAxios({
+            method: 'get',
+            url: `/reports/${id}`
+        })
+    },
 
+    changeStatusReport<T>(data: any, id: string): AxiosPromise<IResult<T>> {
+        return apiAxios({
+            method: 'put',
+            url: `/reports/${id}/change-status`,
+            data: data
+        })
+    },
+
+    deleteReport<T>(id: string): AxiosPromise<IResult<T>> {
+        return apiAxios({
+            method: 'delete',
+            url: `/reports/${id}`,
+        })
+    },
+    
     //AUTHOR: TRUONGTN
     /*begin */
 
@@ -327,13 +383,42 @@ export default {
         })
     },
 
-    deleteStudent<T>(id: string): AxiosPromise<IResult<T>> {
+    deleteStudent<T>(id: number): AxiosPromise<IResult<T>> {
         return apiAxios({
             method: 'delete',
             url: `/students/${id}`,
         })
     },
 
+    resetStudentPassword<T>(id: number, data: any): AxiosPromise<IResult<T>> {
+        return apiAxios({
+            method: 'put',
+            data: data,
+            url: `/students/${id}/reset-password`
+        })
+    },
+
+    // Api dashboard - TruongTN
+    getDashboard<T>(): AxiosPromise<IResult<T>> {
+        return apiAxios({
+            method: 'get',
+            url: '/dashboard'
+        })
+    },
+
+    getReports<T>(): AxiosPromise<IResult<T>> {
+        return apiAxios({
+            method: 'get',
+            url: '/reports'
+        })
+    },
+
+    getRequest<T>(): AxiosPromise<IResult<T>> {
+        return apiAxios({
+            method: 'get',
+            url: '/request'
+        })
+    },
     /*end */
 
     updateLearningOutcome<T>(id: number): AxiosPromise<IResult<T>> {
@@ -355,5 +440,64 @@ export default {
             data: data,
             url: `/profile`
         })
-    }
+    },
+    downloadExcelTemplate<T>(): AxiosPromise<IResult<T>> {
+        return apiAxios({
+            method: 'get',
+            url: '/classes/download/get-template-import-file',
+            responseType: 'blob',
+        })
+    },
+    countReportPending<T>(): AxiosPromise<IResult<T>> {
+        return apiAxios({
+            method: 'get',
+            url: '/reports/count-pending',
+        })
+    },
+    countStudentRequest<T>(): AxiosPromise<IResult<T>> {
+        return apiAxios({
+            method: 'get',
+            url: '/students/request/count',
+        })
+    },
+    getRequestStudent<T>(params: {} = {}): AxiosPromise<IResult<T>> {
+        return apiAxios({
+            method: 'get',
+            url: '/students/request',
+            params
+        })
+    },
+    deleteRequestSelected<T>(data: any): AxiosPromise<IResult<T>> {
+        return apiAxios({
+            method: 'delete',
+            url: `/students/request/delete-selected`,
+            data: data
+        })
+    },
+    getRequestStudentDetail<T>(id: number): AxiosPromise<IResult<T>> {
+        return apiAxios({
+            method: 'get',
+            url: `/students/request/${id}`
+        })
+    },
+    deleteRequest<T>(id: number): AxiosPromise<IResult<T>> {
+        return apiAxios({
+            method: 'delete',
+            url: `/students/request/${id}`,
+        })
+    },
+    changeStatusRequest<T>(id: number, data: object): AxiosPromise<IResult<T>> {
+        return apiAxios({
+            method: 'put',
+            data: data,
+            url: `/students/request/${id}`
+        })
+    },
+    changeStatusRequestSelect<T>(data: object): AxiosPromise<IResult<T>> {
+        return apiAxios({
+            method: 'put',
+            data: data,
+            url: `/students/request/selected`
+        })
+    },
 }

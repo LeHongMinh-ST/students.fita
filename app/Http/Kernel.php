@@ -66,5 +66,6 @@ class Kernel extends HttpKernel
         'permission' => \App\Http\Middleware\PermissionUser::class,
         'auth.admin' => \App\Http\Middleware\AuthAdmin::class,
         'auth.student' => \App\Http\Middleware\AuthStudent::class,
+        'student.class-monitor' => \App\Http\Middleware\StudentClassMonitor::class,
     ];
 }

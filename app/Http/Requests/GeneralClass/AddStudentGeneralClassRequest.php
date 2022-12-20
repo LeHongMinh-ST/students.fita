@@ -13,7 +13,7 @@ class AddStudentGeneralClassRequest extends FormRequest
      */
     public function authorize()
     {
-        return false;
+        return true;
     }
 
     /**
@@ -24,7 +24,7 @@ class AddStudentGeneralClassRequest extends FormRequest
     public function rules()
     {
         return [
-            'student_id' => 'required'
+            'student_ids' => 'required'
         ];
     }
 }

@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Enums\Report\ReportStatus;
+use App\Enums\Report\ReportSubject;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -17,6 +19,7 @@ class Report extends Model
         'title',
         'subjects',
         'content',
+        'class_id',
         'status',
         'status_approve',
         'created_by',
@@ -37,5 +40,21 @@ class Report extends Model
     {
         return $this->belongsTo(User::class, 'approved_by');
     }
+
+    public function getStatusTextAttribute(): string
+    {
+        return $this->status ? ReportStatus::getDescription($this->status) : '';
+    }
+
+    public function getSubjectTextAttribute():string
+    {
+        return $this->subjects ? ReportSubject::getDescription($this->subjects) : '';
+
+    }
+
+    protected $appends = [
+        'status_text',
+        'subject_text',
+    ];
 
 }

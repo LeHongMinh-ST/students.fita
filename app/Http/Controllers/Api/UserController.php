@@ -28,6 +28,7 @@ class UserController extends Controller
 
     public function index(Request $request): JsonResponse
     {
+
         $data = $request->all();
         $relationships = ['role', 'department'];
         $columns = ['*'];
@@ -44,9 +45,20 @@ class UserController extends Controller
             $condition[] = ['user_name', 'or', $orCondition];
         }
 
-        $user = $this->userRepository->getListPaginateBy($condition, $relationships, $columns, $paginate);
+        if (!empty($data['is_teacher']) && $data['is_teacher'] == 1) {
+            $condition[] = ['is_teacher', '=', 1];
+        }
 
-        return $this->responseSuccess(['users' => $user]);
+        $sort = @$data['sort'] ?? 'DESC';
+        $condition[] = ['created_at', 'ORDER_BY', $sort];
+
+        $users = $this->userRepository->allBy($condition, $relationships, $columns);
+
+        if (isset($data['page'])) {
+            $users = $this->userRepository->getListPaginateBy($condition, $relationships, $columns, $paginate);
+        }
+
+        return $this->responseSuccess(['users' => $users]);
     }
 
     public function show($id): JsonResponse
@@ -110,6 +122,12 @@ class UserController extends Controller
     public function destroy($id): JsonResponse
     {
         try {
+
+            $auth = auth('api')->user();
+            if ($id == $auth->id) {
+                return $this->responseError('Không thể xóa người dùng này!');
+            }
+
             $this->userRepository->deleteById($id);
             return $this->responseSuccess();
         } catch (\Exception $exception) {
@@ -124,8 +142,14 @@ class UserController extends Controller
     public function deleteSelected(DeleteUserRequest $request): JsonResponse
     {
         try {
-            $roleId = $request->input('user_id', []);
-            $condition[] = ['id', 'in', $roleId];
+            $userIds = $request->input('user_id', []);
+
+            $auth = auth('api')->user();
+            if (in_array($auth->id, $userIds)) {
+                return $this->responseError('Lỗi không thể xoá người dùng đang sử dụng!');
+            }
+
+            $condition[] = ['id', 'in', $userIds];
             $this->userRepository->deleteBy($condition);
             return $this->responseSuccess();
         } catch (\Exception $exception) {
@@ -175,7 +199,7 @@ class UserController extends Controller
             ]);
             return $this->responseSuccess();
         } catch (\Exception $exception) {
-            Log::error('Error update user', [
+            Log::error('Error reset my password user', [
                 'method' => __METHOD__,
                 'message' => $exception->getMessage()
             ]);

@@ -42,13 +42,16 @@ class GeneralClassController extends Controller
         }
 
         if (isset($data['class_code'])) {
-            $condition[] = ['class_code' => $data['class_code']];
+            $condition[] = ['class_code', '=', $data['class_code']];
         }
         $user = auth()->user();
 
-        if (@$user->teacher_id) {
-            $condition[] = ['teacher_id' => $user->teacher_id];
+        if ($user->is_teacher && !@$user->is_super_admin) {
+            $condition[] = ['teacher_id', '=', $user->id];
         }
+
+        $sort = $data['sort'] ?? 'DESC';
+        $condition[] = ['created_at', 'ORDER_BY', $sort];
 
         $class = $this->generalClassRepository->getListPaginateBy($condition, $relationships, $columns, $paginate);
 
@@ -68,7 +71,7 @@ class GeneralClassController extends Controller
 
     public function show($id): JsonResponse
     {
-        $relationships = ['students', 'department'];
+        $relationships = ['students', 'department', 'teacher'];
         $columns = ['*'];
 
         return $this->responseSuccess([
@@ -149,13 +152,11 @@ class GeneralClassController extends Controller
     public function addStudentToClass(AddStudentGeneralClassRequest $request, $id): JsonResponse
     {
         try {
-            $studentId = $request->input('student_id', '');
-            $student = $this->studentRepository->findById($studentId);
-            $student?->fill([
+            $studentIds = $request->get('student_ids', []);
+            $this->studentRepository->update([['id', 'in', $studentIds]],[
                 'class_id' => $id,
-                'updated_by' => auth()->id(),
             ]);
-            $this->studentRepository->createOrUpdate($student);
+
             return $this->responseSuccess();
         } catch (\Exception $exception) {
             Log::error('Error add student to class', [

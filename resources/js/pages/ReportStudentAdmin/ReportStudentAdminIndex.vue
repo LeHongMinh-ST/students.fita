@@ -35,10 +35,16 @@
 
                             <q-menu>
                                 <q-list style="min-width: 100px">
-                                    <q-item clickable v-close-popup @click="openDialogDeleteSelect">
+                                    <q-item clickable v-close-popup @click="openDialogDeleteSelect" style="display: flex">
                                         <q-item-section>
                                             <span>
                                                 <q-icon name="fa-solid fa-trash" class="q-mr-sm" size="xs"></q-icon>Xoá
+                                                ({{ checkboxArray.length }} bản ghi)
+                                            </span>
+                                        </q-item-section>
+                                        <q-item-section>
+                                            <span>
+                                                <q-icon name="fa-solid fa-trash" class="q-mr-sm" size="xs"></q-icon>Duyệt
                                                 ({{ checkboxArray.length }} bản ghi)
                                             </span>
                                         </q-item-section>
@@ -62,11 +68,7 @@
                     </div>
                 </div>
                 <div class="table-wrapper-action">
-                    <q-btn no-caps @click="redirectRouter('ReportStudentCreate')" color="secondary" class="q-mr-sm">
-                        <q-icon name="fa-solid fa-plus" class="q-mr-sm" size="xs"></q-icon>
-                        Tạo mới
-                    </q-btn>
-                    <q-btn no-caps  color="secondary" class="q-mr-sm">
+                    <q-btn no-caps  color="secondary" class="q-mr-sm" @click="getListReport">
                         <q-icon name="fa-solid fa-refresh" class="q-mr-sm" size="xs"></q-icon>
                         Tải lại
                     </q-btn>
@@ -77,61 +79,84 @@
                 <q-markup-table class="role-table">
                     <thead>
                         <tr>
-                            <th class="text-center" width="5%"></th>
+                            <!-- <th class="text-center" width="5%">
+                                    <q-checkbox v-model="checkboxAll"/>  
+                            </th> -->
                             <th class="text-center" width="5%">STT</th>
                             <th class="text-left">Mã sinh viên</th>
                             <th class="text-left">Tên sinh viên</th>
                             <th class="text-left">Chủ đề</th>
-                            <th class="text-left">Nội dung</th>
-                           
-                            <th class="text-left">Trạng thái xét duyệt</th>
+                            <th class="text-left">Trạng thái báo cáo</th>
                             <th class="text-left">Người tạo</th>
-                            <th class="text-left">Người phê duyệt</th>
                             <th class="text-center">Hành động</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <template v-if="items && items.length > 0">
-                            <tr v-for="(item, index) in items" :key="index">
-                                <td class="text-center">
+                        <template v-if="reports && reports.length > 0">
+                            <tr v-for="(item, index) in reports" :key="index">
+                                <!-- <td class="text-center">
                                     <q-checkbox v-model="checkboxArray" :val="getValueLodash(item, 'id', 0)"/>
-                                </td>
+                                </td> -->
                                 <td class="text-center">
                                     {{ index + +1 + +page.perPage * (page.currentPage - 1) }}
                                 </td>
                                 <td class="text-left">
-                                    <span class="text-bold cursor-pointer text-link" @click="redirectRouter('ReportStudentDetail', {id: getValueLodash(item, 'id', 0)})">
-                                        {{ getValueLodash(item, "code", "") ?? "Chưa cập nhật"}}
+                                    <span class="text-bold cursor-pointer text-link" @click="redirectRouter('ReportStudentDetailAdmin', {id: getValueLodash(item, 'id', 0)})">
+                                        {{ getValueLodash(item, "title", "") ?? "Chưa cập nhật"}}
                                     </span>
                                 </td>
                                 <td class="text-left">
-                                    <span class="text-bold cursor-pointer text-link" @click="redirectRouter('ReportStudentDetail', {id: getValueLodash(item, 'id', 0)})">
-                                        {{ getValueLodash(item, "name", "") ?? "Chưa cập nhật"}}
+                                    <span class="text-bold cursor-pointer text-link" @click="redirectRouter('ReportStudentDetailAdmin', {id: getValueLodash(item, 'id', 0)})">
+                                        {{ getValueLodash(item, "student.full_name", "") ?? "Chưa cập nhật"}}
                                     </span>
                                 </td>
                                 <td class="text-left">
-                                    {{ getValueLodash(item, "subjects", "") ?? "Chưa cập nhật"}}
+                                    {{ getValueLodash(item, "subject_text", "") ?? "Chưa cập nhật"}}
+                                </td>
+                                <td class="text-left" >
+                                    <q-badge v-if="getValueLodash(item, 'status', 0) == reportStatusEnum.Pending " align="middle" color='orange'>
+                                        {{ getValueLodash(item, "status_text", "") ?? "Chưa cập nhật"}}
+                                     </q-badge>
+                                     <q-badge v-if="getValueLodash(item, 'status', 0) == reportStatusEnum.Seen " align="middle" color='blue'>
+                                        {{ getValueLodash(item, "status_text", "") ?? "Chưa cập nhật"}}
+                                     </q-badge>
+                                     <q-badge v-if="getValueLodash(item, 'status', 0) == reportStatusEnum.Approved " align="middle" color='green'>
+                                        {{ getValueLodash(item, "status_text", "") ?? "Chưa cập nhật"}}
+                                     </q-badge>
+                                    
                                 </td>
                                 <td class="text-left">
-                                    {{ getValueLodash(item, "content", "") ?? "Chưa cập nhật"}}
+                                    {{ getValueLodash(item, "created_by.full_name", "Chưa cập nhật") ?? "Chưa cập nhật"}}
                                 </td>
-                                <td class="text-left">
-                                    {{ getValueLodash(item, "status_approve", "") ?? "Chưa cập nhật"}}
-                                </td>
-                                <td class="text-left">
-                                    {{ getValueLodash(item, "createBy", "") ?? "Chưa cập nhật"}}
-                                </td>
-                                <td class="text-left">
-                                    {{ getValueLodash(item, "approvedBy", "") ?? "Chưa cập nhật"}}
-                                </td>
+                                
                                 <td class="text-center">
-                                    <q-btn no-caps @click="handleAprove" color="green" class="q-mr-sm aprrove">
-                                        Duyệt
-                                    </q-btn>
-                                    <q-btn no-caps @click="handleStop" color="red" class="q-mr-sm aprrove">
-                                        Từ chối
-                                    </q-btn>
-                                </td>
+                                <div class="inline cursor-pointer">
+                                    <q-icon name="menu" size="sm"></q-icon>
+                                    <q-menu touch-position>
+                                        <q-list style="min-width: 100px">
+                                            <q-item clickable v-close-popup @click="redirectRouter('ReportStudentDetailAdmin', {id: getValueLodash(item, 'id', 0)})">
+                                               <span><q-icon name="fa-solid fa-eye" class="q-mr-sm"
+                                                             size="xs" @click="redirectRouter('ReportStudentDetailAdmin', {id: getValueLodash(item, 'id', 0)})"></q-icon>Xem chi tiết</span>
+                                           </q-item>
+                                            <q-item
+                                              
+                                                clickable v-close-popup
+                                                @click="handleChangeStatusReport(getValueLodash(item, 'id', 0))"
+                                               >
+                                                <span><q-icon name="fa-solid fa-check" class="q-mr-sm"
+                                                              size="xs"></q-icon>Duyệt</span>
+                                            </q-item>
+                                            <q-item
+                                                @click="openDialogDelete(getValueLodash(item, 'id', 0))"
+                                                clickable v-close-popup
+                                               >
+                                                <span><q-icon name="fa-solid fa-trash" class="q-mr-sm"
+                                                              size="xs"></q-icon>Xóa</span>
+                                            </q-item>
+                                        </q-list>
+                                    </q-menu>
+                                </div>
+                            </td>
                             </tr>
                         </template>
                         <template v-else>
@@ -157,12 +182,17 @@
         </q-card-section>
 
         <q-card-actions align="right">
-          <q-btn flat label="Đóng" color="primary"  v-close-popup/>
-          <q-btn label="Đồng ý" color="red"  v-close-popup/>
+            <q-btn flat label="Đóng" color="primary" @click="closeDialog" v-close-popup/>
+          <q-btn label="Đồng ý" color="red" @click="handleDelete" v-close-popup/>
         </q-card-actions>
       </q-card>
     </q-dialog>
     </div>
+    <q-inner-loading
+              :showing="loadingClasses"
+              label-class="text-teal"
+              label-style="font-size: 1.1em"
+          />
 </template>
 
 <script lang="ts">
@@ -176,9 +206,7 @@
         ref,
         watch
     } from "vue";
-    import {
-        useRouter
-    } from "vue-router";
+    import {useRoute, useRouter} from "vue-router";
     import {
         useStore
     } from "vuex";
@@ -198,16 +226,22 @@
     import {
         validationHelper
     } from "../../utils/validationHelper";
+
+    import {ReportStatusEnum} from "../../enums/reportStatus.enum";
+
     // import DeleteDepartment from "./Delete.vue";
 
     export default defineComponent({
-        name: "ReviewListIndex",
+        name: "ReportStudentAdminIndex",
         setup() {
             const $q = useQuasar();
             const store = useStore();
             const studentCode = ref < string > ("");
             const items = ref < Array < any >> ([]);
             const itemIDs = ref < Array < number >> ([]);
+            const reports = ref<Array<any>>([])
+            const reportId = ref<string>('')
+            const checkboxAll = ref<boolean | string>(false);
             const {
                 setValidationErrors,
                 getValidationErrors,
@@ -220,13 +254,14 @@
                 total: 0,
                 perPage: 10,
             });
-
+            const loadingClasses = ref<boolean>(false)
             const currentPage = ref < number > (1);
             const loading = ref < boolean > (false);
             const isFilter = ref < boolean > (false);
             const router = useRouter();
             const checkboxArray = ref < string[] > ([])
             const search = ref < string > ('')
+            const isRequest = ref<boolean>(false)
             const toggleFilter = (): void => {
                 isFilter.value = !isFilter.value;
             };
@@ -241,8 +276,72 @@
             
             const openDialogDelete = (id: string): void => {
                 dialogDelete.value = true
+                reportId.value =id;
+            }
+            
+            const closeDialog = (): void => {
+                dialogDelete.value = false
+                // dialogDeleteSelect.value = false
+                reportId.value = ''
+            }
+            const handleDelete = () => {
+                $q.loading.show()
+                const data = {
+                    id: checkboxArray.value
+                }
+                api.deleteReport(reportId.value).then(() => {
+                    getListReport()
+                    closeDialog()
+                    checkboxArray.value = []
+                    $q.notify({
+                    icon: 'check',
+                    message: 'Xóa thành công phản ánh',
+                    color: 'positive',
+                    position: 'top-right'
+                    })
+                }).catch(() => {
+                    $q.notify({
+                    icon: 'report_problem',
+                    message: 'Không xóa được phản ánh!',
+                    color: 'negative',
+                    position: 'top-right'
+                    })
+                }).finally(() => $q.loading.hide())
             }
 
+            const handleChangeStatusReport = async (id:string) => {
+                const data = {
+                    "status":reportStatusEnum.Approved
+                }
+                if (!isRequest.value) {
+                    $q.loading.show()
+                    isRequest.value = true
+
+                    api.changeStatusReport(data, id).then(res => {
+                    if (res) {
+                        eventBus.$emit('notify-success', 'Duyệt phản ánh thành công')
+                        getListReport()
+                    }
+                    }).catch(error => {
+                    let errors = _.get(error.response, 'data.error', {})
+                    if (Object.keys(errors).length === 0) {
+                        let message = _.get(error.response, 'data.message', '')
+                        $q.notify({
+                        icon: 'report_problem',
+                        message,
+                        color: 'negative',
+                        position: 'top-right'
+                        })
+                    }
+                    if (Object.keys(errors).length > 0) {
+                        setValidationErrors(errors)
+                    }
+                    }).finally(() => {
+                        isRequest.value = false
+                        $q.loading.hide()
+                    })
+                }
+            }
             const getValueLodash = (res: object, data: string, d: any = null) => {
                 return _.get(res, data, d);
             };
@@ -261,7 +360,19 @@
                         position: "top-right"
                     })
             }
+            watch(
+                () => checkboxAll.value,
+                (value) => {
+                if (value === true) {
+                    //checkboxArray.value = departmentIds.value;
+                }
 
+                if (value === false) {
+                    checkboxArray.value = [];
+                }
+                }
+            );
+            const reportStatusEnum = ReportStatusEnum;
             const redirectRouter = (nameRoute: string, params: any | [] = null): void => {
                 router.push({
                     name: nameRoute,
@@ -274,53 +385,52 @@
                 "1": "Nữ"
             }
 
-            
+            const getListReport = async () => {
 
-            const handleAprove = (()=>{
-                eventBus.$emit('notify-success', 'Duyệt thành công');
-            });
+                loadingClasses.value = true
+                const payload = {
+                    page: 1,
+                }
 
-            const handleStop = (()=>{
-                eventBus.$emit('notify-success', 'Từ chối thành công');
-            });
+                if (search.value) {
+                    payload.q = search.value
+                }
 
+                payload.page = page?.value?.currentPage;
+
+                await api.getAllReport<IPaginate<[]>>(payload).then(res => {
+                reports.value = _.get(res, 'data.data.reports.data')
+
+                console.log("aaaaaaaaaaa "+reports);
+                page.value.currentPage = _.get(res, 'data.data.reports.current_page', 1)
+                page.value.total = _.get(res, 'data.data.reports.last_page', 0)
+                page.value.perPage = _.get(res, 'data.data.reports.per_page', 0)        
+                }).catch(() => {
+                $q.notify({
+                    icon: 'report_problem',
+                    message: 'Không tải danh sách phản ánh!',
+                    color: 'negative',
+                    position: 'top-right'
+                })
+                }).finally(() => loadingClasses.value = false)
+            }
+
+            watch(() => page.value.currentPage, () => getListReport())
+            watch(() => search.value, () => getListReport())
             onMounted(() => {
                 store.commit(`home/${HomeMutationTypes.SET_TITLE}`, "Phản ánh sinh viên");
                 eventBus.$on("notify-success", (message: string) => {
                     generateNotify(message, true)
                 });
-                initData();
+                
+                getListReport();
             });
 
-            const initData = (): void => {
-                items.value = [{
-                        "id": 1,
-                        "code": "637949",
-                        "name": "Đàm Anh Thái",
-                        "title": "BC1",
-                        "subjects": "BC1",
-                        "content": "Nội dung báo cáo 1",
-                        "status": "Hoạt động",
-                        "status_approve": "Chưa duyệt",
-                        "createBy": "Lê Hồng Minh",
-                        "approvedBy": "Ngô Công Thắng"
-                    },
-                    {
-                        "id": 2,
-                        "code": "637960",
-                        "name": "Tô Nam Trường",
-                        "title": "BC2",
-                        "subjects": "BC2",
-                        "content": "Nội dung báo cáo 2",
-                        "status": "Hoạt động",
-                        "status_approve": "Duyệt",
-                        "createBy": "Đàm Đức Chiến",
-                        "approvedBy": "Trần Trung Hiếu"
-                    },
-                ];
-            }
+            
 
             return {
+                loadingClasses,
+                getListReport,
                 studentCode,
                 isFilter,
                 toggleFilter,
@@ -340,8 +450,8 @@
                 search,
                 openDialogDelete,
                 dialogDelete,
-                handleAprove,
-                handleStop
+                reports,
+                reportStatusEnum,handleDelete,closeDialog,checkboxAll,handleChangeStatusReport
             };
         },
     });
@@ -350,10 +460,6 @@
 
 
 <style scoped lang="scss">
-
-.aprrove{
-    height: 10px !important;
-}
 .text-link{
     color: #337ab7 !important;
 }

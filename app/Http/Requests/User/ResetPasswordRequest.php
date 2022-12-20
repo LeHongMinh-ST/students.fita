@@ -24,7 +24,7 @@ class ResetPasswordRequest extends BaseRequest
     public function rules()
     {
         return [
-            'password' => 'required',
+            'password' => 'required|min:6',
         ];
     }
 

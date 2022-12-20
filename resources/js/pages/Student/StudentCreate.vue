@@ -239,7 +239,7 @@
                     </div>
 
                     <div class="form-group">
-                        <label class="text-bold">Lớp <span class="required">*</span></label>
+                        <label class="text-bold">Lớp </label>
                         <q-select
                             outlined
                             dense
@@ -497,7 +497,6 @@ export default defineComponent({
         const handleUpload = () => {
             if (image.value) {
                 imageUrl.value = URL.createObjectURL(image.value);
-                console.log(image.value)
             }
         }
 
@@ -538,7 +537,11 @@ export default defineComponent({
 
                 Object.keys(student.value).map(function (objectKey) {
                     const value = student.value[objectKey];
-                    formData.append(objectKey, value)
+                    if (value == null) {
+                        formData.append(objectKey, "")
+                    } else {
+                        formData.append(objectKey, value)
+                    }
                 });
 
                 formData.append('image', image.value)

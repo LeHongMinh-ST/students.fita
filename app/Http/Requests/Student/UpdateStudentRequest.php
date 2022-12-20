@@ -39,7 +39,6 @@ class UpdateStudentRequest extends BaseRequest
         return [
             'full_name' => 'họ và tên',
             'school_year' => 'niên khóa',
-            'class_id' => 'lớp',
             'role' => 'vai trò',
             'student_code' => 'mã sinh viên',
             'status' => 'tình trạng sinh viên',

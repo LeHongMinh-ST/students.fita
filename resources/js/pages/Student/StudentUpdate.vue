@@ -239,7 +239,7 @@
                       </div>
 
                       <div class="form-group">
-                          <label class="text-bold">Lớp <span class="required">*</span></label>
+                          <label class="text-bold">Lớp </label>
                           <q-select
                               outlined
                               dense
@@ -254,6 +254,17 @@
                               :error-message="getValidationErrors('class_id')"
                               :error="hasValidationErrors('class_id')"
                               @update:model-value="() => resetValidateErrors('class_id')"
+                          />
+                      </div>
+                      <div class="form-group">
+                          <label class="text-bold">Chuyên ngành</label>
+                          <q-input
+                              outlined
+                              dense
+                              v-model="student.major"
+                              :error-message="getValidationErrors('major')"
+                              :error="hasValidationErrors('major')"
+                              @update:model-value="() => resetValidateErrors('major')"
                           />
                       </div>
                       <div class="family-wrapper q-mt-lg q-mb-lg">
@@ -450,7 +461,7 @@
   import eventBus from "../../utils/eventBus";
 
   export default defineComponent({
-      name: "StudentCreate",
+      name: "StudentUpdate",
       setup() {
           const store = useStore()
           const $q = useQuasar()

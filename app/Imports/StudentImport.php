@@ -34,7 +34,7 @@ class StudentImport implements ToModel, WithHeadingRow, WithValidation
             'student_code' => $row['ma_sinh_vien'],
             'password' => @$row['ngay_sinh'],
             'gender' => @$row['gioi_tinh'],
-            'permanent_residence' => @$row['ho_khau_thuong_chu'],
+            'permanent_residence' => @$row['ho_khau_thuong_tru'],
             'major' => @$row['chuyen_nganh'],
             'dob' => @$row['ngay_sinh'],
             'pob' => @$row['noi_sinh'],
@@ -70,9 +70,9 @@ class StudentImport implements ToModel, WithHeadingRow, WithValidation
     public function customValidationAttributes()
     {
         return [
-            'ho_va_ten' => 'Họ và tên',
-            'ma_sinh_vien' => 'Mã sinh viên',
-            'ngay_sinh' => 'Ngày sinh',
+            'ho_va_ten' => 'họ và tên',
+            'ma_sinh_vien' => 'mã sinh viên',
+            'ngay_sinh' => 'ngày sinh',
         ];
     }
 }

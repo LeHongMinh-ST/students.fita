@@ -20,10 +20,10 @@
                         <q-avatar size="26px">
                             <img :src="auth.thumbnail ? auth.thumbnail_url : 'https://cdn.quasar.dev/img/avatar4.jpg'">
                         </q-avatar>
-                        <q-menu>
+                        <q-menu max-width="200px">
                             <div class="row no-wrap q-pa-md">
 
-                                <div class="column items-center">
+                              <div class="column items-center" style="min-width: 120px">
 
                                     <q-avatar size="72px">
                                         <img
@@ -163,11 +163,11 @@ export default defineComponent({
             checkClassMonitor,
             links1: [
                 {icon: 'fa-solid fa-address-card', text: 'Hồ sơ sinh viên', routeName: 'HomeStudent'},
-                {icon: 'fa-solid fa-users', text: 'Thông tin lớp học', routeName: 'ClassStudent'},
+                {icon: 'fa-solid fa-users', text: 'Thông tin lớp học', routeName: 'StudentClass'},
             ],
             links2: [
-                {icon: 'fa-solid fa-circle-info', text: 'Duyệt thông tin', routeName: 'RequestIndex'},
-                {icon: 'fa-solid fa-flag', text: 'Phản ánh lớp học', routeName: 'ClassStudent',},
+                {icon: 'fa-solid fa-circle-info', text: 'Duyệt thông tin', routeName: 'RequestStudent'},
+                {icon: 'fa-solid fa-flag', text: 'Phản ánh lớp học', routeName: 'ReportStudent',},
             ]
         }
     }

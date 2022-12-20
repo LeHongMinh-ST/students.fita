@@ -2,9 +2,9 @@
 
 namespace App\Http\Requests\Report;
 
-use Illuminate\Foundation\Http\FormRequest;
+use App\Http\Requests\BaseRequest;
 
-class StoreReportRequest extends FormRequest
+class StoreReportRequest extends BaseRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -26,6 +26,7 @@ class StoreReportRequest extends FormRequest
         return [
             'title' => 'required',
             'content' => 'required',
+            'student_id' => 'required',
         ];
     }
 
@@ -33,6 +34,7 @@ class StoreReportRequest extends FormRequest
     {
         return [
             'title' => 'tiêu đề',
+            'student_id' => 'sinh viên',
             'content' => 'nội dung',
         ];
     }
