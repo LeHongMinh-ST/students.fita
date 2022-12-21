@@ -66,7 +66,7 @@
 </template>
 
 <script lang="ts">
-import {defineComponent, ref, watch} from 'vue'
+import {defineComponent, onMounted, ref, watch} from 'vue'
 import api from '../api'
 import {useQuasar} from 'quasar'
 import _ from 'lodash'
@@ -76,6 +76,8 @@ import {AuthMutationTypes} from "../store/modules/auth/mutation-types"
 import ILoginResult from "../models/ILoginResult";
 import IUserResult from "../models/IUserResult";
 import IRedirectSocialResult from "../models/IRedirectSocialResult";
+import {HomeMutationTypes} from "../store/modules/home/mutation-types";
+import eventBus from "../utils/eventBus";
 
 export default defineComponent({
   name: 'Login',
@@ -141,6 +143,28 @@ export default defineComponent({
         })
       })
     }
+
+
+    onMounted((): void => {
+      eventBus.$on('notify-success', (message: string) => {
+        $q.notify({
+          icon: 'check',
+          message: message,
+          color: 'positive',
+          position: 'top-right'
+        })
+      })
+
+      eventBus.$on('notify-error', (message: string) => {
+        $q.notify({
+          icon: 'report_problem',
+          message,
+          color: 'negative',
+          position: 'top-right'
+        })
+      })
+    })
+
 
     const getAuthUser = async (): Promise<any> => {
       let auth = {}
