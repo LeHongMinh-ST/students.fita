@@ -13,6 +13,7 @@ import {useStore} from "vuex"
 import {AuthMutationTypes} from "../store/modules/auth/mutation-types"
 import {useRouter} from "vue-router"
 import ILoginResult from "../models/ILoginResult";
+import eventBus from "../utils/eventBus";
 
 const PROVIDER_GOOGLE = 'google'
 
@@ -37,7 +38,7 @@ export default defineComponent({
       api.loginSocialCallback<ILoginResult>(PROVIDER_GOOGLE, payload).then(async res => {
         if (res) {
             if (_.get(res, 'data.back', false)) {
-                router.go(-1)
+                await router.push({name: 'Profile'})
             } else {
                 store.commit(`auth/${AuthMutationTypes.SET_ACCESS_TOKEN}`, _.get(res, 'data.access_token'))
                 store.commit(`auth/${AuthMutationTypes.SET_LOGIN_STATUS}`, true)
@@ -45,8 +46,13 @@ export default defineComponent({
                 await router.push({name: 'Home'})
             }
         }
-      }).catch(error => {
-        console.log(error)
+      }).catch((error) => {
+        let errors = _.get(error.response, 'data.error', {})
+        if (Object.keys(errors).length === 0) {
+          let message = _.get(error.response, 'data.message', '')
+          eventBus.$emit('notify-error', message)
+        }
+        router.push({name: 'Login'})
       })
     }
 
