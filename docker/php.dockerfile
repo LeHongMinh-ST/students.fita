@@ -31,4 +31,9 @@ RUN mkdir -p /usr/src/php/ext/redis \
     && echo 'redis' >> /usr/src/php-available-exts \
     && docker-php-ext-install redis
 
+RUN curl -sS https://getcomposer.org/installer | php \
+    && mv composer.phar /usr/local/bin/composer
+
+RUN apt install -y nodejs
+
 CMD ["php-fpm", "-y", "/usr/local/etc/php-fpm.conf", "-R"]
