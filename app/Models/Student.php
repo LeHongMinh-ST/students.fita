@@ -127,7 +127,7 @@ class Student extends Authenticatable implements JWTSubject
 
     public function getThumbnailUrlAttribute(): string
     {
-        return Storage::disk('google')->url($this->thumbnail);
+        return Storage::url($this->thumbnail);
     }
 
     public function getSocialPolicyObjectTextAttribute(): string

@@ -101,7 +101,7 @@ class UserController extends Controller
         try {
             $data = $request->all();
             if ($request->hasFile('image')) {
-                $path = Storage::disk('google')->putFile('images/user/thumbnail', $request->file('image'));
+                $path = Storage::putFile('images/user/thumbnail', $request->file('image'));
                 $data['thumbnail'] = $path;
             }
             $this->userRepository->updateById($id, array_merge($data, [
@@ -214,7 +214,7 @@ class UserController extends Controller
 
             $data = $request->all();
             if ($request->hasFile('image')) {
-                $path = Storage::disk('google')->putFile('images/user/thumbnail', $request->file('image'));
+                $path = Storage::putFile('images/user/thumbnail', $request->file('image'));
                 $data['thumbnail'] = $path;
             }
 

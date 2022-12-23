@@ -120,7 +120,7 @@ class StudentTemp extends Model
 
     public function getThumbnailUrlAttribute(): string
     {
-        return Storage::disk('google')->url($this->thumbnail);
+        return Storage::url($this->thumbnail);
     }
 
     public function getSocialPolicyObjectTextAttribute(): string
