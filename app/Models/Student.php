@@ -14,6 +14,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
 use PHPOpenSourceSaver\JWTAuth\Contracts\JWTSubject;
 
 class Student extends Authenticatable implements JWTSubject
@@ -126,7 +127,7 @@ class Student extends Authenticatable implements JWTSubject
 
     public function getThumbnailUrlAttribute(): string
     {
-        return asset("/storage/{$this->thumbnail}");
+        return Storage::disk('google')->url($this->thumbnail);
     }
 
     public function getSocialPolicyObjectTextAttribute(): string

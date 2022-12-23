@@ -13,6 +13,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
+use Illuminate\Support\Facades\Storage;
 
 class StudentTemp extends Model
 {
@@ -119,7 +120,7 @@ class StudentTemp extends Model
 
     public function getThumbnailUrlAttribute(): string
     {
-        return asset("/storage/{$this->thumbnail}");
+        return Storage::disk('google')->url($this->thumbnail);
     }
 
     public function getSocialPolicyObjectTextAttribute(): string

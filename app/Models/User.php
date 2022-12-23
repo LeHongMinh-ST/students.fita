@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
 use Laravel\Sanctum\HasApiTokens;
 use PHPOpenSourceSaver\JWTAuth\Contracts\JWTSubject;
 
@@ -118,7 +119,7 @@ class User extends Authenticatable implements JWTSubject
 
     public function getThumbnailUrlAttribute(): string
     {
-        return asset("/storage/{$this->thumbnail}");
+        return Storage::disk('google')->url($this->thumbnail);
     }
 
     public function rejects()

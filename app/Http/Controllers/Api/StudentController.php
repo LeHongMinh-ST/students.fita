@@ -68,7 +68,7 @@ class StudentController extends Controller
             $authId = auth()->id();
 
             if ($request->hasFile('image')) {
-                $path = Storage::disk('public')->putFile('images/students/thumbnail', $request->file('image'));
+                $path = Storage::disk('google')->putFile('images/students/thumbnail', $request->file('image'));
                 $data['thumbnail'] = $path;
             }
 
@@ -102,7 +102,7 @@ class StudentController extends Controller
             $student = $this->studentRepository->findById($id);
 
             if ($request->hasFile('image')) {
-                $path = Storage::disk('public')->putFile('images/students/thumbnail', $request->file('image'));
+                $path = Storage::disk('google')->putFile('images/students/thumbnail', $request->file('image'));
                 $data['thumbnail'] = $path;
             }
 
@@ -153,7 +153,7 @@ class StudentController extends Controller
             $student = $this->studentRepository->findById($auth->id);
 
             if ($request->hasFile('image')) {
-                $path = Storage::disk('public')->putFile('images/students/thumbnail', $request->file('image'));
+                $path = Storage::disk('google')->putFile('images/students/thumbnail', $request->file('image'));
                 $data['thumbnail'] = $path;
             }
 
