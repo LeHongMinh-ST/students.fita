@@ -26,6 +26,7 @@ use App\Traits\ResponseTrait;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
@@ -139,7 +140,7 @@ class StudentController extends Controller
         }
     }
 
-    public function createStudentTemp(UpdateStudentTempRequest $request): JsonResponse
+    public function createStudentTemp(Request $request): JsonResponse
     {
         DB::beginTransaction();
         try {
@@ -185,9 +186,10 @@ class StudentController extends Controller
                     $family['student_id'] = $studentTemp->student_id;
                     $studentTemp->families()->create($family);
                 }
-
-                if ($this->isChangeFamily($student->families, $studentTemp->families)) {
-                    $studentTemp->change_column[] = 'family';
+                if ($this->isChangeFamily($student->families?->toArray(), $studentTemp->families?->toArray())) {
+                    $changeColumn = $studentTemp->change_column;
+                    $changeColumn[] = 'family';
+                    $studentTemp->change_column = $changeColumn;
                 }
             }
 
@@ -759,34 +761,33 @@ class StudentController extends Controller
 
     private function isChangeFamily($oldFamily, $newFamily): int|array
     {
-        $oldFamily = $oldFamily->map(function ($item) {
-            return collect($item)->except(['id', 'created_at', 'updated_at'])->toArray();
-        })->toArray();
+        try {
+            $oldFamily = Arr::except($oldFamily, ['id', 'created_at', 'updated_at']);
+            $newFamily = Arr::except($newFamily, ['id', 'created_at', 'updated_at', 'student_temp_id']);
 
-        $newFamily = $newFamily->map(function ($item) {
-            return collect($item)->except(['id', 'created_at', 'updated_at', 'student_temp_id'])->toArray();
-        })->toArray();
+            foreach ($oldFamily as $key => $value) {
+                if (is_array($value)) {
 
-        foreach ($oldFamily as $key => $value) {
-            if (is_array($value)) {
+                    if (!isset($newFamily[$key])) {
+                        $difference[$key] = $value;
 
-                if (!isset($newFamily[$key])) {
-                    $difference[$key] = $value;
+                    } elseif (!is_array($newFamily[$key])) {
+                        $difference[$key] = $value;
 
-                } elseif (!is_array($newFamily[$key])) {
-                    $difference[$key] = $value;
-
-                } else {
-                    $new_diff = $this->isChangeFamily($value, $newFamily[$key]);
-                    if ($new_diff != FALSE) {
-                        $difference[$key] = $new_diff;
+                    } else {
+                        $newDiff = $this->isChangeFamily($value, $newFamily[$key]);
+                        if ($newDiff != FALSE) {
+                            $difference[$key] = $newDiff;
+                        }
                     }
-                }
 
-            } elseif (!isset($newFamily[$key]) || $newFamily[$key] != $value) {
-                $difference[$key] = $value;
+                } elseif (!isset($newFamily[$key]) || $newFamily[$key] != $value) {
+                    $difference[$key] = $value;
+                }
             }
+            return !empty($difference);
+        }catch (\Exception $exception) {
+            throw new \Exception($exception);
         }
-        return !empty($difference);
     }
 }
