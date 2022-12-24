@@ -414,7 +414,7 @@ class StudentController extends Controller
 
                     $familyTemp = $studentTemp->families;
                     $student = $this->studentRepository->getFirstBy(['id' => $studentTemp->student_id]);
-                    $data = array_intersect_key($studentTemp->toArray(), array_flip(StudentTemp::ONLY_KEY_UPDATE));
+                    $data = Arr::only($studentTemp->toArray(), StudentTemp::ONLY_KEY_UPDATE);
                     $student?->fill($data);
 
                     $this->studentRepository->createOrUpdate($student);
