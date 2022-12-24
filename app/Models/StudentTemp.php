@@ -165,6 +165,11 @@ class StudentTemp extends Model
         return 'Lớp trưởng';
     }
 
+    public function generalClass(): BelongsTo
+    {
+        return $this->belongsTo(GeneralClass::class, 'class_id');
+    }
+
     protected $appends = [
         'status_approved_text',
         'thumbnail_url',
