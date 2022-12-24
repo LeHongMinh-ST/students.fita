@@ -191,6 +191,7 @@ class StudentController extends Controller
                     $changeColumn[] = 'family';
                     $studentTemp->change_column = $changeColumn;
                 }
+
             }
 
             $this->studentTempRepository->createOrUpdate($studentTemp);
@@ -762,8 +763,16 @@ class StudentController extends Controller
     private function isChangeFamily($oldFamily, $newFamily): int|array
     {
         try {
-            $oldFamily = Arr::except($oldFamily, ['id', 'created_at', 'updated_at']);
-            $newFamily = Arr::except($newFamily, ['id', 'created_at', 'updated_at', 'student_temp_id']);
+            $oldFamily = collect($oldFamily)->map(function ($family) {
+                return Arr::only($family, ['relationship', 'full_name', 'job', 'phone', 'student_id',]);
+            })->toArray();
+            $newFamily = collect($newFamily)->map(function ($family) {
+                return Arr::only($family, ['relationship', 'full_name', 'job', 'phone', 'student_id',]);
+            })->toArray();
+
+            if (empty($oldFamily) && !empty($newFamily)) {
+                return true;
+            }
 
             foreach ($oldFamily as $key => $value) {
                 if (is_array($value)) {
