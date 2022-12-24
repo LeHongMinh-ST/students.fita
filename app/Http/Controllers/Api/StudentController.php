@@ -332,7 +332,7 @@ class StudentController extends Controller
             'student_id' => auth('students')->id(),
             'status_approved' => StudentTempStatus::Pending
         ]);
-        $relationships = ['studentApproved', 'teacherApproved', 'adminApproved', 'student', 'rejectable', 'families'];
+        $relationships = ['studentApproved', 'teacherApproved', 'adminApproved', 'student', 'rejectable', 'families', 'generalClass'];
 
         return $this->responseSuccess([
             'studentTemp' => $studentTemp?->load($relationships)
