@@ -652,7 +652,7 @@ class StudentController extends Controller
 
     public function showRequestUpdateStudent($id): JsonResponse
     {
-        $relationship = ['studentApproved', 'teacherApproved', 'adminApproved', 'student', 'rejectable', 'families'];
+        $relationship = ['studentApproved', 'teacherApproved', 'adminApproved', 'student', 'rejectable', 'families', 'generalClass'];
         $request = $this->studentTempRepository->getFirstBy(['id' => $id], ['*'], $relationship);
 
         return $this->responseSuccess([
