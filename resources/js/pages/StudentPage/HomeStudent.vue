@@ -1,4 +1,26 @@
 <template>
+<q-dialog v-model="isShowPopup" @hide="closeDialog">
+      <q-card style="width: 300px">
+        <q-card-section>
+          <div class="text-h6">Nội dung từ chối</div>
+        </q-card-section>
+        <q-card-section class="row items-center" style="width: 100%">
+            <label class="text-bold">Lý do từ chối </label>
+            <p>
+                Lý do
+            </p>
+        </q-card-section>
+        <q-card-actions align="right" class="row">
+          <q-btn
+            flat
+            label="Đóng"
+            color="primary"
+            @click="closeDialog"
+            v-close-popup
+          />
+        </q-card-actions>
+      </q-card>
+    </q-dialog>
     <div class="student-wrapper">
         <q-breadcrumbs>
             <q-breadcrumbs-el label="Hồ sơ sinh viên" icon="home" :to="{ name: 'HomeStudent' }" />
@@ -134,6 +156,9 @@
                                             <div class="item q-mb-md">
                                                 <strong>Hộ khẩu thường
                                                     trú: </strong>{{ auth.permanent_residence ?? 'Chưa cập nhật' }}
+                                            </div>
+                                            <div class="item q-mb-md">
+                                                <strong>Nơi ở hiện tại: </strong>{{ auth.address ?? 'Chưa cập nhật' }}
                                             </div>
                                             <div class="item q-mb-md">
                                                 <strong>Quốc tịch: </strong>{{ auth.nationality ?? 'Chưa cập nhật' }}
@@ -410,6 +435,13 @@
                                                 <span><q-icon name="fa-solid fa-trash" class="q-mr-sm"
                                                               size="xs"></q-icon>Xoá</span>
                                                             </q-item>
+                                                            <q-item clickable v-close-popup
+                                                                @click="redirectRouter('RequestDetail', {id: getValueLodash(request, 'id', 0)})">
+                                                                <q-item-section>
+                                                                    <span><q-icon name="fa-solid fa-eye" class="q-mr-sm" size="xs"></q-icon>Chi tiết</span>
+                                                                </q-item-section>
+                                                            </q-item>
+
                                                         </q-list>
                                                     </q-menu>
                                                 </div>
@@ -550,6 +582,14 @@ export default defineComponent({
         const {page} = usePage()
         const requestId = ref<string>('')
         const dialogDeleteRequest = ref<boolean>(false)
+        const isShowPopup = ref<boolean>(false)
+        const setIsShowPopup = () => {
+            isShowPopup.value = true;
+        }
+        const closeDialog = () => {
+            isShowPopup.value = false;
+        }
+
 
         const openDialogDelete = (id) => {
             dialogDeleteRequest.value = true
@@ -736,7 +776,10 @@ export default defineComponent({
             handleFormatDate,
             handleDeleteRequest,
             openDialogDelete,
-            dialogDeleteRequest
+            dialogDeleteRequest,
+            isShowPopup,
+            setIsShowPopup,
+            closeDialog
         }
     }
 })

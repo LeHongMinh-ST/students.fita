@@ -198,6 +198,17 @@
                               @update:model-value="() => resetValidateErrors('permanent_residence')"
                           />
                       </div>
+                      <div class="form-group">
+                        <label class="text-bold">Nơi ở hiện tại</label>
+                        <q-input
+                            outlined
+                            dense
+                            v-model="student.address"
+                            :error-message="getValidationErrors('address')"
+                            :error="hasValidationErrors('address')"
+                            @update:model-value="() => resetValidateErrors('address')"
+                        />
+                    </div>
                       <div class="row">
                           <div class="col-6 q-pr-sm">
                               <div class="form-group">

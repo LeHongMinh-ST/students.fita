@@ -158,6 +158,9 @@
                                                     trú: </strong>{{ student.permanent_residence ?? 'Chưa cập nhật' }}
                                             </div>
                                             <div class="item q-mb-md">
+                                                <strong>Nơi ở hiện tại: </strong>{{ student.address ?? 'Chưa cập nhật' }}
+                                            </div>
+                                            <div class="item q-mb-md">
                                                 <strong>Quốc tịch: </strong>{{ student.nationality ?? 'Chưa cập nhật' }}
                                             </div>
                                             <div class="item q-mb-md">
