@@ -549,13 +549,13 @@ export default defineComponent({
                 Object.keys(student.value).map(function (objectKey) {
                     const value = student.value[objectKey];
                     if (value == null) {
-                        formData.append(objectKey, "")
-                    } else {
-                        formData.append(objectKey, value)
-                    }
+                          formData.append(objectKey, "")
+                      } else {
+                          formData.append(objectKey, JSON.stringify(value))
+                      }
                 });
 
-                formData.append('image', image.value)
+                formData.append('image', JSON.stringify(image.value))
 
                 api.createStudent<IStudentResult>(formData).then(res => {
                     if (res) {

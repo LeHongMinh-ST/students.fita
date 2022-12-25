@@ -1,7 +1,7 @@
 <template>
     <div class="role-wrapper">
         <q-breadcrumbs>
-            <q-breadcrumbs-el label="Bảng điều khiển" icon="home" :to="{ name: 'Home' }"/>
+            <q-breadcrumbs-el label="Bảng điều khiển" icon="home" :to="{ name: 'HomeStudent' }"/>
             <q-breadcrumbs-el label="Yêu cầu duyệt thông tin"/>
         </q-breadcrumbs>
         <q-slide-transition>

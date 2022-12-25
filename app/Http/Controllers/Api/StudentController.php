@@ -65,7 +65,12 @@ class StudentController extends Controller
     {
         DB::beginTransaction();
         try {
-            $data = $request->all();
+            $data = [];
+            $dataRequest = $request->all();
+            foreach ($dataRequest as $key => $value) {
+                if ($key == "id") $data["student_id"] = json_decode($value, true);
+                else $data[$key] = json_decode($value, true);
+            }
             $authId = auth()->id();
 
             if ($request->hasFile('image')) {
@@ -99,7 +104,12 @@ class StudentController extends Controller
     {
         DB::beginTransaction();
         try {
-            $data = $request->all();
+            $data = [];
+            $dataRequest = $request->all();
+            foreach ($dataRequest as $key => $value) {
+                if ($key == "id") $data["student_id"] = json_decode($value, true);
+                else $data[$key] = json_decode($value, true);
+            }
             $student = $this->studentRepository->findById($id);
 
             if ($request->hasFile('image')) {

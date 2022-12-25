@@ -5,11 +5,12 @@
           <div class="text-h6">Nội dung từ chối</div>
         </q-card-section>
         <q-card-section class="row items-center" style="width: 100%">
-            <label class="text-bold">Ghi chú <span class="required">*</span></label>
+            <label class="text-bold">Nội dung</label>
             <q-input
                 class="full-width"
                 outlined
                 dense
+                type="textarea"
                 v-model="noteReject"
                 id="noteReject"
                 ref="noteRejectInput"
@@ -112,8 +113,7 @@
                   </div>
                   <div class="item q-mt-md"
                     v-if="student?.status_approved == studentStatusTempEnum.Reject"
-                  >
-                    <span class="text-bold">Nội dung từ chối:</span>
+                  ><span class="text-bold">Nội dung từ chối:</span>
                     {{ student?.reject_note ?? "Chưa cập nhật" }}
                   </div>
                 </div>
@@ -126,8 +126,6 @@
                             size="xs"></q-icon>
                     Duyệt
                   </q-btn>
-
-
                   <q-btn v-if="checkClassMonitor('student-update') && checkStatusReject(student)"
                          color="red" class="q-mb-sm"
                          @click="setShowPopup()"
@@ -145,7 +143,7 @@
         <div class="col-9">
           <q-card>
             <q-card-section>
-              <div class="text-bold">Thông tin yêu cầu chỉnh sửa 1</div>
+              <div class="text-bold">Thông tin yêu cầu chỉnh sửa</div>
             </q-card-section>
             <q-separator/>
 
@@ -170,10 +168,10 @@
                     <div class="item q-mb-md">
                       <strong>CMT/CCCD: </strong>
                       <badge :change-column="student?.change_column || []" key-column="citizen_identification" :new-value="student?.citizen_identification" :old-value="student?.student?.citizen_identification"/>
-
                     </div>
                     <div class="item q-mb-md" >
                       <strong>Nơi sinh: </strong>
+                      <badge :change-column="student?.change_column || []" key-column="pob" :new-value="student?.pob" :old-value="student?.student?.pob"/>
                     </div>
                     <div class="item q-mb-md">
                       <strong>Quê quán: </strong>
@@ -200,21 +198,23 @@
                     </div>
 
                     <div class="item q-mb-md">
-                      <strong>Niên khóa: </strong>{{ student.countryside ?? 'Chưa cập nhật' }}
+                      <strong>Niên khóa: </strong>{{ student.school_year ?? 'Chưa cập nhật' }}
                     </div>
-
                     <div class="item q-mb-md">
-                      <strong>Chương trình đào tạo: </strong>
+                      <strong>Chương trình đào tạo: </strong>{{ student.training_text ?? 'Chưa cập nhật' }}
                     </div>
-
                     <div class="item q-mb-md">
-                      <strong>Ngày sinh: </strong>
+                      <strong>Ngày sinh: </strong>{{ student.dob ?? 'Chưa cập nhật' }}
                     </div>
 
                     <div class="item q-mb-md">
                       <strong>Hộ khẩu thường
                         trú: </strong>
                       <badge :change-column="student?.change_column || []" key-column="permanent_residence" :new-value="student?.permanent_residence" :old-value="student?.student?.permanent_residence"/>
+                    </div>
+                    <div class="item q-mb-md">
+                      <strong>Nơi ở hiện tại: </strong>
+                      <badge :change-column="student?.change_column || []" key-column="address" :new-value="student?.address" :old-value="student?.student?.address"/>
                     </div>
                     <div class="item q-mb-md">
                       <strong>Quốc tịch: </strong>
@@ -225,13 +225,13 @@
                       <strong>Tôn giáo: </strong>
                       <badge :change-column="student?.change_column || []" key-column="religion" :new-value="student?.religion" :old-value="student?.student?.religion"/>
                     </div>
-
                     <div class="item q-mb-md">
-                      <strong>Đối tượng chính sách xã
-                        hội: </strong>
+                        <strong>Đối tượng chính sách xã hội: </strong>
+                      <badge :change-column="student?.change_column || []" key-column="social_policy_object_text" :new-value="student?.social_policy_object_text" :old-value="student?.student?.social_policy_object_text"/>
                     </div>
                     <div class="item q-mb-md">
-                      <strong>Ghi chú: </strong>
+                        <strong>Ghi chú: </strong>
+                      <badge :change-column="student?.change_column || []" key-column="note" :new-value="student?.note" :old-value="student?.student?.note"/>
                     </div>
                   </div>
                 </div>
@@ -451,7 +451,7 @@ export default defineComponent({
           })
     }
 
-    const handleChangeStatus = async (status, reject_note) => {
+    const handleChangeStatus = async (status, reject_note="") => {
       if (!isRequest.value) {
         isRequest.value = true
         try {

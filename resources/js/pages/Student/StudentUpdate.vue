@@ -572,11 +572,11 @@
                       if (value == null) {
                           formData.append(objectKey, "")
                       } else {
-                          formData.append(objectKey, value)
+                          formData.append(objectKey, JSON.stringify(value))
                       }
                   });
 
-                  formData.append('image', image.value)
+                  formData.append('image', JSON.stringify(image.value))
                   api.updateStudent<IStudentResult>(formData, parseInt(studentCode.value)).then(res => {
                       if (res) {
                           eventBus.$emit('notify-success', 'Cập nhật sinh viên thành công')

@@ -1,6 +1,6 @@
-import {IFamilyResult} from "./IFamilyResult";
 import IClassesResult from "./IClassesResult";
-import {ILearningOutcomeResult} from "./ILearningOutcomeResult";
+import { IFamilyResult } from "./IFamilyResult";
+import { ILearningOutcomeResult } from "./ILearningOutcomeResult";
 
 export interface IStudentResult {
     id?: number,
@@ -39,5 +39,6 @@ export interface IStudentResult {
     role_text?: string,
     families?: IFamilyResult[],
     general_class?: IClassesResult,
-    learning_outcomes?: ILearningOutcomeResult[]
+    learning_outcomes?: ILearningOutcomeResult[],
+    student_id?: number
 }

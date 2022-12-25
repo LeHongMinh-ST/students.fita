@@ -33,7 +33,6 @@ export default ({
         }
     },
     setup(props) {
-        console.log(props);
         return {
             ...props
             // change_column, key_column, new_value, old_value
