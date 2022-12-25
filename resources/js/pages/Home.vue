@@ -55,7 +55,7 @@
 
                 </div>
                 <div class="col  q-pl-sm">
-                    <q-card class="cursor-pointer" @click="redirectRouter('ReportStudent')">
+                    <q-card class="cursor-pointer" @click="redirectRouter('ReportStudentAdmin')">
                         <q-card-section vert class="text-white vert bg-orange-8">
                             <div class="row">
                                 <div class="col-10">
