@@ -80,7 +80,7 @@
                     <thead>
                         <tr>
                             <!-- <th class="text-center" width="5%">
-                                    <q-checkbox v-model="checkboxAll"/>  
+                                    <q-checkbox v-model="checkboxAll"/>
                             </th> -->
                             <th class="text-center" width="5%">STT</th>
                             <th class="text-left">Mã sinh viên</th>
@@ -123,12 +123,12 @@
                                      <q-badge v-if="getValueLodash(item, 'status', 0) == reportStatusEnum.Approved " align="middle" color='green'>
                                         {{ getValueLodash(item, "status_text", "") ?? "Chưa cập nhật"}}
                                      </q-badge>
-                                    
+
                                 </td>
                                 <td class="text-left">
                                     {{ getValueLodash(item, "created_by.full_name", "Chưa cập nhật") ?? "Chưa cập nhật"}}
                                 </td>
-                                
+
                                 <td class="text-center">
                                 <div class="inline cursor-pointer">
                                     <q-icon name="menu" size="sm"></q-icon>
@@ -139,7 +139,7 @@
                                                              size="xs" @click="redirectRouter('ReportStudentDetailAdmin', {id: getValueLodash(item, 'id', 0)})"></q-icon>Xem chi tiết</span>
                                            </q-item>
                                             <q-item
-                                              
+
                                                 clickable v-close-popup
                                                 @click="handleChangeStatusReport(getValueLodash(item, 'id', 0))"
                                                >
@@ -272,13 +272,13 @@
             const handleFormatDate = (value: string): string => {
                 return formatDate(value);
             };
-           
-            
+
+
             const openDialogDelete = (id: string): void => {
                 dialogDelete.value = true
                 reportId.value =id;
             }
-            
+
             const closeDialog = (): void => {
                 dialogDelete.value = false
                 // dialogDeleteSelect.value = false
@@ -401,10 +401,9 @@
                 await api.getAllReport<IPaginate<[]>>(payload).then(res => {
                 reports.value = _.get(res, 'data.data.reports.data')
 
-                console.log("aaaaaaaaaaa "+reports);
                 page.value.currentPage = _.get(res, 'data.data.reports.current_page', 1)
                 page.value.total = _.get(res, 'data.data.reports.last_page', 0)
-                page.value.perPage = _.get(res, 'data.data.reports.per_page', 0)        
+                page.value.perPage = _.get(res, 'data.data.reports.per_page', 0)
                 }).catch(() => {
                 $q.notify({
                     icon: 'report_problem',
@@ -422,11 +421,11 @@
                 eventBus.$on("notify-success", (message: string) => {
                     generateNotify(message, true)
                 });
-                
+
                 getListReport();
             });
 
-            
+
 
             return {
                 loadingClasses,

@@ -1,4 +1,37 @@
 <template>
+    <q-dialog v-model="isShowPopup" @hide="closeDialog">
+      <q-card style="width: 300px">
+        <q-card-section>
+          <div class="text-h6">Nội dung từ chối</div>
+        </q-card-section>
+        <q-card-section class="row items-center" style="width: 100%">
+            <label class="text-bold">Nội dung</label>
+            <q-input
+                class="full-width"
+                outlined
+                dense
+                type="textarea"
+                v-model="noteReject"
+                id="noteReject"
+                ref="noteRejectInput"
+            />
+        </q-card-section>
+        <q-card-actions align="right" class="row">
+          <q-btn
+            flat
+            label="Đóng"
+            color="primary"
+            @click="closeDialog"
+            v-close-popup
+          />
+          <q-btn
+            label="Đồng ý"
+            color="blue"
+            @click="handleChangeStatus(studentStatusTempEnum.Reject, noteReject)"
+          />
+        </q-card-actions>
+      </q-card>
+    </q-dialog>
   <div class="student-wrapper">
     <q-breadcrumbs>
       <q-breadcrumbs-el label="Bảng điều khiển" icon="home" :to="{name: 'Home'}"/>
@@ -78,6 +111,12 @@
                     <span class="text-bold">Người từ chối:</span>
                     {{ `${student?.rejectable?.full_name} (${student.reject_role_text})`  }}
                   </div>
+                  <div class="item q-mt-md"
+                    v-if="student?.status_approved == studentStatusTempEnum.Reject"
+                  >
+                    <span class="text-bold">Nội dung từ chối:</span>
+                    {{ student?.reject_note ?? "Chưa cập nhật" }}
+                  </div>
                 </div>
                 <q-separator/>
                 <div class="main-action q-mt-md text-center">
@@ -92,7 +131,7 @@
 
                   <q-btn v-if="checkPermission('student-update') && checkStatusReject(student)"
                          color="red" class="q-mb-sm"
-                         @click="handleChangeStatus(studentStatusTempEnum.Reject)">
+                         @click="setShowPopup()">
                     <q-icon name="fa-solid fa-xmark " class="q-mr-sm"
                             size="xs"></q-icon>
                     Từ chối
@@ -124,21 +163,24 @@
                       }}
                     </div>
                     <div class="item q-mb-md">
-                      <strong>Chuyên ngành: </strong>{{ student?.major ?? 'Chưa cập nhật' }}
+                      <strong>Chuyên ngành: </strong>
+                      <badge :change-column="student?.change_column || []" key-column="major" :new-value="student?.major" :old-value="student?.student?.major"/>
                     </div>
                     <div class="item q-mb-md">
-                      <strong>CMT/CCCD: </strong>{{
-                        student?.citizen_identification ?? 'Chưa cập nhật'
-                      }}
+                      <strong>CMT/CCCD: </strong>
+                      <badge :change-column="student?.change_column || []" key-column="citizen_identification" :new-value="student?.citizen_identification" :old-value="student?.student?.citizen_identification"/>
                     </div>
                     <div class="item q-mb-md">
-                      <strong>Nơi sinh: </strong>{{ student.pob ?? 'Chưa cập nhật' }}
+                      <strong>Nơi sinh: </strong>
+                      <badge :change-column="student?.change_column || []" key-column="pob" :new-value="student?.pob" :old-value="student?.student?.pob"/>
                     </div>
                     <div class="item q-mb-md">
-                      <strong>Quê quán: </strong>{{ student.countryside ?? 'Chưa cập nhật' }}
+                      <strong>Quê quán: </strong>
+                      <badge :change-column="student?.change_column || []" key-column="countryside" :new-value="student?.countryside" :old-value="student?.student?.countryside"/>
                     </div>
                     <div class="item q-mb-md">
-                      <strong>Dân tộc: </strong>{{ student.ethnic ?? 'Chưa cập nhật' }}
+                      <strong>Dân tộc: </strong>
+                      <badge :change-column="student?.change_column || []" key-column="ethnic" :new-value="student?.ethnic" :old-value="student?.student?.ethnic"/>
                     </div>
                     <div class="item q-mb-md">
                       <strong>Tình trạng sinh viên: </strong>{{
@@ -172,30 +214,41 @@
 
                     <div class="item q-mb-md">
                       <strong>Hộ khẩu thường
-                        trú: </strong>{{ student.permanent_residence ?? 'Chưa cập nhật' }}
+                        trú: </strong>
+                      <badge :change-column="student?.change_column || []" key-column="permanent_residence" :new-value="student?.permanent_residence" :old-value="student?.student?.permanent_residence"/>
                     </div>
                     <div class="item q-mb-md">
-                      <strong>Quốc tịch: </strong>{{ student.nationality ?? 'Chưa cập nhật' }}
+                      <strong>Nơi ở hiện tại: </strong>
+                      <badge :change-column="student?.change_column || []" key-column="address" :new-value="student?.address" :old-value="student?.student?.address"/>
                     </div>
                     <div class="item q-mb-md">
-                      <strong>Tôn giáo: </strong>{{ student.religion ?? 'Chưa cập nhật' }}
+                      <strong>Quốc tịch: </strong>
+                      <badge :change-column="student?.change_column || []" key-column="nationality" :new-value="student?.nationality" :old-value="student?.student?.nationality"/>
                     </div>
-
+                    <div class="item q-mb-md">
+                      <strong>Tôn giáo: </strong>
+                      <badge :change-column="student?.change_column || []" key-column="religion" :new-value="student?.religion" :old-value="student?.student?.religion"/>
+                    </div>
                     <div class="item q-mb-md">
                       <strong>Đối tượng chính sách xã
-                        hội: </strong>{{
-                        student.social_policy_object_text ?? 'Chưa cập nhật'
-                      }}
+                        hội: </strong>
+                      <badge :change-column="student?.change_column || []" key-column="social_policy_object_text" :new-value="student?.social_policy_object_text" :old-value="student?.student?.social_policy_object_text"/>
                     </div>
                     <div class="item q-mb-md">
-                      <strong>Ghi chú: </strong>{{ student.note ?? 'Chưa cập nhật' }}
+                      <strong>Ghi chú: </strong>
+                      <badge :change-column="student?.change_column || []" key-column="note" :new-value="student?.note" :old-value="student?.student?.note"/>
                     </div>
                   </div>
                 </div>
                 <div class="row">
                   <div class="col">
                     <div class="family-wrapper q-mt-lg q-mb-lg">
-                      <label class="text-bold label-family">Thông tin gia đình</label>
+                        <label class="text-bold label-family " v-if="student?.change_column?.includes('family')">
+                        <q-badge v-if="student?.change_column?.includes('family')" transparent align="middle" color="red" class="bg-red text-body2 ">
+                            Thông tin gia đình
+                        </q-badge>
+                            </label>
+                      <label v-else class="text-bold label-family">Thông tin gia đình</label>
                       <div class="family-list q-pa-md">
                         <div class="row">
                           <div class="col-2 q-mr-sm">
@@ -274,9 +327,13 @@ import _ from "lodash";
 import {permissionHelper} from "../../utils/permissionHelper";
 import {StudentTempStatusEnum} from "../../enums/studentTempStatus.enum";
 import {useStore} from "vuex";
+import Badge from "../../components/Badge.vue"
 
 export default defineComponent({
   name: "RequestStudentDetail",
+  components: {
+    Badge
+  },
   setup() {
     const route = useRoute()
     const store = useStore()
@@ -286,7 +343,16 @@ export default defineComponent({
     const tab = ref<string>('home')
     const $q = useQuasar()
     const {checkPermission, checkTeacher} = permissionHelper()
-
+    const noteReject = ref("")
+    const isShowPopup = ref(false)
+    const noteRejectInput = ref(null)
+    const setShowPopup = () => {
+        isShowPopup.value = true;
+    }
+    const closeDialog = () => {
+        isShowPopup.value = false;
+        noteReject.value = "";
+    }
     const {
       setValidationErrors,
       getValidationErrors,
@@ -296,9 +362,9 @@ export default defineComponent({
 
     const dialogDelete = ref<boolean>(false)
     const studentStatusTempEnum = StudentTempStatusEnum
-    onMounted(() => {
+    onMounted( async() => {
       userId.value = <string>route.params.id
-      getStudentTemp(parseInt(userId.value))
+        getStudentTemp(parseInt(userId.value))
       eventBus.$on('notify-success', message => {
         $q.notify({
           icon: 'check',
@@ -308,6 +374,8 @@ export default defineComponent({
         })
       })
     })
+
+
 
     const loading = ref<boolean>(false)
     const handleUpdateLearningOutcome = () => {
@@ -396,12 +464,13 @@ export default defineComponent({
           })
     }
 
-    const handleChangeStatus = async (status) => {
+    const handleChangeStatus = async (status, reject_note="") => {
       if (!isRequest.value) {
         isRequest.value = true
         try {
           const data = {
-            status: status
+            status: status,
+            reject_note: reject_note,
           }
           const res = await api.changeStatusRequest(parseInt(userId.value), data)
           if (res) {
@@ -424,6 +493,8 @@ export default defineComponent({
           }
         }
         isRequest.value = false
+        isShowPopup.value = false
+        noteReject.value = ""
       }
 
 
@@ -447,7 +518,12 @@ export default defineComponent({
       checkStatusApproved,
       checkStatusReject,
       handleChangeStatus,
-      checkTeacher
+      checkTeacher,
+      noteReject,
+      isShowPopup,
+      setShowPopup,
+      closeDialog,
+      noteRejectInput
     }
   }
 })

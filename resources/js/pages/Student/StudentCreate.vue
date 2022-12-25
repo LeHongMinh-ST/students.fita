@@ -198,6 +198,17 @@
                             @update:model-value="() => resetValidateErrors('permanent_residence')"
                         />
                     </div>
+                    <div class="form-group">
+                        <label class="text-bold">Nơi ở hiện tại</label>
+                        <q-input
+                            outlined
+                            dense
+                            v-model="student.address"
+                            :error-message="getValidationErrors('address')"
+                            :error="hasValidationErrors('address')"
+                            @update:model-value="() => resetValidateErrors('address')"
+                        />
+                    </div>
                     <div class="row">
                         <div class="col-6 q-pr-sm">
                             <div class="form-group">
@@ -538,13 +549,13 @@ export default defineComponent({
                 Object.keys(student.value).map(function (objectKey) {
                     const value = student.value[objectKey];
                     if (value == null) {
-                        formData.append(objectKey, "")
-                    } else {
-                        formData.append(objectKey, value)
-                    }
+                          formData.append(objectKey, "")
+                      } else {
+                          formData.append(objectKey, JSON.stringify(value))
+                      }
                 });
 
-                formData.append('image', image.value)
+                formData.append('image', JSON.stringify(image.value))
 
                 api.createStudent<IStudentResult>(formData).then(res => {
                     if (res) {

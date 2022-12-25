@@ -14,7 +14,7 @@
                         <q-separator/>
                         <q-card-section>
                             <div class="row">
-                                <div class="col-3 q-pr-md">
+                                <div class="col-3 q-pr-md ">
                                     <div class="form-group">
                                         <label class="text-bold">Ảnh sinh viên </label>
                                         <div>
@@ -26,7 +26,7 @@
                                                 @update:model-value="handleUpload()"
                                             ></q-file>
                                         </div>
-                                        <div class="avatar-wrapper q-mt-sm">
+                                        <div class="avatar-wrapper q-mt-sm q-mb-none">
                                             <q-img
                                                 class="avatar-student"
                                                 :src="imageUrl"
@@ -35,7 +35,7 @@
                                             ></q-img>
                                         </div>
                                     </div>
-                                    <div class="form-group">
+                                    <div class="form-group" style="padding-bottom: 20px;">
                                         <label class="text-bold">Niên khóa <span class="required">*</span></label>
                                         <q-input
                                             disable
@@ -44,7 +44,7 @@
                                             v-model="school_year"
                                         />
                                     </div>
-                                    <div class="form-group">
+                                    <div class="form-group" style="padding-bottom: 20px;">
                                         <label class="text-bold">Chương trình đào tạo</label>
                                         <q-input
                                             disable
@@ -125,6 +125,7 @@
                                         <q-input
                                             outlined
                                             dense
+                                            disable
                                             v-model="student.full_name"
                                             :error-message="getValidationErrors('full_name')"
                                             :error="hasValidationErrors('full_name')"
@@ -136,6 +137,7 @@
                                         <q-select
                                             outlined
                                             dense
+                                            disable
                                             :options="genderList"
                                             label="Chọn giới tính"
                                             v-model="student.gender"
@@ -149,6 +151,7 @@
                                     <div class="form-group">
                                         <label class="text-bold">Ngày sinh  <span class="required">*</span></label>
                                         <q-input outlined dense v-model="student.dob"
+                                                 disable
                                                  :error-message="getValidationErrors('dob')"
                                                  :error="hasValidationErrors('dob')"
                                                  @update:model-value="() => resetValidateErrors('dob')"
@@ -197,6 +200,17 @@
                                             :error-message="getValidationErrors('permanent_residence')"
                                             :error="hasValidationErrors('permanent_residence')"
                                             @update:model-value="() => resetValidateErrors('permanent_residence')"
+                                        />
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="text-bold">Nơi ở hiện tại</label>
+                                        <q-input
+                                            outlined
+                                            dense
+                                            v-model="student.address"
+                                            :error-message="getValidationErrors('address')"
+                                            :error="hasValidationErrors('address')"
+                                            @update:model-value="() => resetValidateErrors('address')"
                                         />
                                     </div>
                                     <div class="row">
@@ -605,7 +619,7 @@ export default defineComponent({
             width: 100%;
             border-radius: 5px;
             border: 1px solid #8f8f8f;
-            margin-bottom: 40px;
+            margin-bottom: 20px;
 
             .avatar-student {
                 border-radius: 5px;
