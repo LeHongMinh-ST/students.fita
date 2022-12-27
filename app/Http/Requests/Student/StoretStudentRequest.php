@@ -24,14 +24,13 @@ class StoretStudentRequest extends BaseRequest
     public function rules()
     {
         return [
-            'full_name' => 'required',
-            'role' => 'required',
+            'full_name' => 'required|string',
+            'role' => 'required|string',
             'status' => 'required',
             'gender' => 'required',
             'student_code' => 'required|unique:students',
             'school_year' => 'required',
             'dob' => 'required',
-
         ];
     }
 
