@@ -424,11 +424,21 @@ export default defineComponent({
         const handleDelete = async () => {
             $q.loading.show()
             if (!isRequest.value) isRequest.value = true
+
             try {
-                await api.updateStudent<IStudentResult>({
-                    ...studentFocuse.value,
-                    class_id: null,
-                }, studentFocuse.value?.id || 0)
+                const payload: any = { ...studentFocuse.value, class_id: 0}
+                const formData = new FormData()
+
+                Object.keys(payload).map(function (objectKey) {
+                      const value = payload[objectKey];
+                      if (value == null) {
+                          formData.append(objectKey, "")
+                      } else {
+                          formData.append(objectKey, JSON.stringify(value))
+                      }
+                  });
+
+                await api.updateStudent<IStudentResult>(formData, studentFocuse.value?.id || 0)
                 checkboxArray.value = []
                 handleGetStudents()
                 generateNotify("Xóa thành công sinh viên", true)
