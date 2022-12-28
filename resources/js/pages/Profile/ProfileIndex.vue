@@ -43,6 +43,7 @@
                                                 <label class="text-bold">Tên tài khoản <span
                                                     class="required">*</span></label>
                                                 <q-input
+                                                    disable
                                                     outlined
                                                     dense
                                                     v-model="profile.user_name"
@@ -102,6 +103,7 @@
                                             <div v-if="profile.is_teacher" class="form-group">
                                                 <label class="text-bold">Mã giảng viên <span class="required">*</span></label>
                                                 <q-input
+                                                    disable
                                                     outlined
                                                     dense
                                                     v-model="profile.teacher_code"
