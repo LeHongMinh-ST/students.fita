@@ -36,7 +36,7 @@ class StudentRepository extends BaseRepository implements StudentRepositoryInter
             $query->where('student_code', $data['student_code']);
         }
 
-        if (isset($data['class_id'])) {
+        if (@$data['class_id'] !== null) {
             $query->where('class_id', $data['class_id']);
         }
 
